@@ -1,0 +1,7 @@
+.App {
+  text-align: center;
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}

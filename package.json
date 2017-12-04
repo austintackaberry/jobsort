@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "cd react-backend && npm install && npm start"
+  },
+  "dependencies": {
+    "node-fetch": "^1.7.3"
+  }
+}
