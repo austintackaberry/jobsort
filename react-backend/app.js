@@ -6,8 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var fetch = require('node-fetch');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+// var index = require('./routes/index');
+// var users = require('./routes/users');
 
 var app = express();
 
@@ -31,20 +31,11 @@ app.use(bodyParser.text());
 if (process.env.NODE_ENV === "production") {
   app.use(express.static('client/build'));
 }
-// app.post('/yelpsearch', function(req, res) {
-//   console.log('yelp search received request');
-//   var yelpSearchTerms = JSON.parse(req.body);
-//   yelp.accessToken(process.env.YELP_CLIENT_ID, process.env.YELP_CLIENT_SECRET).then(resp => {
-//     const client = yelp.client(resp.jsonBody.access_token);
-//     client.search(yelpSearchTerms).then(response => {
-//       res.send(response.jsonBody);
-//     }).catch(e => {
-//       console.log(e);
-//     });
-//   }).catch(e => {
-//     console.log(e);
-//   });
-// });
+app.post('/getresults', function(req, res) {
+  console.log('getresults received request');
+  var dataPackage = req.body;
+  res.send({hello:'you got this message'});
+});
 // app.post('/googlesearch', function(req, res) {
 //   console.log('google search received request');
 //   var googleSearchTerms = JSON.parse(req.body);

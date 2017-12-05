@@ -5,3 +5,43 @@
 input::-webkit-calendar-picker-indicator {
   display: none;
 }
+
+.delete-lang {
+  display: inline-block;
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.user-lang-div {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 5px;
+  background-color: rgb(128, 201, 197);
+  border-radius: 4px;
+  margin: 15px 5px 0px 5px;
+}
+
+#user-lang-div-placeholder {
+  background-color: inherit;
+  height: 14px;
+}
+
+.user-lang-span {
+  font-size: 14px;
+}
+
+.weight-input {
+  width: 70px;
+}
+
+#content {
+  width: 60%;
+  margin: 0 auto;
+  border: 1px solid rgb(158, 200, 204);
+  border-radius: 5px;
+  margin-top: 20px;
+  background-color: rgb(204, 223, 224);
+  padding: 15px;
+}
