@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+body {
+  background-color: rgb(232, 236, 237);
+}
+
 input::-webkit-calendar-picker-indicator {
   display: none;
 }
@@ -12,6 +16,17 @@ input::-webkit-calendar-picker-indicator {
   border: none;
   cursor: pointer;
   border-radius: 50%;
+}
+
+#userJobTitle {
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
+}
+#userJobLocation {
+  display: block;
+  margin: 0 auto;
+  margin-top: 10px;
 }
 
 .user-lang-div {

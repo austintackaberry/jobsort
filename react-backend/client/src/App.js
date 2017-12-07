@@ -6,22 +6,24 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      searchTerm: '',
+      jobTitle: '',
+      jobLocation: '',
       userData: [],
-      allLangs: ['javascript', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'go', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
+      allLangs: ['javascript', 'bootstrap', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
       allLangsJSX: []
     };
     this.state.allLangs.sort();
 
     this.handleLangAdd = this.handleLangAdd.bind(this);
-    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleStep1Change = this.handleStep1Change.bind(this);
     this.handleLangDelClick = this.handleLangDelClick.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
   }
 
-  handleSearchChange(event) {
-    var searchTerm = this.refs.searchTerm.value;
-    this.setState({searchTerm:searchTerm});
+  handleStep1Change(event) {
+    var jobTitle = this.refs.jobTitle.value;
+    var jobLocation = this.refs.jobLocation.value;
+    this.setState({jobTitle:jobTitle, jobLocation:jobLocation});
     event.preventDefault();
   }
 
@@ -47,18 +49,21 @@ class App extends Component {
 
   handleWeightsSubmit(event) {
     var userData = this.state.userData.slice();
+    var allLangs = this.state.allLangs.slice();
     for (let i = 0; i < userData.length; i++) {
       userData[i].weight = parseFloat(this.refs['langWeight'+i].value);
     }
     event.preventDefault();
     this.setState({userData:userData});
     var dataPackage = {
-      searchTerm: this.state.searchTerm,
-      userData: userData
-    }
+      jobTitle: this.state.jobTitle,
+      jobLocation: this.state.jobLocation,
+      userData: userData,
+      allLangs: allLangs
+    };
     fetch('/getresults/', {
       method: 'POST',
-      body: dataPackage
+      body: JSON.stringify(dataPackage)
     }).then(function(res) {
       return res.json();
     }).then(function(response) {
@@ -85,7 +90,7 @@ class App extends Component {
     for (let i = 0; i < userData.length; i++) {
       userDataJSX.push(
         <div className="user-lang-div">
-          <button id={'langButt'+i} class="delete-lang" onClick={this.handleLangDelClick}>&#10006;</button>
+          <button id={'langButt'+i} className="delete-lang" onClick={this.handleLangDelClick}>&#10006;</button>
           <span className="user-lang-span" onClick = {this.sendMsg}>{userData[i].language}</span>
         </div>
       );
@@ -110,11 +115,12 @@ class App extends Component {
         <div id="content">
           <div>
             <p id="step1">
-              Step 1: Input your job search term.
+              Step 1: Input your desired job title and location.
             </p>
             <div>
               <form>
-                <input id="userSearchInput" placeholder="web developer" ref="searchTerm" onChange={this.handleSearchChange}/>
+                <input id="userJobTitle" placeholder="web developer" ref="jobTitle" onChange={this.handleStep1Change}/>
+                <input id="userJobLocation" placeholder="san francisco, ca" ref="jobLocation" onChange={this.handleStep1Change}/>
               </form>
             </div>
           </div>
