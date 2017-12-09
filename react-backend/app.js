@@ -51,11 +51,12 @@ app.post('/getresults', function(req, res) {
     for (let j = 0; j < githubData.length; j++) {
       githubFormatted.push(
         {
-          id: githubData[j].id,
+          url: 'https://jobs.github.com/positions/' + githubData[j].id,
           title: githubData[j].title,
           postTime: githubData[j].created_at,
           location: githubData[j].location,
-          type: githubData[j].type
+          type: githubData[j].type,
+          description: githubData[j].description
         }
       );
       let allLangsCount = [];

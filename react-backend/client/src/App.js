@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+var async = require('async');
 
 class App extends Component {
 
@@ -10,7 +11,8 @@ class App extends Component {
       jobLocation: '',
       userData: [],
       allLangs: ['javascript', 'bootstrap', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
-      allLangsJSX: []
+      allLangsJSX: [],
+      listingData: []
     };
     this.state.allLangs.sort();
 
@@ -61,15 +63,26 @@ class App extends Component {
       userData: userData,
       allLangs: allLangs
     };
-    fetch('/getresults/', {
-      method: 'POST',
-      body: JSON.stringify(dataPackage)
-    }).then(function(res) {
-      return res.json();
-    }).then(function(response) {
-      // var data = JSON.parse(response);
-      console.log(response);
-    });
+
+    var listingData;
+    async.series([
+      (callback) => {
+        fetch('/getresults/', {
+          method: 'POST',
+          body: JSON.stringify(dataPackage)
+        }).then(function(res) {
+          return res.json();
+        }).then(function(response) {
+          // var data = JSON.parse(response);
+          listingData = response.slice();
+          callback();
+        });
+      },
+      (callback) => {
+        this.setState({listingData:listingData});
+        callback();
+      }
+    ]);
   }
 
   render() {
@@ -83,6 +96,26 @@ class App extends Component {
         {allLangsJSX}
       </datalist>
     ];
+
+    var listingDataJSX = [];
+    var listingData = this.state.listingData.slice();
+
+    listingData.map((listing) => {
+      let shortHTMLDescription = listing.description.slice(0,300);
+      let div = document.createElement("div");
+      div.innerHTML = shortHTMLDescription;
+      let text = div.textContent || div.innerText || "";
+      text = text.slice(0,text.lastIndexOf(" "));
+      text = text.concat('...');
+      listingDataJSX.push(
+        <div className="job-listing">
+          <h4><a href={listing.url}>{listing.title}</a></h4>
+          <p className="listing-item">{listing.location}</p>
+          <p className="listing-item">{listing.type}</p>
+          <p className="listing-item">{text}</p>
+        </div>
+      );
+    });
 
     var userData = this.state.userData.slice();
     var userDataJSX = [];
@@ -142,6 +175,9 @@ class App extends Component {
               Step 3: Assign weights to each language/framework based on how well you know them. A higher number means you know that language more.
             </p>
             {userLangWeightsJSX}
+          </div>
+          <div id="listing-container">
+            {listingDataJSX}
           </div>
         </div>
       </div>

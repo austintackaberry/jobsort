@@ -29,6 +29,14 @@ input::-webkit-calendar-picker-indicator {
   margin-top: 10px;
 }
 
+.job-listing {
+  border: 1px solid black;
+  width: 60%;
+  margin: 0 auto;
+  text-align: left;
+  padding: 10px;
+}
+
 .user-lang-div {
   display: inline-block;
   margin-top: 10px;
