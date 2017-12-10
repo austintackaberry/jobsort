@@ -12,7 +12,12 @@ class App extends Component {
       userData: [],
       allLangs: ['javascript', 'bootstrap', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
       allLangsJSX: [],
-      listingData: []
+      listingData: [],
+      checked: {
+        github:true,
+        stackOverflow:true,
+        hackerNews:true
+      }
     };
     this.state.allLangs.sort();
 
@@ -20,6 +25,7 @@ class App extends Component {
     this.handleStep1Change = this.handleStep1Change.bind(this);
     this.handleLangDelClick = this.handleLangDelClick.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
   }
 
   handleStep1Change(event) {
@@ -49,7 +55,26 @@ class App extends Component {
     this.setState({userData:userData});
   }
 
+  handleCheckboxChange(event) {
+    console.log(event.target.checked);
+    console.log(event.target.id);
+    var checked = this.state.checked;
+    var jobBoard = "";
+    if (event.target.id === "hn-checkbox") {
+      jobBoard = "hackerNews";
+    }
+    else if (event.target.id === "gh-checkbox") {
+      jobBoard = "github";
+    }
+    else if (event.target.id === "so-checkbox") {
+      jobBoard = "stackOverflow";
+    }
+    checked[jobBoard] = event.target.checked;
+    this.setState({checked:checked});
+  }
+
   handleWeightsSubmit(event) {
+    var checked = this.state.checked;
     var userData = this.state.userData.slice();
     var allLangs = this.state.allLangs.slice();
     for (let i = 0; i < userData.length; i++) {
@@ -61,7 +86,8 @@ class App extends Component {
       jobTitle: this.state.jobTitle,
       jobLocation: this.state.jobLocation,
       userData: userData,
-      allLangs: allLangs
+      allLangs: allLangs,
+      checked: checked
     };
 
     var listingData;
@@ -100,10 +126,11 @@ class App extends Component {
     var listingDataJSX = [];
     var listingDataJSX1 = [];
     var listingData = this.state.listingData;
+    var checked = this.state.checked;
 
     if (listingData) {
       listingData.map((listing) => {
-        if (listing.source === "hackerNews") {
+        if (listing.source === "hackerNews" && checked.hackerNews === true) {
           listingDataJSX = [];
           let text = '';
           if (listing.description) {
@@ -133,11 +160,12 @@ class App extends Component {
           listingDataJSX.push(<p className="listing-item">{text}</p>);
           listingDataJSX1.push(
             <div className="job-listing">
+              <span id="hacker-news" className="source">hn who's hiring</span>
               {listingDataJSX}
             </div>
           )
         }
-        else if (listing.source === "github")  {
+        else if (listing.source === "github" && checked.github === true)  {
           let shortHTMLDescription = listing.description.slice(0,200);
           let div = document.createElement("div");
           div.innerHTML = shortHTMLDescription;
@@ -146,6 +174,7 @@ class App extends Component {
           text = text.concat('...');
           listingDataJSX1.push(
             <div className="job-listing">
+              <span id="github" className="source">github</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.location}</p>
               <p className="listing-item">{listing.type}</p>
@@ -153,7 +182,7 @@ class App extends Component {
             </div>
           );
         }
-        else if (listing.source === "stackOverflow")  {
+        else if (listing.source === "stackOverflow" && checked.stackOverflow === true)  {
           let shortHTMLDescription = listing.description.slice(0,200);
           let div = document.createElement("div");
           div.innerHTML = shortHTMLDescription;
@@ -162,6 +191,7 @@ class App extends Component {
           text = text.concat('...');
           listingDataJSX1.push(
             <div className="job-listing">
+              <span id="stack-overflow" className="source">stack overflow</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.location}</p>
               <p className="listing-item">{listing.companyName}</p>
@@ -204,18 +234,33 @@ class App extends Component {
         <div id="content">
           <div>
             <p id="step1">
-              Step 1: Input your desired job title and location.
+              Input your desired job title and location.
             </p>
             <div>
               <form>
-                <input id="userJobTitle" placeholder="web developer" ref="jobTitle" onChange={this.handleStep1Change}/>
-                <input id="userJobLocation" placeholder="san francisco, ca" ref="jobLocation" onChange={this.handleStep1Change}/>
+                <input id="userJobTitle" placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
+                <input id="userJobLocation" placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
+              </form>
+            </div>
+          </div>
+          <div>
+            <p>
+              Check the job boards you want included in the search.
+            </p>
+            <div>
+              <form id="job-board-checkbox-form">
+                <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                <label for="hn-checkbox">hacker news: who's hiring</label>
+                <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                <label for="so-checkbox">stack overflow</label>
+                <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                <label for="gh-checkbox">github</label>
               </form>
             </div>
           </div>
           <div>
             <p id="step2">
-              Step 2: Input all the languages/frameworks you know.
+              Input languages/frameworks that you know.
             </p>
             <div>
               <form onSubmit={this.handleLangAdd}>
@@ -228,7 +273,7 @@ class App extends Component {
           </div>
           <div>
             <p id="step3">
-              Step 3: Assign weights to each language/framework based on how well you know them. A higher number means you know that language more.
+              Assign weights to each language/framework based on how well you know them. A higher number means you know that language more.
             </p>
             {userLangWeightsJSX}
           </div>
