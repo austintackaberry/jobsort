@@ -77,6 +77,7 @@ app.post('/getresults', function(req, res) {
   console.log('getresults received request');
   var dataPackage = JSON.parse(req.body);
   var returnDataPackage = [];
+  var stackOverflowFormatted = [];
   async.series([
     (callback) => {
       var githubData = {};
@@ -191,8 +192,7 @@ app.post('/getresults', function(req, res) {
                 }
               });
               returnDataPackage = returnDataPackage.concat(hnFormatted);
-              returnDataPackage = jobSort(returnDataPackage);
-              res.send(returnDataPackage);
+              callback();
             })
             .catch((err) => {
               console.log(err);
@@ -201,6 +201,62 @@ app.post('/getresults', function(req, res) {
         .catch((err) => {
           console.log(err);
         });
+    },
+    (callback) => {
+      const options = {
+        uri: 'https://stackoverflow.com/jobs?q=' + dataPackage.jobTitle + '&l=' + dataPackage.jobLocation + '&d=20&u=Miles&sort=i',
+        transform: (body) => {return cheerio.load(body);}
+      };
+      rp(options)
+      .then(($) => {
+        var soLinkFunctions = [];
+        $('.-job-item').each(function(index, value) {
+          soLinkFunctions.push(
+            () => {
+              return new Promise((resolve, reject) => {
+                var url = 'https://stackoverflow.com/jobs/' + $(this).attr('data-jobid');
+                const options = {
+                  uri: url,
+                  transform: (body) => {return cheerio.load(body);}
+                };
+                rp(options)
+                .then(($) => {
+                  stackOverflowFormatted.push({});
+                  stackOverflowFormatted[index].title = $('a.title.job-link').attr('title');
+                  stackOverflowFormatted[index].companyName = $('a.employer').text();
+                  stackOverflowFormatted[index].location = $('div.-location').text();
+                  stackOverflowFormatted[index].url = url;
+                  stackOverflowFormatted[index].source = "stackOverflow";
+                  stackOverflowFormatted[index].description = $('div.description').text();
+                  stackOverflowFormatted[index].rankScore = rankScore(dataPackage, stackOverflowFormatted[index].description);
+                  resolve();
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+              });
+            }
+          );
+        });
+        soLinkFunctions.push(
+          () => {
+            return new Promise((resolve, reject) => {
+              returnDataPackage = returnDataPackage.concat(stackOverflowFormatted)
+              returnDataPackage = jobSort(returnDataPackage);
+              res.send(returnDataPackage);
+              resolve();
+            });
+          }
+        );
+        var promise = soLinkFunctions[0]();
+        for (var i = 1; i < soLinkFunctions.length; i++) {
+          promise = promise.then(soLinkFunctions[i]);
+        }
+        callback();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   ]);
 });

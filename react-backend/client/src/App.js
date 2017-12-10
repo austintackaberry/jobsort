@@ -153,6 +153,22 @@ class App extends Component {
             </div>
           );
         }
+        else if (listing.source === "stackOverflow")  {
+          let shortHTMLDescription = listing.description.slice(0,200);
+          let div = document.createElement("div");
+          div.innerHTML = shortHTMLDescription;
+          let text = div.textContent || div.innerText || "";
+          text = text.slice(0,text.lastIndexOf(" "));
+          text = text.concat('...');
+          listingDataJSX1.push(
+            <div className="job-listing">
+              <h4><a href={listing.url}>{listing.title}</a></h4>
+              <p className="listing-item">{listing.location}</p>
+              <p className="listing-item">{listing.companyName}</p>
+              <p className="listing-item">{text}</p>
+            </div>
+          );
+        }
       });
     }
 
