@@ -98,24 +98,64 @@ class App extends Component {
     ];
 
     var listingDataJSX = [];
-    var listingData = this.state.listingData.slice();
+    var listingDataJSX1 = [];
+    var listingData = this.state.listingData;
 
-    listingData.map((listing) => {
-      let shortHTMLDescription = listing.description.slice(0,300);
-      let div = document.createElement("div");
-      div.innerHTML = shortHTMLDescription;
-      let text = div.textContent || div.innerText || "";
-      text = text.slice(0,text.lastIndexOf(" "));
-      text = text.concat('...');
-      listingDataJSX.push(
-        <div className="job-listing">
-          <h4><a href={listing.url}>{listing.title}</a></h4>
-          <p className="listing-item">{listing.location}</p>
-          <p className="listing-item">{listing.type}</p>
-          <p className="listing-item">{text}</p>
-        </div>
-      );
-    });
+    if (listingData) {
+      listingData.map((listing) => {
+        if (listing.source === "hackerNews") {
+          listingDataJSX = [];
+          let text = '';
+          if (listing.description) {
+            let shortHTMLDescription = listing.description.slice(0,200);
+            let div = document.createElement("div");
+            div.innerHTML = shortHTMLDescription;
+            text = div.textContent || div.innerText || "";
+            text = text.slice(0,text.lastIndexOf(" "));
+            text = text.concat('...');
+          }
+          if (listing.title) {
+            listingDataJSX.push(<h4>{listing.title}</h4>);
+          }
+          listingDataJSX.push(<p className="listing-item">Company: {listing.companyName}</p>);
+          if (listing.location) {
+            listingDataJSX.push(<p className="listing-item">Location: {listing.location}</p>);
+          }
+          if (listing.url) {
+            listingDataJSX.push(<p className='listing-item'>Link: <a href={listing.url}>{listing.url}</a></p>);
+          }
+          if (listing.type) {
+            listingDataJSX.push(<p className="listing-item">Type: {listing.type}</p>);
+          }
+          if (listing.compensation) {
+            listingDataJSX.push(<p className="listing-item">Compensation: {listing.compensation}</p>);
+          }
+          listingDataJSX.push(<p className="listing-item">{text}</p>);
+          listingDataJSX1.push(
+            <div className="job-listing">
+              {listingDataJSX}
+            </div>
+          )
+        }
+        else if (listing.source === "github")  {
+          let shortHTMLDescription = listing.description.slice(0,200);
+          let div = document.createElement("div");
+          div.innerHTML = shortHTMLDescription;
+          let text = div.textContent || div.innerText || "";
+          text = text.slice(0,text.lastIndexOf(" "));
+          text = text.concat('...');
+          listingDataJSX1.push(
+            <div className="job-listing">
+              <h4><a href={listing.url}>{listing.title}</a></h4>
+              <p className="listing-item">{listing.location}</p>
+              <p className="listing-item">{listing.type}</p>
+              <p className="listing-item">{text}</p>
+            </div>
+          );
+        }
+      });
+    }
+
 
     var userData = this.state.userData.slice();
     var userDataJSX = [];
@@ -177,7 +217,7 @@ class App extends Component {
             {userLangWeightsJSX}
           </div>
           <div id="listing-container">
-            {listingDataJSX}
+            {listingDataJSX1}
           </div>
         </div>
       </div>
