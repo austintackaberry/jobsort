@@ -148,10 +148,10 @@ app.post('/getresults', function(req, res) {
                   hnFormatted.push({source:"hackerNews", fullPostText:text, fullPostHTML:fullPost})
                   if ($($(this).contents()[1]).attr('href')) {
                     hnFormatted[hnFormatted.length -1].url = $($(this).contents()[1]).attr('href');
-                    descriptionHTML = $($(this).contents().slice(2)).html();
+                    descriptionHTML = $($(this).contents().slice(2)).text();
                   }
                   else {
-                    descriptionHTML = $($(this).contents().slice(1)).html();
+                    descriptionHTML = $($(this).contents().slice(1)).text();
                   }
                   hnFormatted[hnFormatted.length -1].companyName = listingInfo.shift();
                   hnFormatted[hnFormatted.length -1].description = descriptionHTML;
@@ -214,6 +214,9 @@ app.post('/getresults', function(req, res) {
           soLinkFunctions.push(
             () => {
               return new Promise((resolve, reject) => {
+                stackOverflowFormatted.push({});
+                let postTime = $(this).find('.-posted-date.g-col').text();
+                stackOverflowFormatted[index].postTime = postTime.trim();
                 var url = 'https://stackoverflow.com/jobs/' + $(this).attr('data-jobid');
                 const options = {
                   uri: url,
@@ -221,10 +224,9 @@ app.post('/getresults', function(req, res) {
                 };
                 rp(options)
                 .then(($) => {
-                  stackOverflowFormatted.push({});
                   stackOverflowFormatted[index].title = $('a.title.job-link').attr('title');
                   stackOverflowFormatted[index].companyName = $('a.employer').text();
-                  stackOverflowFormatted[index].location = $('div.-location').text();
+                  stackOverflowFormatted[index].location = $('div.-location').first().text().trim().replace("- \n","");
                   stackOverflowFormatted[index].url = url;
                   stackOverflowFormatted[index].source = "stackOverflow";
                   stackOverflowFormatted[index].description = $('div.description').text();
