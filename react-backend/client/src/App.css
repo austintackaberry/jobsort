@@ -10,7 +10,7 @@ input::-webkit-calendar-picker-indicator {
   display: none;
 }
 
-.delete-lang {
+.exit {
   display: inline-block;
   background-color: inherit;
   border: none;
@@ -31,7 +31,7 @@ input::-webkit-calendar-picker-indicator {
 
 .job-listing {
   border: 1px solid black;
-  width: 60%;
+  width: 70%;
   margin: 0 auto;
   text-align: left;
   padding: 10px;

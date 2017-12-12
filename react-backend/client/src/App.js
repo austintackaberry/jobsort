@@ -10,7 +10,7 @@ class App extends Component {
       jobTitle: '',
       jobLocation: '',
       userData: [],
-      allLangs: ['javascript', 'bootstrap', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
+      allLangs: ['javascript', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
       allLangsJSX: [],
       listingData: [],
       checked: {
@@ -26,6 +26,10 @@ class App extends Component {
     this.handleLangDelClick = this.handleLangDelClick.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    this.handleReadMoreClick = this.handleReadMoreClick.bind(this);
+    this.handleHideClick = this.handleHideClick.bind(this);
+    this.handleUnhideAll = this.handleUnhideAll.bind(this);
+    this.handleReadMoreAll = this.handleReadMoreAll.bind(this);
   }
 
   handleStep1Change(event) {
@@ -111,6 +115,41 @@ class App extends Component {
     ]);
   }
 
+  handleReadMoreClick(event) {
+    var listingIndex = event.target.getAttribute('data-value');
+    var listingData = this.state.listingData;
+    if (listingData[listingIndex].readMore) {
+      listingData[listingIndex].readMore = false;
+      event.target.parentElement.parentElement.scrollIntoView(true);
+    }
+    else {
+      listingData[listingIndex].readMore = true;
+    }
+    this.setState({listingData:listingData});
+  }
+
+  handleHideClick(event) {
+    var listingIndex = event.target.getAttribute('data-value');
+    var listingData = this.state.listingData;
+    listingData[listingIndex].hidden = true;
+    this.setState({listingData:listingData});
+  }
+
+  handleUnhideAll() {
+    var listingData = this.state.listingData;
+    listingData.map((listing)=>{
+      listing.hidden = false;
+    });
+    this.setState({listingData:listingData});
+  }
+  handleReadMoreAll() {
+    var listingData = this.state.listingData;
+    listingData.map((listing)=>{
+      listing.readMore = true;
+    });
+    this.setState({listingData:listingData});
+  }
+
   render() {
     var allLangs = this.state.allLangs.slice();
     var allLangsJSX = [];
@@ -127,20 +166,24 @@ class App extends Component {
     var listingDataJSX1 = [];
     var listingData = this.state.listingData;
     var checked = this.state.checked;
+    var unhideAllJSX = [];
 
     if (listingData) {
-      listingData.map((listing) => {
-        if (listing.source === "hackerNews" && checked.hackerNews === true) {
+      listingData.map((listing, index) => {
+        let hide = <button id="hide" href="javascript: void(0)" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>;
+        let readMoreLess = "read more";
+        let text = '';
+        if (listing.descriptionText && !listing.readMore) {
+          text = listing.descriptionText.slice(0,200);
+          text = text.slice(0,text.lastIndexOf(" "));
+          text = text.concat('...');
+        }
+        else if (listing.descriptionHTML && listing.readMore) {
+          readMoreLess = "read less"
+          text = <p dangerouslySetInnerHTML={{__html: listing.descriptionHTML}} />;
+        }
+        if (listing.source === "hackerNews" && checked.hackerNews === true  && !listing.hidden) {
           listingDataJSX = [];
-          let text = '';
-          if (listing.description) {
-            let shortHTMLDescription = listing.description.slice(0,200);
-            let div = document.createElement("div");
-            div.innerHTML = shortHTMLDescription;
-            text = div.textContent || div.innerText || "";
-            text = text.slice(0,text.lastIndexOf(" "));
-            text = text.concat('...');
-          }
           if (listing.title) {
             listingDataJSX.push(<h4>{listing.title}</h4>);
           }
@@ -148,6 +191,7 @@ class App extends Component {
           if (listing.location) {
             listingDataJSX.push(<p className="listing-item">Location: {listing.location}</p>);
           }
+          listingDataJSX.push(<p className="listing-item">Posted: {listing.postTime}</p>);
           if (listing.url) {
             listingDataJSX.push(<p className='listing-item'>Link: <a href={listing.url}>{listing.url}</a></p>);
           }
@@ -157,47 +201,43 @@ class App extends Component {
           if (listing.compensation) {
             listingDataJSX.push(<p className="listing-item">Compensation: {listing.compensation}</p>);
           }
-          listingDataJSX.push(<p className="listing-item">{text}</p>);
+          listingDataJSX.push(<p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>);
           listingDataJSX1.push(
             <div className="job-listing">
+              {hide}
               <span id="hacker-news" className="source">hn who's hiring</span>
               {listingDataJSX}
             </div>
-          )
+          );
         }
-        else if (listing.source === "github" && checked.github === true)  {
-          let shortHTMLDescription = listing.description.slice(0,200);
-          let div = document.createElement("div");
-          div.innerHTML = shortHTMLDescription;
-          let text = div.textContent || div.innerText || "";
-          text = text.slice(0,text.lastIndexOf(" "));
-          text = text.concat('...');
+        else if (listing.source === "github" && checked.github === true && !listing.hidden)  {
           listingDataJSX1.push(
             <div className="job-listing">
+              {hide}
               <span id="github" className="source">github</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.location}</p>
+              <p className="listing-item">{listing.postTime}</p>
               <p className="listing-item">{listing.type}</p>
-              <p className="listing-item">{text}</p>
+              <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
             </div>
           );
         }
-        else if (listing.source === "stackOverflow" && checked.stackOverflow === true)  {
-          let shortHTMLDescription = listing.description.slice(0,200);
-          let div = document.createElement("div");
-          div.innerHTML = shortHTMLDescription;
-          let text = div.textContent || div.innerText || "";
-          text = text.slice(0,text.lastIndexOf(" "));
-          text = text.concat('...');
+        else if (listing.source === "stackOverflow" && checked.stackOverflow === true  && !listing.hidden)  {
           listingDataJSX1.push(
             <div className="job-listing">
+              {hide}
               <span id="stack-overflow" className="source">stack overflow</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.location}</p>
+              <p className="listing-item">{listing.postTime}</p>
               <p className="listing-item">{listing.companyName}</p>
-              <p className="listing-item">{text}</p>
+              <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
             </div>
           );
+        }
+        else if (listing.hidden && unhideAllJSX.length < 1) {
+          unhideAllJSX.push(<button onClick={this.handleUnhideAll}>unhide all</button>);
         }
       });
     }
@@ -209,12 +249,12 @@ class App extends Component {
     for (let i = 0; i < userData.length; i++) {
       userDataJSX.push(
         <div className="user-lang-div">
-          <button id={'langButt'+i} className="delete-lang" onClick={this.handleLangDelClick}>&#10006;</button>
+          <button id={'langButt'+i} className="exit" onClick={this.handleLangDelClick}>&#10006;</button>
           <span className="user-lang-span" onClick = {this.sendMsg}>{userData[i].language}</span>
         </div>
       );
       userLangWeightsJSX.push(
-        <div>{userData[i].language}: <input className="weight-input" ref={'langWeight'+i} /></div>
+        <div>{userData[i].language}: <input data-lpignore='true' className="weight-input" ref={'langWeight'+i} /></div>
       );
     }
     if (userDataJSX.length === 0) {
@@ -238,8 +278,8 @@ class App extends Component {
             </p>
             <div>
               <form>
-                <input id="userJobTitle" placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
-                <input id="userJobLocation" placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
+                <input id="userJobTitle" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
+                <input id="userJobLocation" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
               </form>
             </div>
           </div>
@@ -264,7 +304,7 @@ class App extends Component {
             </p>
             <div>
               <form onSubmit={this.handleLangAdd}>
-                <input id="userLangInput" list='languages' name='languages' ref="userAddLang"/>
+                <input id="userLangInput" data-lpignore='true' list='languages' name='languages' ref="userAddLang"/>
                 {allLangsJSX}
                 <input type="submit" value="Add" />
               </form>
@@ -276,6 +316,8 @@ class App extends Component {
               Assign weights to each language/framework based on how well you know them. A higher number means you know that language more.
             </p>
             {userLangWeightsJSX}
+            {unhideAllJSX}
+            <button onClick={this.handleReadMoreAll}>read more all</button>
           </div>
           <div id="listing-container">
             {listingDataJSX1}

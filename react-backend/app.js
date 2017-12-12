@@ -8,6 +8,7 @@ var fetch = require('node-fetch');
 var async = require('async');
 const cheerio = require('cheerio');
 const rp = require('request-promise');
+var htmlToText = require('html-to-text');
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
@@ -31,8 +32,60 @@ app.use(bodyParser.text());
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
+function UTCDateToTimeElapsed(passedDate) {
+  let milliseconds = Date.now() - Date.parse(passedDate);
+  let seconds = milliseconds/1000.0;
+  if (seconds < 60) {
+    return Math.round(seconds) + "s ago";
+  }
+  let minutes = seconds/60;
+  if (minutes < 60) {
+    return Math.round(minutes) + "min ago";
+  }
+  let hours = minutes/60;
+  if (hours < 24) {
+    return Math.round(hours) + "h ago";
+  }
+  let days = hours/24;
+  if (days < 7) {
+    return Math.round(days) + "d ago";
+  }
+  let weeks = days/7;
+  return Math.round(weeks) + "w ago";
+}
+
+function parseHackerNewsPostTime(timeString) {
+  let timeArr = timeString.split(' ');
+  if (timeArr[1] == 'seconds') {
+    timeArr[0] = timeArr[0] + 's';
+  }
+  if (timeArr[1] == 'minutes') {
+    timeArr[0] = timeArr[0] + 'min';
+  }
+  if (timeArr[1] == 'hours') {
+    timeArr[0] = timeArr[0] + 'h';
+  }
+  if (timeArr[1] == 'days') {
+    if (parseInt(timeArr[0]) < 7) {
+      timeArr[0] = timeArr[0] + 'd';
+    }
+    else if (parseInt(timeArr[0]) < 30) {
+      timeArr[0] = Math.round(parseInt(timeArr[0])/7.0).toString() + 'w';
+    }
+    else {
+      timeArr[0] = Math.round(parseInt(timeArr[0])/30.4).toString() + 'mon';
+    }
+  }
+  if (timeArr[1] == 'years') {
+    timeArr[0] = timeArr[0] + 'y';
+  }
+  timeArr.splice(1,1);
+  return timeArr.join(' ');
+}
+
 function rankScore(dataPackage, description) {
   let allLangsCount = [];
+  let descriptionHasTech = [];
   let rankScore = 0;
   for (let i = 0; i < dataPackage.allLangs.length; i++) {
     let regexVar = dataPackage.allLangs[i].replace(/\+/g,"\\$&");
@@ -40,12 +93,31 @@ function rankScore(dataPackage, description) {
     if (regexVar === 'c') {
       var re = new RegExp(/[^a-zA-Z0-9]c[^a-zA-Z0-9]/i);
     }
-    if (regexVar === 'r') {
+    else if (regexVar === 'r') {
       var re = new RegExp(/[^a-zA-Z0-9]r[^a-zA-Z0-9]/i);
     }
+    else if (regexVar === 'html') {
+      var re = new RegExp(/^\.html/i);
+    }
+    else if (regexVar === '.net') {
+      var re = new RegExp(/\.net(?!\s?core)/i);
+    }
+    else if (regexVar === 'react native') {
+      var re = new RegExp(/react\s?native/i);
+    }
+    else if (regexVar === 'java') {
+      var re = new RegExp(/java\s?script/i);
+    }
+    let test = re.test(description);
+    if (regexVar === 'react') {
+      var re1 = new RegExp(/react(?!\s?native)/i);
+      var re2 = new RegExp(/react(?![a-ik-z])/i);
+      test = re1.test(description) && re2.test(description);
+    }
     allLangsCount.push({language: dataPackage.allLangs[i]});
-    if (description.match(re)) {
+    if (test) {
       allLangsCount[i].isInDescription = 1;
+      descriptionHasTech.push(dataPackage.allLangs[i]);
       dataPackage.userData.map((element) => {
         if (element.language == dataPackage.allLangs[i]) {
           rankScore += element.weight * allLangsCount[i].isInDescription;
@@ -60,7 +132,10 @@ function rankScore(dataPackage, description) {
   let rankTotal = 0;
   allLangsCount.map((element) => {rankTotal += element.isInDescription;});
   rankScore /= rankTotal;
-  return rankScore;
+  if (rankScore === null) {
+    rankScore = 0;
+  }
+  return {rankScore:rankScore, descriptionHasTech:descriptionHasTech};
 }
 
 function jobSort(listingData) {
@@ -81,7 +156,6 @@ app.post('/getresults', function(req, res) {
   var asyncFns = [];
   var asyncFns2 = [];
   if (dataPackage.checked.github) {
-    console.log('github');
     asyncFns.push(
       (() => {
         return new Promise((resolve, reject) => {
@@ -98,16 +172,21 @@ app.post('/getresults', function(req, res) {
             githubData = data;
             var githubFormatted = [];
             for (let j = 0; j < githubData.length; j++) {
+              let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 1}));
               githubFormatted.push(
                 {
                   url: 'https://jobs.github.com/positions/' + githubData[j].id,
                   title: githubData[j].title,
-                  postTime: githubData[j].created_at,
+                  postTime: UTCDateToTimeElapsed(githubData[j].created_at),
                   location: githubData[j].location,
                   type: githubData[j].type,
-                  description: githubData[j].description,
+                  descriptionHTML: githubData[j].description,
+                  descriptionText: htmlToText.fromString(githubData[j].description, {wordwrap: 1}),
+                  descriptionHasTech: rankScoreObj.descriptionHasTech,
                   source: "github",
-                  rankScore: rankScore(dataPackage, githubData[j].description)
+                  rankScore: rankScoreObj.rankScore,
+                  readMore: false,
+                  hidden: false
                 }
               );
             }
@@ -122,7 +201,6 @@ app.post('/getresults', function(req, res) {
     );
   }
   if (dataPackage.checked.hackerNews) {
-    console.log('hackern');
     asyncFns.push(
       (() => {
         return new Promise((resolve, reject) => {
@@ -155,18 +233,32 @@ app.post('/getresults', function(req, res) {
                   let i = 0;
                   let j = 0;
                   let descriptionHTML;
-                  let fullPost = $(this).html();
-                  hnFormatted.push({source:"hackerNews", fullPostText:text, fullPostHTML:fullPost})
+                  let fullPost = $(this);
+                  fullPost.find('.reply').remove();
+                  fullPost = fullPost.html();
+                  let postTime = $(this).parents().eq(2).find('.age').text();
+                  hnFormatted.push(
+                    {
+                      source:"hackerNews",
+                      fullPostText:text,
+                      descriptionHTML:fullPost,
+                      readMore: false,
+                      hidden: false,
+                      postTime: parseHackerNewsPostTime(postTime)
+                    }
+                  );
                   if ($($(this).contents()[1]).attr('href')) {
                     hnFormatted[hnFormatted.length -1].url = $($(this).contents()[1]).attr('href');
-                    descriptionHTML = $($(this).contents().slice(2)).text();
+                    descriptionText = $($(this).contents().slice(2)).text();
                   }
                   else {
-                    descriptionHTML = $($(this).contents().slice(1)).text();
+                    descriptionText = $($(this).contents().slice(1)).text();
                   }
+                  let rankScoreObj = rankScore(dataPackage, text);
                   hnFormatted[hnFormatted.length -1].companyName = listingInfo.shift();
-                  hnFormatted[hnFormatted.length -1].description = descriptionHTML;
-                  hnFormatted[hnFormatted.length - 1].rankScore = rankScore(dataPackage, text);
+                  hnFormatted[hnFormatted.length -1].descriptionText = descriptionText;
+                  hnFormatted[hnFormatted.length - 1].rankScore = rankScoreObj.rankScore;
+                  hnFormatted[hnFormatted.length - 1].descriptionHasTech = rankScoreObj.descriptionHasTech;
                   while (i < listingInfo.length) {
                     if (listingInfo[i].includes('http')) {
                       hnFormatted[hnFormatted.length -1].url = listingInfo.splice(i, 1);
@@ -217,7 +309,6 @@ app.post('/getresults', function(req, res) {
     );
   }
   if (dataPackage.checked.stackOverflow) {
-    console.log('stacko');
     asyncFns.push(
       (() => {
         return new Promise((resolve1, reject) => {
@@ -241,14 +332,18 @@ app.post('/getresults', function(req, res) {
                     };
                     rp(options)
                     .then(($) => {
+                      let rankScoreObj = rankScore(dataPackage, stackOverflowFormatted[index].descriptionText);
                       stackOverflowFormatted[index].title = $('a.title.job-link').attr('title');
                       stackOverflowFormatted[index].companyName = $('a.employer').text();
                       stackOverflowFormatted[index].location = $('div.-location').first().text().trim().replace("- \n","");
                       stackOverflowFormatted[index].url = url;
+                      stackOverflowFormatted[index].readMore = false;
+                      stackOverflowFormatted[index].hidden = false;
                       stackOverflowFormatted[index].source = "stackOverflow";
-                      stackOverflowFormatted[index].description = $('div.description').text();
-                      stackOverflowFormatted[index].rankScore = rankScore(dataPackage, stackOverflowFormatted[index].description);
-                      console.log('way too long');
+                      stackOverflowFormatted[index].descriptionHTML = $('div.description').html();
+                      stackOverflowFormatted[index].descriptionText = $('div.description').text();
+                      stackOverflowFormatted[index].rankScore = rankScoreObj.rankScore;
+                      stackOverflowFormatted[index].descriptionHasTech = rankScoreObj.descriptionHasTech;
                       resolve();
                     })
                     .catch((err) => {
@@ -268,15 +363,6 @@ app.post('/getresults', function(req, res) {
               })()
             );
             resolve1();
-            // Promise.all(asyncFns2).then(() => {
-            // })
-            // .catch((err) => {
-            //   console.log(err);
-            // });
-            // for (var i = 0; i < asyncFns2.length; i++) {
-            //   promise = promise.then(asyncFns2[i]);
-            // }
-            // asyncFns = asyncFns.concat(asyncFns2);
           })
           .catch((err) => {
             console.log(err);
@@ -285,26 +371,9 @@ app.post('/getresults', function(req, res) {
       })()
     );
   }
-  // if (!dataPackage.checked.stackOverflow) {
-  //   asyncFns.push(
-  //     () => {
-  //       return new Promise((resolve, reject) => {
-  //         returnDataPackage = jobSort(returnDataPackage);
-  //         res.send(returnDataPackage);
-  //         resolve();
-  //       });
-  //     }
-  //   );
-  // }
-  // var promise = asyncFns[0]();
-  // for (var i = 1; i < asyncFns.length; i++) {
-  //   promise = promise.then(asyncFns[i]);
-  // }
-  console.log(asyncFns.length);
   Promise.all(asyncFns).then(() => {
     Promise.all(asyncFns2).then(() => {
-      returnDataPackage = jobSort(returnDataPackage);
-      res.send(returnDataPackage);
+      res.send(jobSort(returnDataPackage));
     })
     .catch((err) => {
       console.log(err);
