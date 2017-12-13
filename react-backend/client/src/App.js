@@ -10,8 +10,8 @@ class App extends Component {
       jobTitle: '',
       jobLocation: '',
       userData: [],
-      allLangs: ['javascript', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
-      allLangsJSX: [],
+      allTechs: ['javascript', 'jquery', 'sass', 'rails', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
+      allTechsJSX: [],
       listingData: [],
       checked: {
         github:true,
@@ -19,7 +19,7 @@ class App extends Component {
         hackerNews:true
       }
     };
-    this.state.allLangs.sort();
+    this.state.allTechs.sort();
 
     this.handleLangAdd = this.handleLangAdd.bind(this);
     this.handleStep1Change = this.handleStep1Change.bind(this);
@@ -42,8 +42,8 @@ class App extends Component {
   handleLangAdd(event) {
     var lastUserAddedLang = this.refs.userAddLang.value;
     var userData = this.state.userData.slice();
-    var allLangs = this.state.allLangs.slice();
-    if (!userData.some((element) => {return element.language === lastUserAddedLang}) && allLangs.includes(lastUserAddedLang)) {
+    var allTechs = this.state.allTechs.slice();
+    if (!userData.some((element) => {return element.language === lastUserAddedLang}) && allTechs.includes(lastUserAddedLang)) {
       document.getElementById('userLangInput').value ="";
       userData.push({language:lastUserAddedLang});
     }
@@ -80,7 +80,7 @@ class App extends Component {
   handleWeightsSubmit(event) {
     var checked = this.state.checked;
     var userData = this.state.userData.slice();
-    var allLangs = this.state.allLangs.slice();
+    var allTechs = this.state.allTechs.slice();
     for (let i = 0; i < userData.length; i++) {
       userData[i].weight = parseFloat(this.refs['langWeight'+i].value);
     }
@@ -90,7 +90,7 @@ class App extends Component {
       jobTitle: this.state.jobTitle,
       jobLocation: this.state.jobLocation,
       userData: userData,
-      allLangs: allLangs,
+      allTechs: allTechs,
       checked: checked
     };
 
@@ -151,14 +151,14 @@ class App extends Component {
   }
 
   render() {
-    var allLangs = this.state.allLangs.slice();
-    var allLangsJSX = [];
-    for (let i = 0; i < allLangs.length; i++) {
-      allLangsJSX.push(<option value={allLangs[i]} />);
+    var allTechs = this.state.allTechs.slice();
+    var allTechsJSX = [];
+    for (let i = 0; i < allTechs.length; i++) {
+      allTechsJSX.push(<option value={allTechs[i]} />);
     }
-    allLangsJSX = [
-      <datalist id="languages">
-        {allLangsJSX}
+    allTechsJSX = [
+      <datalist id="technologies">
+        {allTechsJSX}
       </datalist>
     ];
 
@@ -201,6 +201,7 @@ class App extends Component {
           if (listing.compensation) {
             listingDataJSX.push(<p className="listing-item">Compensation: {listing.compensation}</p>);
           }
+          listingDataJSX.push(<p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>);
           listingDataJSX.push(<p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>);
           listingDataJSX1.push(
             <div className="job-listing">
@@ -219,6 +220,7 @@ class App extends Component {
               <p className="listing-item">{listing.location}</p>
               <p className="listing-item">{listing.postTime}</p>
               <p className="listing-item">{listing.type}</p>
+              <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
               <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
             </div>
           );
@@ -229,9 +231,10 @@ class App extends Component {
               {hide}
               <span id="stack-overflow" className="source">stack overflow</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
+              <p className="listing-item">{listing.companyName}</p>
               <p className="listing-item">{listing.location}</p>
               <p className="listing-item">{listing.postTime}</p>
-              <p className="listing-item">{listing.companyName}</p>
+              <p className="listing-item">Technologies: {listing.descriptionHasTech.join(', ')}</p>
               <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
             </div>
           );
@@ -300,12 +303,12 @@ class App extends Component {
           </div>
           <div>
             <p id="step2">
-              Input languages/frameworks that you know.
+              Input technologies/frameworks that you know.
             </p>
             <div>
               <form onSubmit={this.handleLangAdd}>
-                <input id="userLangInput" data-lpignore='true' list='languages' name='languages' ref="userAddLang"/>
-                {allLangsJSX}
+                <input id="userLangInput" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
+                {allTechsJSX}
                 <input type="submit" value="Add" />
               </form>
             </div>

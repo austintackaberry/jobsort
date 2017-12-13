@@ -84,56 +84,79 @@ function parseHackerNewsPostTime(timeString) {
 }
 
 function rankScore(dataPackage, description) {
-  let allLangsCount = [];
+  let allTechsCount = [];
   let descriptionHasTech = [];
   let rankScore = 0;
-  for (let i = 0; i < dataPackage.allLangs.length; i++) {
-    let regexVar = dataPackage.allLangs[i].replace(/\+/g,"\\$&");
-    var re = new RegExp(regexVar, 'i');
-    if (regexVar === 'c') {
-      var re = new RegExp(/[^a-zA-Z0-9]c[^a-zA-Z0-9]/i);
+  for (let i = 0; i < dataPackage.allTechs.length; i++) {
+    let test;
+    let regexVar = dataPackage.allTechs[i];
+    if (regexVar === '.net') {
+      re = new RegExp(/[^a-z0-9]\.net[^a-z0-9]/i);
     }
-    else if (regexVar === 'r') {
-      var re = new RegExp(/[^a-zA-Z0-9]r[^a-zA-Z0-9]/i);
+    else if (regexVar === 'c++') {
+      re = new RegExp(/c\+\+/i);
+    }
+    else {
+      re = new RegExp(regexVar, 'i');
+    }
+    if (regexVar === 'r') {
+      re = new RegExp(/[^a-zA-Z0-9é]r[^a-zA-Z0-9é&]/i);
+    }
+    else if (regexVar === 'bootstrap') {
+      re = new RegExp(/[^a-zA-Z0-9]bootstrap[^a-zA-Z0-9]/i);
+    }
+    else if (regexVar === 'scala') {
+      re = new RegExp(/[^a-zA-Z0-9]scala[^a-zA-Z0-9]/i);
+    }
+    else if (regexVar === 'sql') {
+      re = new RegExp(/[^a-zA-Z0-9]sql[^a-zA-Z0-9]/i);
     }
     else if (regexVar === 'html') {
-      var re = new RegExp(/^\.html/i);
-    }
-    else if (regexVar === '.net') {
-      var re = new RegExp(/\.net(?!\s?core)/i);
+      re = new RegExp(/^\.html/i);
     }
     else if (regexVar === 'react native') {
-      var re = new RegExp(/react\s?native/i);
+      re = new RegExp(/react\s?native/i);
     }
     else if (regexVar === 'java') {
-      var re = new RegExp(/java\s?script/i);
+      re = new RegExp(/java(?!script)/i);
     }
-    let test = re.test(description);
-    if (regexVar === 'react') {
-      var re1 = new RegExp(/react(?!\s?native)/i);
-      var re2 = new RegExp(/react(?![a-ik-z])/i);
-      test = re1.test(description) && re2.test(description);
+    else if (regexVar === 'objective-c') {
+      re = new RegExp(/(objective-c)|(objective\sc)/i);
     }
-    allLangsCount.push({language: dataPackage.allLangs[i]});
+    else if (regexVar === 'react') {
+      re = new RegExp(/react(?![a-ik-z])(?!\s?native)/i);
+    }
+    if (regexVar === 'c') {
+      let tempDescription = description;
+      tempDescription = tempDescription.replace(/objective\sc|objective\-c|series\sc/ig, "");
+      re = new RegExp(/[^a-zA-Z0-9]c(?!\+\+)(?![\#a-zA-Z0-9])/i);
+      test = re.test(tempDescription);
+    }
+    else {
+      test = re.test(description);
+    }
+    allTechsCount.push({language: dataPackage.allTechs[i]});
     if (test) {
-      allLangsCount[i].isInDescription = 1;
-      descriptionHasTech.push(dataPackage.allLangs[i]);
+      allTechsCount[i].isInDescription = 1;
+      descriptionHasTech.push(dataPackage.allTechs[i]);
       dataPackage.userData.map((element) => {
-        if (element.language == dataPackage.allLangs[i]) {
-          rankScore += element.weight * allLangsCount[i].isInDescription;
+        if (element.language == dataPackage.allTechs[i]) {
+          rankScore += element.weight * allTechsCount[i].isInDescription;
         }
-        return element.language == dataPackage.allLangs[i];
+        return element.language == dataPackage.allTechs[i];
       });
     }
     else {
-      allLangsCount[i].isInDescription = 0;
+      allTechsCount[i].isInDescription = 0;
     }
   }
   let rankTotal = 0;
-  allLangsCount.map((element) => {rankTotal += element.isInDescription;});
-  rankScore /= rankTotal;
-  if (rankScore === null) {
-    rankScore = 0;
+  allTechsCount.map((element) => {rankTotal += element.isInDescription;});
+  if (rankTotal === 0) {
+    rankScore = 0.000000001;
+  }
+  else {
+    rankScore /= rankTotal;
   }
   return {rankScore:rankScore, descriptionHasTech:descriptionHasTech};
 }
@@ -155,6 +178,8 @@ app.post('/getresults', function(req, res) {
   var stackOverflowFormatted = [];
   var asyncFns = [];
   var asyncFns2 = [];
+  var asyncLocationFns = [];
+  asyncLocationFns.push()
   if (dataPackage.checked.github) {
     asyncFns.push(
       (() => {
@@ -172,7 +197,7 @@ app.post('/getresults', function(req, res) {
             githubData = data;
             var githubFormatted = [];
             for (let j = 0; j < githubData.length; j++) {
-              let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 1}));
+              let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 80}));
               githubFormatted.push(
                 {
                   url: 'https://jobs.github.com/positions/' + githubData[j].id,
@@ -332,7 +357,7 @@ app.post('/getresults', function(req, res) {
                     };
                     rp(options)
                     .then(($) => {
-                      let rankScoreObj = rankScore(dataPackage, stackOverflowFormatted[index].descriptionText);
+                      let rankScoreObj = rankScore(dataPackage, $('div.description').text());
                       stackOverflowFormatted[index].title = $('a.title.job-link').attr('title');
                       stackOverflowFormatted[index].companyName = $('a.employer').text();
                       stackOverflowFormatted[index].location = $('div.-location').first().text().trim().replace("- \n","");
