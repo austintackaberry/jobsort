@@ -56,9 +56,9 @@ function UTCDateToTimeElapsed(passedDate) {
 
 function getDistanceInMilesFromUser(userCoordinates, jobCoordinates) {
   lat1 = userCoordinates.lat;
-  lon1 = userCoordinates.lon;
+  lon1 = userCoordinates.lng;
   lat2 = jobCoordinates.lat;
-  lon2 = jobCoordinates.lon;
+  lon2 = jobCoordinates.lng;
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
   var dLon = deg2rad(lon2-lon1);
@@ -508,19 +508,6 @@ app.post('/getresults', function(req, res) {
   );
 
 });
-
-//   Promise.all(asyncFns).then(() => {
-//     Promise.all(asyncFns2).then(() => {
-//       res.send(jobSort(returnDataPackage));
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
-// });
 
 app.listen(process.env.PORT || 3001);
 console.log('listening on 3001');

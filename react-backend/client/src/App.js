@@ -60,8 +60,6 @@ class App extends Component {
   }
 
   handleCheckboxChange(event) {
-    console.log(event.target.checked);
-    console.log(event.target.id);
     var checked = this.state.checked;
     var jobBoard = "";
     if (event.target.id === "hn-checkbox") {
