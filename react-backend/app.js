@@ -109,6 +109,7 @@ function rankScore(dataPackage, description) {
   let allTechsCount = [];
   let descriptionHasTech = [];
   let rankScore = 0;
+  let techUserKnows = 0;
   for (let i = 0; i < dataPackage.allTechs.length; i++) {
     let test;
     let regexVar = dataPackage.allTechs[i];
@@ -119,21 +120,9 @@ function rankScore(dataPackage, description) {
       re = new RegExp(/c\+\+/i);
     }
     else {
-      re = new RegExp(regexVar, 'i');
+      re = new RegExp('[^a-zA-Z0-9é]' + regexVar + '[^a-zA-Z0-9é&]', 'i');
     }
-    if (regexVar === 'r') {
-      re = new RegExp(/[^a-zA-Z0-9é]r[^a-zA-Z0-9é&]/i);
-    }
-    else if (regexVar === 'bootstrap') {
-      re = new RegExp(/[^a-zA-Z0-9]bootstrap[^a-zA-Z0-9]/i);
-    }
-    else if (regexVar === 'scala') {
-      re = new RegExp(/[^a-zA-Z0-9]scala[^a-zA-Z0-9]/i);
-    }
-    else if (regexVar === 'sql') {
-      re = new RegExp(/[^a-zA-Z0-9]sql[^a-zA-Z0-9]/i);
-    }
-    else if (regexVar === 'html') {
+    if (regexVar === 'html') {
       re = new RegExp(/^\.html/i);
     }
     else if (regexVar === 'react native') {
@@ -164,6 +153,7 @@ function rankScore(dataPackage, description) {
       dataPackage.userData.map((element) => {
         if (element.language == dataPackage.allTechs[i]) {
           rankScore += element.weight * allTechsCount[i].isInDescription;
+          techUserKnows++;
         }
         return element.language == dataPackage.allTechs[i];
       });
@@ -178,7 +168,7 @@ function rankScore(dataPackage, description) {
     rankScore = 0.000000001;
   }
   else {
-    rankScore /= rankTotal;
+    rankScore = rankScore*techUserKnows/rankTotal;
   }
   return {rankScore:rankScore, descriptionHasTech:descriptionHasTech};
 }
@@ -404,9 +394,12 @@ app.post('/getresults', function(req, res) {
               // }
             }
           });
-          async.parallel(asyncHnLocationFns, function(err, results) {
-            callback();
-          });
+          if (userCoordinates) {
+            async.parallel(asyncHnLocationFns, function(err, results) {
+              callback();
+            });
+          }
+          callback();
         })
         .catch((err) => {
           console.log(err);
@@ -493,15 +486,19 @@ app.post('/getresults', function(req, res) {
     ],
     function(err, results) {
       let i = 0;
-      while (i < hnFormatted.length) {
-        if (!hnFormatted[i].distance) {
-          hnFormatted.splice(i, 1);
-        }
-        else {
-          i++;
+      if (userCoordinates) {
+        while (i < hnFormatted.length) {
+          if (!hnFormatted[i].distance) {
+            hnFormatted.splice(i, 1);
+          }
+          else {
+            i++;
+          }
         }
       }
       returnDataPackage = returnDataPackage.concat(hnFormatted.concat(githubFormatted.concat(stackOverflowFormatted)));
+      console.log(returnDataPackage.length);
+      console.log(hnFormatted.length);
       returnDataPackage = jobSort(returnDataPackage);
       res.send(returnDataPackage);
     }

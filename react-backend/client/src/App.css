@@ -35,6 +35,9 @@ input::-webkit-calendar-picker-indicator {
   margin: 0 auto;
   text-align: left;
   padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  border: 1px solid rgb(86, 138, 144);
 }
 
 .source {
@@ -88,7 +91,7 @@ input::-webkit-calendar-picker-indicator {
 #content {
   width: 60%;
   margin: 0 auto;
-  border: 1px solid rgb(158, 200, 204);
+  border: 1px solid rgb(86, 138, 144);
   border-radius: 5px;
   margin-top: 20px;
   background-color: rgb(204, 223, 224);

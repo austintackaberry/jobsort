@@ -10,7 +10,7 @@ class App extends Component {
       jobTitle: '',
       jobLocation: '',
       userData: [],
-      allTechs: ['javascript', 'jquery', 'sass', 'rails', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
+      allTechs: ['javascript', 'git', 'jquery', 'sass', 'rails', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
       allTechsJSX: [],
       listingData: [],
       checked: {
@@ -140,6 +140,7 @@ class App extends Component {
     });
     this.setState({listingData:listingData});
   }
+
   handleReadMoreAll() {
     var listingData = this.state.listingData;
     listingData.map((listing)=>{
@@ -165,9 +166,13 @@ class App extends Component {
     var listingData = this.state.listingData;
     var checked = this.state.checked;
     var unhideAllJSX = [];
+    var showFullDescriptionsJSX = [];
 
     if (listingData) {
       listingData.map((listing, index) => {
+        if (showFullDescriptionsJSX.length < 1 && listingData.length > 0) {
+          showFullDescriptionsJSX.push(<button onClick={this.handleReadMoreAll}>show all descriptions</button>)
+        }
         let hide = <button id="hide" href="javascript: void(0)" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>;
         let readMoreLess = "read more";
         let text = '';
@@ -183,16 +188,18 @@ class App extends Component {
         if (listing.source === "hackerNews" && checked.hackerNews === true  && !listing.hidden) {
           listingDataJSX = [];
           if (listing.title) {
-            listingDataJSX.push(<h4>{listing.title}</h4>);
+            if (listing.url) {
+              listingDataJSX.push(<h4><a href={listing.url}>{listing.title}</a></h4>);
+            }
+            else {
+              listingDataJSX.push(<h4>{listing.title}</h4>);
+            }
           }
           listingDataJSX.push(<p className="listing-item">Company: {listing.companyName}</p>);
           if (listing.location) {
             listingDataJSX.push(<p className="listing-item">Location: {listing.location}</p>);
           }
           listingDataJSX.push(<p className="listing-item">Posted: {listing.postTime}</p>);
-          if (listing.url) {
-            listingDataJSX.push(<p className='listing-item'>Link: <a href={listing.url}>{listing.url}</a></p>);
-          }
           if (listing.type) {
             listingDataJSX.push(<p className="listing-item">Type: {listing.type}</p>);
           }
@@ -264,7 +271,7 @@ class App extends Component {
     userLangWeightsJSX = [
       <form onSubmit={this.handleWeightsSubmit}>
         {userLangWeightsJSX}
-        <input type="submit" value="Get Results!" />
+        <input type="submit" value="get results" />
       </form>
   ]
 
@@ -275,7 +282,7 @@ class App extends Component {
         <div id="content">
           <div>
             <p id="step1">
-              Input your desired job title and location.
+              input your desired job title and location
             </p>
             <div>
               <form>
@@ -286,7 +293,7 @@ class App extends Component {
           </div>
           <div>
             <p>
-              Check the job boards you want included in the search.
+              check the job boards you want included in the search
             </p>
             <div>
               <form id="job-board-checkbox-form">
@@ -301,7 +308,7 @@ class App extends Component {
           </div>
           <div>
             <p id="step2">
-              Input technologies/frameworks that you know.
+              input technologies that you know
             </p>
             <div>
               <form onSubmit={this.handleLangAdd}>
@@ -314,11 +321,11 @@ class App extends Component {
           </div>
           <div>
             <p id="step3">
-              Assign weights to each language/framework based on how well you know them. A higher number means you know that language more.
+              assign weights to each technology based on how well you know them. a higher number means you know that technology more.
             </p>
             {userLangWeightsJSX}
+            {showFullDescriptionsJSX}
             {unhideAllJSX}
-            <button onClick={this.handleReadMoreAll}>read more all</button>
           </div>
           <div id="listing-container">
             {listingDataJSX1}
