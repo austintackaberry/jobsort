@@ -199,7 +199,7 @@ class App extends Component {
           if (listing.location) {
             listingDataJSX.push(<p className="listing-item">Location: {listing.location}</p>);
           }
-          listingDataJSX.push(<p className="listing-item">Posted: {listing.postTime}</p>);
+          listingDataJSX.push(<p className="listing-item">Posted: {listing.postTimeStr}</p>);
           if (listing.type) {
             listingDataJSX.push(<p className="listing-item">Type: {listing.type}</p>);
           }
@@ -223,7 +223,7 @@ class App extends Component {
               <span id="github" className="source">github</span>
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.location}</p>
-              <p className="listing-item">{listing.postTime}</p>
+              <p className="listing-item">{listing.postTimeStr}</p>
               <p className="listing-item">{listing.type}</p>
               <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
               <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
@@ -238,7 +238,7 @@ class App extends Component {
               <h4><a href={listing.url}>{listing.title}</a></h4>
               <p className="listing-item">{listing.companyName}</p>
               <p className="listing-item">{listing.location}</p>
-              <p className="listing-item">{listing.postTime}</p>
+              <p className="listing-item">{listing.postTimeStr}</p>
               <p className="listing-item">Technologies: {listing.descriptionHasTech.join(', ')}</p>
               <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
             </div>
@@ -262,7 +262,10 @@ class App extends Component {
         </div>
       );
       userLangWeightsJSX.push(
-        <div>{userData[i].language}: <input data-lpignore='true' className="weight-input" ref={'langWeight'+i} /></div>
+        <tr>
+          <td className="table-col-lang">{userData[i].language}: </td>
+          <td><input data-lpignore='true' className="weight-input" ref={'langWeight'+i} /></td>
+        </tr>
       );
     }
     if (userDataJSX.length === 0) {
@@ -270,7 +273,9 @@ class App extends Component {
     }
     userLangWeightsJSX = [
       <form onSubmit={this.handleWeightsSubmit}>
-        {userLangWeightsJSX}
+        <table id='lang-table'>
+          {userLangWeightsJSX}
+        </table>
         <input type="submit" value="get results" />
       </form>
   ]
@@ -281,7 +286,7 @@ class App extends Component {
         <h2>jobSort()</h2>
         <div id="content">
           <div>
-            <p id="step1">
+            <p className="instructions">
               input your desired job title and location
             </p>
             <div>
@@ -292,7 +297,7 @@ class App extends Component {
             </div>
           </div>
           <div>
-            <p>
+            <p className="instructions">
               check the job boards you want included in the search
             </p>
             <div>
@@ -307,7 +312,7 @@ class App extends Component {
             </div>
           </div>
           <div>
-            <p id="step2">
+            <p className="instructions">
               input technologies that you know
             </p>
             <div>
@@ -320,7 +325,7 @@ class App extends Component {
             {userDataJSX}
           </div>
           <div>
-            <p id="step3">
+            <p className="instructions">
               assign weights to each technology based on how well you know them. a higher number means you know that technology more.
             </p>
             {userLangWeightsJSX}

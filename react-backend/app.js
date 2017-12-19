@@ -32,26 +32,32 @@ app.use(bodyParser.text());
 // app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, 'public')));
 
-function UTCDateToTimeElapsed(passedDate) {
+function githubFormatTimePosted(passedDate) {
   let milliseconds = Date.now() - Date.parse(passedDate);
+  let postTimeObj = {postTimeInMs: milliseconds};
   let seconds = milliseconds/1000.0;
   if (seconds < 60) {
-    return Math.round(seconds) + "s ago";
+    postTimeObj.postTimeStr = Math.round(seconds) + "s ago";
+    return postTimeObj;
   }
   let minutes = seconds/60;
   if (minutes < 60) {
-    return Math.round(minutes) + "min ago";
+    postTimeObj.postTimeStr = Math.round(minutes) + "min ago";
+    return postTimeObj;
   }
   let hours = minutes/60;
   if (hours < 24) {
-    return Math.round(hours) + "h ago";
+    postTimeObj.postTimeStr = Math.round(hours) + "h ago";
+    return postTimeObj;
   }
   let days = hours/24;
   if (days < 7) {
-    return Math.round(days) + "d ago";
+    postTimeObj.postTimeStr = Math.round(days) + "d ago";
+    return postTimeObj;
   }
   let weeks = days/7;
-  return Math.round(weeks) + "w ago";
+  postTimeObj.postTimeStr = Math.round(weeks) + "w ago";
+  return postTimeObj;
 }
 
 function getDistanceInMilesFromUser(userCoordinates, jobCoordinates) {
@@ -76,18 +82,26 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-function parseHackerNewsPostTime(timeString) {
+function hackerNewsFormatTimePosted(timeString) {
   let timeArr = timeString.split(' ');
+  let dateNow = new Date();
+  let timeNow = dateNow.getTime();
+  let postTime = timeNow;
+
   if (timeArr[1] == 'seconds') {
+    postTime -= timeArr[0]*1000;
     timeArr[0] = timeArr[0] + 's';
   }
-  if (timeArr[1] == 'minutes') {
+  else if (timeArr[1] == 'minutes') {
+    postTime -= timeArr[0]*60*1000;
     timeArr[0] = timeArr[0] + 'min';
   }
-  if (timeArr[1] == 'hours') {
+  else if (timeArr[1] == 'hours') {
+    postTime -= timeArr[0]*60*60*1000;
     timeArr[0] = timeArr[0] + 'h';
   }
-  if (timeArr[1] == 'days') {
+  else if (timeArr[1] == 'days') {
+    postTime -= timeArr[0]*24*60*60*1000;
     if (parseInt(timeArr[0]) < 7) {
       timeArr[0] = timeArr[0] + 'd';
     }
@@ -99,10 +113,34 @@ function parseHackerNewsPostTime(timeString) {
     }
   }
   if (timeArr[1] == 'years') {
+    postTime -= timeArr[0]*365*24*60*60*1000;
     timeArr[0] = timeArr[0] + 'y';
   }
   timeArr.splice(1,1);
-  return timeArr.join(' ');
+
+  return {postTimeStr: timeArr.join(' '), postTimeInMs: postTime}
+}
+
+function stackOverflowFormatTimePosted(postTimeStr) {
+  let timeArr = postTimeStr.split(' ');
+  let dateNow = new Date();
+  let timeNow = dateNow.getTime();
+  let postTime = timeNow;
+
+  if (timeArr[0].charAt(timeArr[0].length-1) === '<' && timeArr[1] === '1h') {
+    postTime -= timeArr[0]*60*60*1000;
+  }
+  else if (timeArr[0].charAt(timeArr[0].length-1) === 'h') {
+    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*60*60*1000;
+  }
+  else if (timeArr[0].charAt(timeArr[0].length-1) === 'd') {
+    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*24*60*60*1000;
+  }
+  else if (timeArr[0].charAt(timeArr[0].length-1) === 'w') {
+    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*7*24*60*60*1000;
+  }
+
+  return postTime;
 }
 
 function rankScore(dataPackage, description) {
@@ -239,11 +277,13 @@ app.post('/getresults', function(req, res) {
         githubData = data;
         for (let j = 0; j < githubData.length; j++) {
           let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 80}));
+          let postTimeObj = githubFormatTimePosted(githubData[j].created_at);
           githubFormatted.push(
             {
               url: 'https://jobs.github.com/positions/' + githubData[j].id,
               title: githubData[j].title,
-              postTime: UTCDateToTimeElapsed(githubData[j].created_at),
+              postTimeInMs: postTimeObj.postTimeInMs,
+              postTimeStr: postTimeObj.postTimeStr,
               location: githubData[j].location,
               type: githubData[j].type,
               descriptionHTML: githubData[j].description,
@@ -299,6 +339,7 @@ app.post('/getresults', function(req, res) {
               fullPost.find('.reply').remove();
               fullPost = fullPost.html();
               let postTime = $(this).parents().eq(2).find('.age').text();
+              let postTimeObj = hackerNewsFormatTimePosted(postTime);
               hnFormatted.push(
                 {
                   source:"hackerNews",
@@ -306,7 +347,8 @@ app.post('/getresults', function(req, res) {
                   descriptionHTML:fullPost,
                   readMore: false,
                   hidden: false,
-                  postTime: parseHackerNewsPostTime(postTime)
+                  postTimeinMs: postTimeObj.postTimeInMs,
+                  postTimeStr: postTimeObj.postTimeStr
                 }
               );
               if ($($(this).contents()[1]).attr('href')) {
@@ -365,8 +407,8 @@ app.post('/getresults', function(req, res) {
                     })
                     .then(data => {
                       if (!data.results[0]) {
-                        hnFormatted[indexHnFormatted].distance = false;
                         console.log(data);
+                        hnFormatted[indexHnFormatted].distance = false;
                       }
                       else {
                         let hnJobCoordinates = data.results[0].geometry.location;
@@ -424,8 +466,9 @@ app.post('/getresults', function(req, res) {
         $('.-job-item').each(function(index, value) {
           let stackOverflowJobListingFn = (callback) => {
             stackOverflowFormatted.push({});
-            let postTime = $(this).find('.-posted-date.g-col').text();
-            stackOverflowFormatted[index].postTime = postTime.trim();
+            let postTimeStr = $(this).find('.-posted-date.g-col').text();
+            stackOverflowFormatted[index].postTimeinMs = stackOverflowFormatTimePosted(postTimeStr);
+            stackOverflowFormatted[index].postTimeStr = postTimeStr.trim();
             var url = 'https://stackoverflow.com/jobs/' + $(this).attr('data-jobid');
             const options = {
               uri: url,
