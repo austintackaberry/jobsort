@@ -9,6 +9,17 @@ var async = require('async');
 const cheerio = require('cheerio');
 const rp = require('request-promise');
 var htmlToText = require('html-to-text');
+const Batchelor = require('batchelor');
+let batch = new Batchelor({
+  'uri': 'https://maps.googleapis.com/maps/api/geocode',
+  'method': 'POST',
+  'auth': {
+    'bearer': 'AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk'
+  },
+  'headers': {
+    'Content-Type': 'multipart/mixed'
+  }
+});
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
@@ -229,6 +240,7 @@ app.post('/getresults', function(req, res) {
   var asyncFns = [];
   var asyncFns2 = [];
   var asyncHnLocationFns = [];
+  var batchelorList = [];
   asyncHnLocationFns.push()
   var githubFormatted = [];
   var userCoordinates = {};
@@ -394,39 +406,11 @@ app.post('/getresults', function(req, res) {
               }
               let indexHnFormatted = hnFormatted.length -1;
               if (hnFormatted[hnFormatted.length -1].location && userCoordinates) {
-                asyncHnLocationFns.push(
-                  (callback) => {
-                    let location = hnFormatted[indexHnFormatted].location.replace(/[^a-zA-Z0-9-_]/g, ' ')
-                    let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + location + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
-                    fetch(encodeURI(url), {
-                      method: 'GET'
-                    })
-                    .then(res => res.json())
-                    .catch(e => {
-                      console.log(e);
-                    })
-                    .then(data => {
-                      if (!data.results[0]) {
-                        console.log(data);
-                        hnFormatted[indexHnFormatted].distance = false;
-                      }
-                      else {
-                        let hnJobCoordinates = data.results[0].geometry.location;
-                        let distance = getDistanceInMilesFromUser(userCoordinates, hnJobCoordinates);
-                        if (distance < 100) {
-                          hnFormatted[indexHnFormatted].distance = distance;
-                        }
-                        else {
-                          hnFormatted[indexHnFormatted].distance = false;
-                        }
-                      }
-                      callback();
-                    })
-                    .catch(e => {
-                      console.log(e);
-                    });
-                  }
-                );
+                let location = hnFormatted[indexHnFormatted].location.replace(/[^a-zA-Z0-9-_]/g, ' ')
+                batch.add({
+                  'method':'GET',
+                  'path': "/json?address=" + location
+                });
               }
               else {
                 hnFormatted[indexHnFormatted].distance = false;
@@ -437,8 +421,28 @@ app.post('/getresults', function(req, res) {
             }
           });
           if (userCoordinates) {
-            async.parallel(asyncHnLocationFns, function(err, results) {
-              callback();
+            batch.run(function(err, response){
+              if (err){
+                console.log("Error: " + err.toString());
+              }
+              else {
+                // if (!data.results[0]) {
+                //   console.log(data);
+                //   hnFormatted[indexHnFormatted].distance = false;
+                // }
+                // else {
+                //   let hnJobCoordinates = data.results[0].geometry.location;
+                //   let distance = getDistanceInMilesFromUser(userCoordinates, hnJobCoordinates);
+                //   if (distance < 100) {
+                //     hnFormatted[indexHnFormatted].distance = distance;
+                //   }
+                //   else {
+                //     hnFormatted[indexHnFormatted].distance = false;
+                //   }
+                // }
+                console.log(response);
+                callback();
+              }
             });
           }
           callback();

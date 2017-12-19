@@ -3,6 +3,7 @@
     "start": "cd react-backend && npm install && npm start"
   },
   "dependencies": {
+    "batchelor": "^2.0.2",
     "node-fetch": "^1.7.3"
   }
 }
