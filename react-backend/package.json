@@ -16,6 +16,7 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
     "node-fetch": "^1.7.3",
+    "node-mysql": "^0.4.2",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "serve-favicon": "~2.4.5"
