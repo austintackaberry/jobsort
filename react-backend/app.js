@@ -9,6 +9,7 @@ var async = require('async');
 const cheerio = require('cheerio');
 const rp = require('request-promise');
 var htmlToText = require('html-to-text');
+const mysql = require('mysql');
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
@@ -82,43 +83,46 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-function hackerNewsFormatTimePosted(timeString) {
-  let timeArr = timeString.split(' ');
+function getHnDistance(userCoordinates, latitude, longitude) {
+  let jobCoordinates = {
+    lat: latitude,
+    lng: longitude
+  };
+  return getDistanceInMilesFromUser(userCoordinates, jobCoordinates);
+}
+
+function hackerNewsFormatTimePosted(postTime) {
   let dateNow = new Date();
   let timeNow = dateNow.getTime();
-  let postTime = timeNow;
+  let relativePostTime = timeNow - postTime;
 
-  if (timeArr[1] == 'seconds') {
-    postTime -= timeArr[0]*1000;
-    timeArr[0] = timeArr[0] + 's';
+  let seconds = relativePostTime/1000.0;
+  if (seconds < 60) {
+    postTimeStr = Math.round(seconds) + "s ago";
+    return postTimeStr;
   }
-  else if (timeArr[1] == 'minutes') {
-    postTime -= timeArr[0]*60*1000;
-    timeArr[0] = timeArr[0] + 'min';
-  }
-  else if (timeArr[1] == 'hours') {
-    postTime -= timeArr[0]*60*60*1000;
-    timeArr[0] = timeArr[0] + 'h';
-  }
-  else if (timeArr[1] == 'days') {
-    postTime -= timeArr[0]*24*60*60*1000;
-    if (parseInt(timeArr[0]) < 7) {
-      timeArr[0] = timeArr[0] + 'd';
-    }
-    else if (parseInt(timeArr[0]) < 30) {
-      timeArr[0] = Math.round(parseInt(timeArr[0])/7.0).toString() + 'w';
-    }
-    else {
-      timeArr[0] = Math.round(parseInt(timeArr[0])/30.4).toString() + 'mon';
-    }
-  }
-  if (timeArr[1] == 'years') {
-    postTime -= timeArr[0]*365*24*60*60*1000;
-    timeArr[0] = timeArr[0] + 'y';
-  }
-  timeArr.splice(1,1);
 
-  return {postTimeStr: timeArr.join(' '), postTimeInMs: postTime}
+  let minutes = seconds/60;
+  if (minutes < 60) {
+    postTimeStr = Math.round(minutes) + "min ago";
+    return postTimeStr;
+  }
+
+  let hours = minutes/60;
+  if (hours < 24) {
+    postTimeStr = Math.round(hours) + "h ago";
+    return postTimeStr;
+  }
+
+  let days = hours/24;
+  if (days < 7) {
+    postTimeStr = Math.round(days) + "d ago";
+    return postTimeStr;
+  }
+
+  let weeks = days/7;
+  postTimeStr = Math.round(weeks) + "w ago";
+  return postTimeStr;
 }
 
 function stackOverflowFormatTimePosted(postTimeStr) {
@@ -306,113 +310,53 @@ app.post('/getresults', function(req, res) {
       callback();
     }
   };
-  var scrapeHackerNews = function (callback) {
+  var getHnData = function (callback) {
     if (dataPackage.checked.hackerNews) {
-      const options = {
-        uri: 'https://news.ycombinator.com/submitted?id=whoishiring',
-        transform: (body) => {return cheerio.load(body);}
-      };
-      rp(options)
-      .then(($) => {
-        let whoIsHiringLink;
-        $('.storylink').each(function(index, value) {
-          let text = $(this).text();
-          if (text.includes('Who is hiring?')) {
-            whoIsHiringLink = 'https://news.ycombinator.com/' + value.attribs.href;
-            return false;
-          }
-        });
-        const options = {
-          uri: whoIsHiringLink,
-          transform: (body) => {return cheerio.load(body);}
-        };
-        rp(options)
-        .then(($) => {
-          $('.c00').each(function(index, value) {
-            let text = $(this).text();
-            let topLine = $($(this).contents()[0]).text();
-            let listingInfo = topLine.split("|");
-            if (listingInfo.length > 1) {
-              let i = 0;
-              let descriptionHTML;
-              let fullPost = $(this);
-              fullPost.find('.reply').remove();
-              fullPost = fullPost.html();
-              let postTime = $(this).parents().eq(2).find('.age').text();
-              let postTimeObj = hackerNewsFormatTimePosted(postTime);
-              hnFormatted.push(
-                {
-                  source:"hackerNews",
-                  fullPostText:text,
-                  descriptionHTML:fullPost,
-                  readMore: false,
-                  hidden: false,
-                  postTimeinMs: postTimeObj.postTimeInMs,
-                  postTimeStr: postTimeObj.postTimeStr
-                }
-              );
-              if ($($(this).contents()[1]).attr('href')) {
-                hnFormatted[hnFormatted.length -1].url = $($(this).contents()[1]).attr('href');
-                descriptionText = $($(this).contents().slice(2)).text();
-              }
-              else {
-                descriptionText = $($(this).contents().slice(1)).text();
-              }
-              let rankScoreObj = rankScore(dataPackage, text);
-              hnFormatted[hnFormatted.length -1].companyName = listingInfo.shift();
-              hnFormatted[hnFormatted.length -1].descriptionText = descriptionText;
-              hnFormatted[hnFormatted.length - 1].rankScore = rankScoreObj.rankScore;
-              hnFormatted[hnFormatted.length - 1].descriptionHasTech = rankScoreObj.descriptionHasTech;
-              while (i < listingInfo.length) {
-                if (listingInfo[i].includes('http')) {
-                  hnFormatted[hnFormatted.length -1].url = listingInfo.splice(i, 1);
-                }
-                else if (/%|salary|€|\$|£|[0-9][0-9]k/.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].compensation = listingInfo.splice(i, 1)[0];
-                }
-                else if (/position|engineer|developer|senior|junior|scientist|analyst/i.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].title = listingInfo.splice(i, 1)[0];
-                }
-                else if (/permanent|intern|flexible|remote|on\W*site|part\Wtime|full\Wtime|full/i.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].type = listingInfo.splice(i, 1)[0];
-                }
-                else if (/boston|seattle|london|new york|san francisco|bay area|nyc|sf/i.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].location = listingInfo.splice(i, 1)[0];
-                }
-                else if (/\W\W[A-Z][a-zA-Z]/.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].location = listingInfo.splice(i, 1)[0];
-                }
-                else if (/[a-z]\.[a-z]/i.test(listingInfo[i])) {
-                  hnFormatted[hnFormatted.length -1].url = "http://" + listingInfo.splice(i, 1)[0];
-                }
-                else if (listingInfo[i] === " ") {
-                  listingInfo.splice(i, 1);
-                }
-                else {
-                  i++;
-                }
-              }
-              let indexHnFormatted = hnFormatted.length -1;
-              if (hnFormatted[hnFormatted.length -1].location && userCoordinates) {
-                let location = hnFormatted[indexHnFormatted].location.replace(/[^a-zA-Z0-9-_]/g, ' ')
-              }
-              else {
-                hnFormatted[indexHnFormatted].distance = false;
-              }
-              // if (listingInfo.length > 0) {
-              //   console.log(listingInfo);
-              // }
-            }
-          });
-          callback();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+      var connection = mysql.createConnection({
+          host: 'austintackaberry-jobsort.c3tu2houar8w.us-west-1.rds.amazonaws.com',
+          user: 'austintackaberry',
+          password: process.env.MYSQL_PASSWORD,
+          database: 'jobsortdb',
+          port: 3306,          //port mysql
+          charset: "utf8mb4"
       });
+      let queryString = "SELECT * FROM `hackerNewsListings`";
+      connection.query(queryString, function (error, results, fields) {
+        if (!error) {
+          console.log('success!');
+          hnFormatted = results.slice();
+          console.log(hnFormatted);
+          hnFormatted.map(
+            (listing, index) => {
+              hnFormatted[index].postTimeStr = hackerNewsFormatTimePosted(listing.postTimeInMs);
+              let distance = getHnDistance(userCoordinates, listing.latitude, listing.longitude);
+              if (distance > 100) {
+                hnFormatted[index].distance = false;
+              }
+              else {
+                hnFormatted[index].distance = distance;
+              }
+              hnFormatted[index].fullPostText = new Buffer(listing.fullPostText).toString('utf8');
+              if (listing.compensation) {
+                hnFormatted[index].compensation = new Buffer(listing.compensation).toString('utf8');
+              }
+              if (listing.location) {
+                hnFormatted[index].location = new Buffer(listing.location).toString('utf8');
+              }
+              hnFormatted[index].hidden = false;
+              hnFormatted[index].readMore = false;
+              let rankScoreObj = rankScore(dataPackage, listing.fullPostText);
+              hnFormatted[index].rankScore = rankScoreObj.rankScore;
+              hnFormatted[index].descriptionHasTech = rankScoreObj.descriptionHasTech;
+            }
+          );
+          callback();
+        }
+        else {
+          console.log("Query Error: "+error);
+        }
+      });
+      connection.end();
     }
     else {
       callback();
@@ -476,7 +420,7 @@ app.post('/getresults', function(req, res) {
     async.parallel(
       [
         getUserCoordinates,
-        scrapeHackerNews
+        getHnData
       ],
       function(err, results) {
         callback2();
