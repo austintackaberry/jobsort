@@ -325,7 +325,6 @@ app.post('/getresults', function(req, res) {
         if (!error) {
           console.log('success!');
           hnFormatted = results.slice();
-          console.log(hnFormatted);
           hnFormatted.map(
             (listing, index) => {
               hnFormatted[index].postTimeStr = hackerNewsFormatTimePosted(listing.postTimeInMs);
@@ -447,8 +446,6 @@ app.post('/getresults', function(req, res) {
         }
       }
       returnDataPackage = returnDataPackage.concat(hnFormatted.concat(githubFormatted.concat(stackOverflowFormatted)));
-      console.log(returnDataPackage.length);
-      console.log(hnFormatted.length);
       returnDataPackage = jobSort(returnDataPackage);
       res.send(returnDataPackage);
     }
