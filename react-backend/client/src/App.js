@@ -268,72 +268,77 @@ class App extends Component {
         </tr>
       );
     }
-    if (userDataJSX.length === 0) {
-      userDataJSX = [<div className="user-lang-div" id="user-lang-div-placeholder"></div>];
-    }
-    userLangWeightsJSX = [
-      <form onSubmit={this.handleWeightsSubmit}>
+
+    if (userLangWeightsJSX.length > 0) {
+      userLangWeightsJSX = [
         <table id='lang-table'>
           {userLangWeightsJSX}
         </table>
-        <input type="submit" value="get results" />
-      </form>
-  ]
+      ];
+    }
 
+    userLangWeightsJSX = [
+      <form onSubmit={this.handleWeightsSubmit}>
+        <div className="content-group">
+          <p className="instructions">
+            assign weights to each technology based on how well you know them <br /> a higher number means you are more familiar with that technology
+          </p>
+          {userLangWeightsJSX}
+        </div>
+        <input type="submit" id="get-results" value="get results" />
+      </form>
+    ];
 
     return (
       <div className="App">
         <h2>jobSort()</h2>
-        <div id="content">
-          <div>
-            <p className="instructions">
-              input your desired job title and location
-            </p>
-            <div>
-              <form>
-                <input id="userJobTitle" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
-                <input id="userJobLocation" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
-              </form>
+        <div id="content-lvl1">
+          <div id="content-lvl2">
+            <div className="content-group">
+              <p className="instructions">
+                input your desired job title and location
+              </p>
+              <div>
+                <form>
+                  <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
+                  <input id="userJobLocation" className="textbox" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
+                </form>
+              </div>
             </div>
-          </div>
-          <div>
-            <p className="instructions">
-              check the job boards you want included in the search
-            </p>
-            <div>
-              <form id="job-board-checkbox-form">
-                <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                <label for="hn-checkbox">hacker news: who's hiring</label>
-                <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                <label for="so-checkbox">stack overflow</label>
-                <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                <label for="gh-checkbox">github</label>
-              </form>
+            <div className="content-group">
+              <p className="instructions">
+                check the job boards you want included in the search
+              </p>
+              <div style={{"margin-top":"7px"}}>
+                <form id="job-board-checkbox-form">
+                  <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                  <label for="hn-checkbox">hacker news: who's hiring</label>
+                  <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                  <label for="so-checkbox">stack overflow</label>
+                  <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                  <label for="gh-checkbox">github</label>
+                </form>
+              </div>
             </div>
-          </div>
-          <div>
-            <p className="instructions">
-              input technologies that you know
-            </p>
-            <div>
-              <form onSubmit={this.handleLangAdd}>
-                <input id="userLangInput" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
-                {allTechsJSX}
-                <input type="submit" value="Add" />
-              </form>
+            <div className="content-group">
+              <p className="instructions">
+                input technologies that you know
+              </p>
+              <div style={{"margin-top":"7px"}}>
+                <form onSubmit={this.handleLangAdd}>
+                  <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
+                  {allTechsJSX}
+                  <input type="submit" id="add" value="add" />
+                </form>
+              </div>
+              {userDataJSX}
             </div>
-            {userDataJSX}
-          </div>
-          <div>
-            <p className="instructions">
-              assign weights to each technology based on how well you know them. a higher number means you know that technology more.
-            </p>
             {userLangWeightsJSX}
             {showFullDescriptionsJSX}
             {unhideAllJSX}
-          </div>
-          <div id="listing-container">
-            {listingDataJSX1}
+            <div id="listing-container">
+              {listingDataJSX1}
+            </div>
           </div>
         </div>
       </div>
