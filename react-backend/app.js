@@ -176,6 +176,9 @@ function rankScore(dataPackage, description) {
     else if (regexVar === 'objective-c') {
       re = new RegExp(/(objective-c)|(objective\sc)/i);
     }
+    else if (regexVar === 'node') {
+      re = new RegExp(/([^a-zA-Z0-9é]node[^a-zA-Z0-9é&])|([^a-zA-Z0-9é]nodejs[^a-zA-Z0-9é&])/i);
+    }
     else if (regexVar === 'react') {
       re = new RegExp(/react(?![a-ik-z])(?!\s?native)/i);
     }

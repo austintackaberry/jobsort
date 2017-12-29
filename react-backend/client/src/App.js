@@ -41,8 +41,10 @@ class App extends Component {
 
   handleLangAdd(event) {
     var lastUserAddedLang = this.refs.userAddLang.value;
+    lastUserAddedLang = lastUserAddedLang.toLowerCase();
     var userData = this.state.userData.slice();
     var allTechs = this.state.allTechs.slice();
+    let regexVar = lastUserAddedLang;
     if (!userData.some((element) => {return element.language === lastUserAddedLang}) && allTechs.includes(lastUserAddedLang)) {
       document.getElementById('userLangInput').value ="";
       userData.push({language:lastUserAddedLang});
