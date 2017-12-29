@@ -15,7 +15,7 @@ class App extends Component {
       listingData: [],
       checked: {
         github:true,
-        stackOverflow:true,
+        stackOverflow:false,
         hackerNews:true
       }
     };
@@ -321,7 +321,7 @@ class App extends Component {
                         <label for="hn-checkbox">hacker news: who's hiring</label>
                       </div>
                       <div className="checkbox">
-                        <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                        <input id="so-checkbox" type="checkbox" disabled="disabled" onChange={this.handleCheckboxChange}/>
                         <label for="so-checkbox">stack overflow</label>
                       </div>
                       <div className="checkbox">
