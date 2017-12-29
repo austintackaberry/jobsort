@@ -188,7 +188,6 @@ class App extends Component {
           text = <p dangerouslySetInnerHTML={{__html: listing.descriptionHTML}} />;
         }
         if (listing.source === "hackerNews" && checked.hackerNews === true  && !listing.hidden) {
-          console.log(listing.descriptionText);
           listingDataJSX = [];
           if (listing.title) {
             if (listing.url) {
