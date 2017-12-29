@@ -311,12 +311,22 @@ class App extends Component {
               </p>
               <div style={{"margin-top":"7px"}}>
                 <form id="job-board-checkbox-form">
-                  <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                  <label for="hn-checkbox">hacker news: who's hiring</label>
-                  <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                  <label for="so-checkbox">stack overflow</label>
-                  <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                  <label for="gh-checkbox">github</label>
+                  <div id="checkbox-container">
+                    <div id="checkbox-group">
+                      <div className="checkbox">
+                        <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                        <label for="hn-checkbox">hacker news: who's hiring</label>
+                      </div>
+                      <div className="checkbox">
+                        <input id="so-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                        <label for="so-checkbox">stack overflow</label>
+                      </div>
+                      <div className="checkbox">
+                        <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                        <label for="gh-checkbox">github</label>
+                      </div>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
