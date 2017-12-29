@@ -68,6 +68,10 @@ input::-webkit-calendar-picker-indicator {
   font-weight: bold;
 }
 
+a {
+  color: #286063;
+}
+
 #job-board-checkbox-form {
   font-size: 13px;
 }
@@ -136,6 +140,18 @@ input::-webkit-calendar-picker-indicator {
   padding: 7px 12px 7px 12px;
   color: black;
   font-size: 1.2rem;
+}
+.listing-options {
+  margin-top: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+  background-color: #a790c4;
+  border-radius: 8px;
+  border: 1px solid rgb(86, 138, 144);
+  padding: 5px 8px 5px 8px;
+  color: black;
+  font-size: 0.8rem;
+  display: inline-block;
 }
 
 #add {

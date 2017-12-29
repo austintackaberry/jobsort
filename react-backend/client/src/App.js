@@ -171,7 +171,7 @@ class App extends Component {
     if (listingData) {
       listingData.map((listing, index) => {
         if (showFullDescriptionsJSX.length < 1 && listingData.length > 0) {
-          showFullDescriptionsJSX.push(<button onClick={this.handleReadMoreAll}>show all descriptions</button>)
+          showFullDescriptionsJSX.push(<button className="listing-options" onClick={this.handleReadMoreAll}>show full descriptions</button>)
         }
         let hide = <button id="hide" href="javascript: void(0)" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>;
         let readMoreLess = "read more";
@@ -245,7 +245,7 @@ class App extends Component {
           );
         }
         else if (listing.hidden && unhideAllJSX.length < 1) {
-          unhideAllJSX.push(<button onClick={this.handleUnhideAll}>unhide all</button>);
+          unhideAllJSX.push(<button className="listing-options" onClick={this.handleUnhideAll}>unhide all listings</button>);
         }
       });
     }
