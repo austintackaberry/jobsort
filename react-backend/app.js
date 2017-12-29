@@ -291,7 +291,7 @@ app.post('/getresults', function(req, res) {
               location: githubData[j].location,
               type: githubData[j].type,
               descriptionHTML: githubData[j].description,
-              descriptionText: htmlToText.fromString(githubData[j].description, {wordwrap: 1}),
+              descriptionText: htmlToText.fromString(githubData[j].description, {wordwrap: 80}),
               descriptionHasTech: rankScoreObj.descriptionHasTech,
               source: "github",
               rankScore: rankScoreObj.rankScore,
@@ -336,6 +336,7 @@ app.post('/getresults', function(req, res) {
                 hnFormatted[index].distance = distance;
               }
               hnFormatted[index].fullPostText = new Buffer(listing.fullPostText).toString('utf8');
+              hnFormatted[index].descriptionText = new Buffer(listing.descriptionText).toString('utf8');
               if (listing.compensation) {
                 hnFormatted[index].compensation = new Buffer(listing.compensation).toString('utf8');
               }
