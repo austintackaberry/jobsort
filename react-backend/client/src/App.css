@@ -183,7 +183,8 @@ a {
   outline: none;
   margin: 0 auto;
   margin-top: 10px;
-  width: 50%;
+  width: 60%;
+  text-align: right;
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
 }
 

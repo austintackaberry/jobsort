@@ -195,7 +195,7 @@ class App extends Component {
       currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
       this.setState({currentLoaderText: currentLoaderText, loaderActive: true});
     };
-    this.loaderInterval = window.setInterval(intervalFn, 50);
+    this.loaderInterval = window.setInterval(intervalFn, 70);
   }
 
   componentDidUpdate() {
