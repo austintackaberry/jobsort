@@ -255,8 +255,11 @@ app.post('/getresults', function(req, res) {
       .then(data => {
         if (!data.results[0]) {
           console.log(data);
+          userCoordinates = false;
         }
-        userCoordinates = data.results[0].geometry.location;
+        else {
+          userCoordinates = data.results[0].geometry.location;
+        }
         callback();
       })
       .catch(e => {

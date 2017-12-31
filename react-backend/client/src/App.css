@@ -177,15 +177,26 @@ a {
   border-radius: 2px;
 }
 
+#loader {
+  border: none;
+  display: block;
+  outline: none;
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 50%;
+  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+}
+
 .typewriter p {
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
   overflow: hidden; /* Ensures the content is not revealed until the animation */
   border-right: .15em solid black; /* The typwriter cursor */
   white-space: nowrap; /* Keeps the content on a single line */
   margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  margin-top: 10px;
   letter-spacing: .15em; /* Adjust as needed */
   animation:
-    typing 3.5s steps(40, end),
+    typing 3.5s steps(40, end) infinite,
     blink-caret .75s step-end infinite;
 }
 

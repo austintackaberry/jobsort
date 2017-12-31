@@ -19,7 +19,8 @@ class App extends Component {
         hackerNews:true
       },
       loaderActive: false,
-      currentLoaderText: ""
+      currentLoaderText: "",
+      noResults: false
     };
     this.state.allTechs.sort();
 
@@ -88,7 +89,13 @@ class App extends Component {
       userData[i].weight = parseFloat(this.refs['langWeight'+i].value);
     }
     event.preventDefault();
-    this.setState({userData:userData});
+    let noResults = this.state.noResults;
+    if (noResults) {
+      this.setState({userData:userData, listingData:[], noResults:false});
+    }
+    else {
+      this.setState({userData:userData, listingData:[]});
+    }
     var dataPackage = {
       jobTitle: this.state.jobTitle,
       jobLocation: this.state.jobLocation,
@@ -114,7 +121,12 @@ class App extends Component {
       },
       (callback) => {
         window.clearInterval(this.loaderInterval);
-        this.setState({listingData:listingData, loaderActive: false, currentLoaderText: ""});
+        if (listingData.length === 0) {
+          this.setState({listingData:listingData, loaderActive: false, noResults: true});
+        }
+        else {
+          this.setState({listingData:listingData, loaderActive: false, noResults: false});
+        }
         callback();
       }
     ]);
@@ -172,7 +184,25 @@ class App extends Component {
     userDataText = userDataText.concat('}');
     let checked = this.state.checked;
     let loaderText = "jobSort({title: '" + jobTitle + "', location: '" + jobLocation + "', checked: {hackerNews: " + checked.hackerNews + ", stackOverflow: " + checked.stackOverflow + ", github: " + checked.github + "}, technologies: " + userDataText + "});";
-    this.setState({loaderActive: true, loaderText:loaderText});
+    let loaderTextCopy = loaderText.split('');
+    let currentLoaderText = "";
+    let loaderTextCopyLength = loaderTextCopy.length;
+    let loaderTextLength = loaderText.length;
+    let intervalFn = () => {
+      if (loaderTextCopy.length === 0) {
+        loaderTextCopy = loaderText.split('');
+      }
+      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
+      this.setState({currentLoaderText: currentLoaderText, loaderActive: true});
+    };
+    this.loaderInterval = window.setInterval(intervalFn, 50);
+  }
+
+  componentDidUpdate() {
+    let loaderActive = this.state.loaderActive;
+    if (loaderActive) {
+      this.loaderEl.focus();
+    }
   }
 
   render() {
@@ -193,6 +223,11 @@ class App extends Component {
     var checked = this.state.checked;
     var unhideAllJSX = [];
     var showFullDescriptionsJSX = [];
+    let noResults = this.state.noResults;
+    let noResultsJSX = [];
+    if (noResults) {
+      noResultsJSX.push(<p>no results found</p>);
+    }
 
     if (listingData) {
       listingData.map((listing, index) => {
@@ -302,14 +337,12 @@ class App extends Component {
       ];
     }
 
-    let loaderText = this.state.loaderText;
+    let currentLoaderText = this.state.currentLoaderText;
     let loaderActive = this.state.loaderActive;
     let loaderJSX = [];
     if (loaderActive) {
       loaderJSX.push(
-        <div className="typewriter">
-          <p>{loaderText}</p>
-        </div>
+        <input id="loader" value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
       );
     }
     userLangWeightsJSX = [
@@ -380,6 +413,7 @@ class App extends Component {
               {userDataJSX}
             </div>
             {userLangWeightsJSX}
+            {noResultsJSX}
             {showFullDescriptionsJSX}
             {unhideAllJSX}
             <div id="listing-container">
