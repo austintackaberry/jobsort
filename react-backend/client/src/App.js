@@ -17,7 +17,9 @@ class App extends Component {
         github:true,
         stackOverflow:false,
         hackerNews:true
-      }
+      },
+      loaderActive: false,
+      currentLoaderText: ""
     };
     this.state.allTechs.sort();
 
@@ -30,6 +32,7 @@ class App extends Component {
     this.handleHideClick = this.handleHideClick.bind(this);
     this.handleUnhideAll = this.handleUnhideAll.bind(this);
     this.handleReadMoreAll = this.handleReadMoreAll.bind(this);
+    this.loader = this.loader.bind(this);
   }
 
   handleStep1Change(event) {
@@ -97,6 +100,7 @@ class App extends Component {
     var listingData;
     async.series([
       (callback) => {
+        this.loader();
         fetch('/getresults/', {
           method: 'POST',
           body: JSON.stringify(dataPackage)
@@ -109,7 +113,8 @@ class App extends Component {
         });
       },
       (callback) => {
-        this.setState({listingData:listingData});
+        window.clearInterval(this.loaderInterval);
+        this.setState({listingData:listingData, loaderActive: false, currentLoaderText: ""});
         callback();
       }
     ]);
@@ -149,6 +154,37 @@ class App extends Component {
       listing.readMore = true;
     });
     this.setState({listingData:listingData});
+  }
+
+  loader() {
+    console.log('loader');
+    let jobTitle = this.state.jobTitle;
+    let jobLocation = this.state.jobLocation;
+    let userData = this.state.userData;
+    let userDataText = "{";
+    userData.map(
+      (element, i) => {
+        userDataText = userDataText.concat(element.language + ": " + element.weight);
+        if (i + 1 < userData.length) {
+          userDataText = userDataText.concat(', ');
+        }
+      }
+    );
+    userDataText = userDataText.concat('}');
+    let checked = this.state.checked;
+    let loaderText = "jobSort({title: '" + jobTitle + "', location: '" + jobLocation + "', checked: {hackerNews: " + checked.hackerNews + ", stackOverflow: " + checked.stackOverflow + ", github: " + checked.github + "}, technologies: " + userDataText + "});";
+    let loaderTextCopy = loaderText.split('');
+    let currentLoaderText = "";
+    let loaderTextCopyLength = loaderTextCopy.length;
+    let loaderTextLength = loaderText.length;
+    let intervalFn = () => {
+      if (loaderTextCopy.length === 0) {
+        loaderTextCopy = loaderText.split('');
+      }
+      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
+      this.setState({currentLoaderText: currentLoaderText});
+    };
+    this.loaderInterval = window.setInterval(intervalFn, 25);
   }
 
   render() {
@@ -252,7 +288,6 @@ class App extends Component {
       });
     }
 
-
     var userData = this.state.userData.slice();
     var userDataJSX = [];
     var userLangWeightsJSX = [];
@@ -266,7 +301,7 @@ class App extends Component {
       userLangWeightsJSX.push(
         <tr>
           <td className="table-col-lang">{userData[i].language}: </td>
-          <td><input data-lpignore='true' className="weight-input" ref={'langWeight'+i} /></td>
+          <td><input data-lpignore='true' className="weight-input" type="number" ref={'langWeight'+i} /></td>
         </tr>
       );
     }
@@ -279,6 +314,7 @@ class App extends Component {
       ];
     }
 
+    let currentLoaderText = this.state.currentLoaderText;
     userLangWeightsJSX = [
       <form onSubmit={this.handleWeightsSubmit}>
         <div className="content-group">
@@ -287,6 +323,7 @@ class App extends Component {
           </p>
           {userLangWeightsJSX}
         </div>
+        <p>{currentLoaderText}</p>
         <input type="submit" id="get-results" value="get results" />
       </form>
     ];
