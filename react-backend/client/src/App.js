@@ -157,7 +157,6 @@ class App extends Component {
   }
 
   loader() {
-    console.log('loader');
     let jobTitle = this.state.jobTitle;
     let jobLocation = this.state.jobLocation;
     let userData = this.state.userData;
@@ -173,18 +172,7 @@ class App extends Component {
     userDataText = userDataText.concat('}');
     let checked = this.state.checked;
     let loaderText = "jobSort({title: '" + jobTitle + "', location: '" + jobLocation + "', checked: {hackerNews: " + checked.hackerNews + ", stackOverflow: " + checked.stackOverflow + ", github: " + checked.github + "}, technologies: " + userDataText + "});";
-    let loaderTextCopy = loaderText.split('');
-    let currentLoaderText = "";
-    let loaderTextCopyLength = loaderTextCopy.length;
-    let loaderTextLength = loaderText.length;
-    let intervalFn = () => {
-      if (loaderTextCopy.length === 0) {
-        loaderTextCopy = loaderText.split('');
-      }
-      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
-      this.setState({currentLoaderText: currentLoaderText});
-    };
-    this.loaderInterval = window.setInterval(intervalFn, 25);
+    this.setState({loaderActive: true, loaderText:loaderText});
   }
 
   render() {
@@ -314,7 +302,16 @@ class App extends Component {
       ];
     }
 
-    let currentLoaderText = this.state.currentLoaderText;
+    let loaderText = this.state.loaderText;
+    let loaderActive = this.state.loaderActive;
+    let loaderJSX = [];
+    if (loaderActive) {
+      loaderJSX.push(
+        <div className="typewriter">
+          <p>{loaderText}</p>
+        </div>
+      );
+    }
     userLangWeightsJSX = [
       <form onSubmit={this.handleWeightsSubmit}>
         <div className="content-group">
@@ -323,8 +320,8 @@ class App extends Component {
           </p>
           {userLangWeightsJSX}
         </div>
-        <p>{currentLoaderText}</p>
         <input type="submit" id="get-results" value="get results" />
+        {loaderJSX}
       </form>
     ];
 
