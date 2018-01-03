@@ -343,7 +343,7 @@ class App extends Component {
     let loaderJSX = [];
     if (loaderActive) {
       loaderJSX.push(
-        <input id="loader" data-lpignore='true' value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
+        <input id="loader" data-lpignore='true' readonly="true" value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
       );
     }
     userLangWeightsJSX = [
