@@ -165,7 +165,7 @@ function rankScore(dataPackage, description) {
       re = new RegExp('[^a-zA-Z0-9é]' + regexVar + '[^a-zA-Z0-9é&]', 'i');
     }
     if (regexVar === 'html') {
-      re = new RegExp(/^\.html/i);
+      re = new RegExp(/[^\.]html/i);
     }
     else if (regexVar === 'react native') {
       re = new RegExp(/react\s?native/i);
@@ -178,6 +178,9 @@ function rankScore(dataPackage, description) {
     }
     else if (regexVar === 'node') {
       re = new RegExp(/([^a-zA-Z0-9é]node[^a-zA-Z0-9é&])|([^a-zA-Z0-9é]nodejs[^a-zA-Z0-9é&])/i);
+    }
+    else if (regexVar === 'javascript') {
+      re = new RegExp(/([^a-zA-Z0-9é]javascript[^a-zA-Z0-9é&])|([^a-zA-Z0-9é\.]js[^a-zA-Z0-9é&])/i);
     }
     else if (regexVar === 'react') {
       re = new RegExp(/react(?![a-ik-z])(?!\s?native)/i);
