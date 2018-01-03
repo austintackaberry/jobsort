@@ -244,27 +244,34 @@ app.post('/getresults', function(req, res) {
 
   var getUserCoordinates = function (callback) {
     if (dataPackage.jobLocation) {
-      let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + dataPackage.jobLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
-      fetch(url, {
-        method: 'GET'
-      })
-      .then(res => res.json())
-      .catch(e => {
-        console.log(e);
-      })
-      .then(data => {
-        if (!data.results[0]) {
-          console.log(data);
-          userCoordinates = false;
-        }
-        else {
-          userCoordinates = data.results[0].geometry.location;
-        }
+      let re = /remote/ig;
+      if (!re.test(dataPackage.jobLocation)) {
+        let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + dataPackage.jobLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
+        fetch(url, {
+          method: 'GET'
+        })
+        .then(res => res.json())
+        .catch(e => {
+          console.log(e);
+        })
+        .then(data => {
+          if (!data.results[0]) {
+            console.log(data);
+            userCoordinates = false;
+          }
+          else {
+            userCoordinates = data.results[0].geometry.location;
+          }
+          callback();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      }
+      else {
+        userCoordinates = 'remote';
         callback();
-      })
-      .catch(e => {
-        console.log(e);
-      });
+      }
     }
     else {
       userCoordinates = false;
@@ -334,12 +341,23 @@ app.post('/getresults', function(req, res) {
           hnFormatted.map(
             (listing, index) => {
               hnFormatted[index].postTimeStr = hackerNewsFormatTimePosted(listing.postTimeInMs);
-              let distance = getHnDistance(userCoordinates, listing.latitude, listing.longitude);
-              if (distance > 100) {
-                hnFormatted[index].distance = false;
+              if (userCoordinates == "remote") {
+                let re = /remote/ig;
+                if (re.test(listing.type)) {
+                  hnFormatted[index].distance = 5;
+                }
+                else {
+                  hnFormatted[index].distance = false;
+                }
               }
               else {
-                hnFormatted[index].distance = distance;
+                let distance = getHnDistance(userCoordinates, listing.latitude, listing.longitude);
+                if (distance > 100) {
+                  hnFormatted[index].distance = false;
+                }
+                else {
+                  hnFormatted[index].distance = distance;
+                }
               }
               hnFormatted[index].fullPostText = new Buffer(listing.fullPostText).toString('utf8');
               hnFormatted[index].descriptionText = new Buffer(listing.descriptionText).toString('utf8');
@@ -423,7 +441,7 @@ app.post('/getresults', function(req, res) {
   }
 
   var hackerNewsTrack = function(callback2) {
-    async.parallel(
+    async.series(
       [
         getUserCoordinates,
         getHnData
