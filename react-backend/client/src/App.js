@@ -190,6 +190,7 @@ class App extends Component {
     let loaderTextLength = loaderText.length;
     let intervalFn = () => {
       if (loaderTextCopy.length === 0) {
+        currentLoaderText = '';
         loaderTextCopy = loaderText.split('');
       }
       currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
@@ -342,7 +343,7 @@ class App extends Component {
     let loaderJSX = [];
     if (loaderActive) {
       loaderJSX.push(
-        <input id="loader" value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
+        <input id="loader" data-lpignore='true' value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
       );
     }
     userLangWeightsJSX = [
