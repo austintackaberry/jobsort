@@ -18,6 +18,7 @@ body {
   margin-right: 0;
   background-color: #9fc2c4;
   padding: 2vmin;
+  box-sizing: border-box
 }
 
 #content-lvl2 {
