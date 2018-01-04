@@ -7,6 +7,49 @@ body {
   font-family: ubuntu;
 }
 
+#content-lvl1 {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border: 1px solid rgb(86, 138, 144);
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: #9fc2c4;
+  padding: 2vmin;
+}
+
+#content-lvl2 {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 650px;
+}
+
+h1 {
+  font-size: calc(10px + 3.5vmin);
+}
+
+h3 {
+  font-size: calc(7px + 1.6vmin);
+}
+
+h4 {
+  font-size: calc(6px + 1.5vmin);
+  margin-top: calc(5px + 1vmin);
+  margin-bottom: calc(5px + 1vmin);
+}
+
+p {
+  font-size: calc(6px + 1vmin);
+  margin-top: 1.5vmin;
+  margin-bottom: 1.5vmin;
+}
+
+label {
+  font-size: calc(5px + 1vmin);
+}
+
 .instructions {
   font-weight: 600;
   margin: 0;
@@ -108,29 +151,13 @@ a {
   width: 70px;
 }
 
-#content-lvl1 {
-  width: 80%;
-  max-width: 900px;
-  margin: 0 auto;
-  border: 1px solid rgb(86, 138, 144);
-  border-radius: 5px;
-  margin-top: 20px;
-  background-color: #9fc2c4;
-  padding: 15px;
-}
-
-#content-lvl2 {
-  width: 100%;
-  margin: 0 auto;
-  max-width: 650px;
-}
-
 .content-group {
   border: 1px solid rgb(86, 138, 144);
-  border-radius: 10px;
-  padding: 15px;
-  margin: 15px;
+  border-radius: 1.5vmin;
+  padding: 2vmin;
+  margin: 2vmin;
   background-color: #69a8ab;
+  box-shadow: 3px 3px 2px -1px rgb(86, 138, 144);
 }
 
 #listing-container {

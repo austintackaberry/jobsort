@@ -349,9 +349,8 @@ class App extends Component {
     userLangWeightsJSX = [
       <form onSubmit={this.handleWeightsSubmit}>
         <div className="content-group">
-          <p className="instructions">
-            assign weights to each technology based on how well you know them <br /> a higher number means you are more familiar with that technology
-          </p>
+          <h3 className="instructions">assign weights to each technology based on how well you know them</h3>
+          <p>(a higher number means you are more familiar with that technology)</p>
           {userLangWeightsJSX}
         </div>
         <input type="submit" id="get-results" value="get results" />
@@ -361,13 +360,13 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h2>jobSort()</h2>
+        <h1>jobSort()</h1>
         <div id="content-lvl1">
           <div id="content-lvl2">
             <div className="content-group">
-              <p className="instructions">
+              <h3 className="instructions">
                 input your desired job title and location
-              </p>
+              </h3>
               <div>
                 <form>
                   <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
@@ -376,9 +375,9 @@ class App extends Component {
               </div>
             </div>
             <div className="content-group">
-              <p className="instructions">
+              <h3 className="instructions">
                 check the job boards you want included in the search
-              </p>
+              </h3>
               <div style={{"margin-top":"7px"}}>
                 <form id="job-board-checkbox-form">
                   <div id="checkbox-container">
@@ -401,9 +400,9 @@ class App extends Component {
               </div>
             </div>
             <div className="content-group">
-              <p className="instructions">
+              <h3 className="instructions">
                 input technologies that you know
-              </p>
+              </h3>
               <div style={{"margin-top":"7px"}}>
                 <form onSubmit={this.handleLangAdd}>
                   <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
