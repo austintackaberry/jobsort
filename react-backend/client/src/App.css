@@ -12,12 +12,10 @@ body {
   max-width: 900px;
   margin: 0 auto;
   border: 1px solid rgb(86, 138, 144);
-  border-radius: 5px;
+  border-radius: 0.5vmin;
   margin-top: 20px;
-  margin-left: 0;
-  margin-right: 0;
   background-color: #9fc2c4;
-  padding: 2vmin;
+  padding: calc(5px + 2vmin);
   box-sizing: border-box
 }
 
@@ -27,28 +25,41 @@ body {
   max-width: 650px;
 }
 
+.content-group {
+  border: 1px solid rgb(86, 138, 144);
+  border-radius: 1.5vmin;
+  padding: 2vmin;
+  margin: calc(5px + 2vmin);
+  background-color: #69a8ab;
+  box-shadow: 3px 3px 2px -1px rgb(86, 138, 144);
+}
+
 h1 {
-  font-size: calc(10px + 3.5vmin);
+  font-size: calc(13px + 3.0vmin);
 }
 
 h3 {
-  font-size: calc(7px + 1.6vmin);
+  font-size: calc(10px + 1.2vmin);
 }
 
 h4 {
-  font-size: calc(6px + 1.5vmin);
+  font-size: calc(8px + 1.5vmin);
   margin-top: calc(5px + 1vmin);
   margin-bottom: calc(5px + 1vmin);
 }
 
 p {
-  font-size: calc(6px + 1vmin);
-  margin-top: 1.5vmin;
-  margin-bottom: 1.5vmin;
+  font-size: calc(8px + 1vmin);
+  margin-top: calc(3.5px + 0.7vmin);
+  margin-bottom: calc(3.5px + 0.7vmin);
 }
 
 label {
-  font-size: calc(5px + 1vmin);
+  font-size: calc(7px + 1vmin);
+}
+
+span {
+  font-size: calc(7px + 1vmin);
 }
 
 .instructions {
@@ -103,6 +114,7 @@ input::-webkit-calendar-picker-indicator {
   margin-top: 10px;
   border: 1px solid rgb(86, 138, 144);
   border-radius: 10px;
+  box-shadow: 3px 3px 2px -1px rgb(86, 138, 144);
 }
 
 .source {
@@ -150,15 +162,6 @@ a {
 
 .weight-input {
   width: 70px;
-}
-
-.content-group {
-  border: 1px solid rgb(86, 138, 144);
-  border-radius: 1.5vmin;
-  padding: 2vmin;
-  margin: 2vmin;
-  background-color: #69a8ab;
-  box-shadow: 3px 3px 2px -1px rgb(86, 138, 144);
 }
 
 #listing-container {
