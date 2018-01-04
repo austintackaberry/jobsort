@@ -2,6 +2,20 @@ import React, { Component } from 'react';
 import './App.css';
 var async = require('async');
 
+function mobileStylingFn() {
+  if (document.getElementById('content-lvl1').offsetWidth > window.innerWidth - 16) {
+    document.body.style.background = "#9fc2c4";
+    document.getElementById("title-container").style.paddingBottom = "0px";
+    document.getElementById('content-lvl1').style.border = "0";
+    document.getElementById('content-lvl1').style.paddingTop = "7px";
+  }
+  else {
+    document.body.style.background = "rgb(232, 236, 237)";
+    document.getElementById("title-container").style.paddingBottom = "20px";
+    document.getElementById('content-lvl1').style.border = "1px solid rgb(86, 138, 144)";
+  }
+}
+
 class App extends Component {
 
   constructor() {
@@ -23,7 +37,6 @@ class App extends Component {
       noResults: false
     };
     this.state.allTechs.sort();
-
     this.handleLangAdd = this.handleLangAdd.bind(this);
     this.handleStep1Change = this.handleStep1Change.bind(this);
     this.handleLangDelClick = this.handleLangDelClick.bind(this);
@@ -34,6 +47,8 @@ class App extends Component {
     this.handleUnhideAll = this.handleUnhideAll.bind(this);
     this.handleReadMoreAll = this.handleReadMoreAll.bind(this);
     this.loader = this.loader.bind(this);
+    window.addEventListener("resize", mobileStylingFn);
+    window.addEventListener("load", mobileStylingFn);
   }
 
   handleStep1Change(event) {
@@ -360,7 +375,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1>jobSort()</h1>
+        <div id="title-container" style={{height: "100%"}}>
+          <h1>jobSort()</h1>
+        </div>
         <div id="content-lvl1">
           <div id="content-lvl2">
             <div className="content-group">
