@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import SearchResults from './components/SearchResults.js';
 var async = require('async');
 
 function mobileStylingFn() {
@@ -16,6 +17,7 @@ function mobileStylingFn() {
   }
 }
 
+
 class App extends Component {
 
   constructor() {
@@ -26,7 +28,8 @@ class App extends Component {
       userData: [],
       allTechs: ['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
       allTechsJSX: [],
-      listingData: [],
+      receivedListingData: [],
+      filteredListingData: [],
       checked: {
         github:true,
         stackOverflow:false,
@@ -42,13 +45,24 @@ class App extends Component {
     this.handleLangDelClick = this.handleLangDelClick.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-    this.handleReadMoreClick = this.handleReadMoreClick.bind(this);
     this.handleHideClick = this.handleHideClick.bind(this);
     this.handleUnhideAll = this.handleUnhideAll.bind(this);
     this.handleReadMoreAll = this.handleReadMoreAll.bind(this);
+    this.filterListingData = this.filterListingData.bind(this);
     this.loader = this.loader.bind(this);
     window.addEventListener("resize", mobileStylingFn);
     window.addEventListener("load", mobileStylingFn);
+  }
+
+  filterListingData(receivedListingData) {
+    let checked = this.state.checked;
+    let filteredListingData = [];
+    receivedListingData.map((listing) => {
+      if ((listing.source === "stackOverflow" && checked.stackOverflow) || (listing.source === "github" && checked.github) || (listing.source === "hackerNews" && checked.hackerNews))  {
+        filteredListingData.push(listing);
+      }
+    });
+    return filteredListingData;
   }
 
   handleStep1Change(event) {
@@ -106,10 +120,10 @@ class App extends Component {
     event.preventDefault();
     let noResults = this.state.noResults;
     if (noResults) {
-      this.setState({userData:userData, listingData:[], noResults:false});
+      this.setState({userData:userData, receivedListingData:[], noResults:false});
     }
     else {
-      this.setState({userData:userData, listingData:[]});
+      this.setState({userData:userData, receivedListingData:[]});
     }
     var dataPackage = {
       jobTitle: this.state.jobTitle,
@@ -119,7 +133,7 @@ class App extends Component {
       checked: checked
     };
 
-    var listingData;
+    var receivedListingData;
     async.series([
       (callback) => {
         this.loader();
@@ -130,57 +144,46 @@ class App extends Component {
           return res.json();
         }).then(function(response) {
           // var data = JSON.parse(response);
-          listingData = response.slice();
+          receivedListingData = response.slice();
           callback();
         });
       },
       (callback) => {
         window.clearInterval(this.loaderInterval);
-        if (listingData.length === 0) {
-          this.setState({listingData:listingData, loaderActive: false, noResults: true});
+        let filteredListingData = this.filterListingData(receivedListingData);
+        this.setState({filteredListingData:filteredListingData});
+        if (receivedListingData.length === 0) {
+          this.setState({receivedListingData:receivedListingData, loaderActive: false, noResults: true});
         }
         else {
-          this.setState({listingData:listingData, loaderActive: false, noResults: false});
+          this.setState({receivedListingData:receivedListingData, loaderActive: false, noResults: false});
         }
         callback();
       }
     ]);
   }
 
-  handleReadMoreClick(event) {
-    var listingIndex = event.target.getAttribute('data-value');
-    var listingData = this.state.listingData;
-    if (listingData[listingIndex].readMore) {
-      listingData[listingIndex].readMore = false;
-      event.target.parentElement.parentElement.scrollIntoView(true);
-    }
-    else {
-      listingData[listingIndex].readMore = true;
-    }
-    this.setState({listingData:listingData});
-  }
-
   handleHideClick(event) {
     var listingIndex = event.target.getAttribute('data-value');
-    var listingData = this.state.listingData;
-    listingData[listingIndex].hidden = true;
-    this.setState({listingData:listingData});
+    var receivedListingData = this.state.receivedListingData;
+    receivedListingData[listingIndex].hidden = true;
+    this.setState({receivedListingData:receivedListingData});
   }
 
   handleUnhideAll() {
-    var listingData = this.state.listingData;
-    listingData.map((listing)=>{
+    var receivedListingData = this.state.receivedListingData;
+    receivedListingData.map((listing)=>{
       listing.hidden = false;
     });
-    this.setState({listingData:listingData});
+    this.setState({receivedListingData:receivedListingData});
   }
 
   handleReadMoreAll() {
-    var listingData = this.state.listingData;
-    listingData.map((listing)=>{
+    var receivedListingData = this.state.receivedListingData;
+    receivedListingData.map((listing)=>{
       listing.readMore = true;
     });
-    this.setState({listingData:listingData});
+    this.setState({receivedListingData:receivedListingData});
   }
 
   loader() {
@@ -233,9 +236,10 @@ class App extends Component {
       </datalist>
     ];
 
-    var listingDataJSX = [];
-    var listingDataJSX1 = [];
-    var listingData = this.state.listingData;
+    const filteredListingData = this.state.filteredListingData.slice();
+    var receivedListingDataJSX = [];
+    var receivedListingDataJSX1 = [];
+    var receivedListingData = this.state.receivedListingData;
     var checked = this.state.checked;
     var unhideAllJSX = [];
     var showFullDescriptionsJSX = [];
@@ -243,88 +247,6 @@ class App extends Component {
     let noResultsJSX = [];
     if (noResults) {
       noResultsJSX.push(<p>no results found</p>);
-    }
-
-    if (listingData) {
-      listingData.map((listing, index) => {
-        if (showFullDescriptionsJSX.length < 1 && listingData.length > 0) {
-          showFullDescriptionsJSX.push(<button className="listing-options" onClick={this.handleReadMoreAll}>show full descriptions</button>)
-        }
-        let hide = <button id="hide" href="javascript: void(0)" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>;
-        let readMoreLess = "read more";
-        let text = '';
-        if (listing.descriptionText && !listing.readMore) {
-          text = listing.descriptionText.slice(0,200);
-          text = text.slice(0,text.lastIndexOf(" "));
-          text = text.concat('...');
-        }
-        else if (listing.descriptionHTML && listing.readMore) {
-          readMoreLess = "read less"
-          text = <p dangerouslySetInnerHTML={{__html: listing.descriptionHTML}} />;
-        }
-        if (listing.source === "hackerNews" && checked.hackerNews === true  && !listing.hidden) {
-          listingDataJSX = [];
-          if (listing.title) {
-            if (listing.url) {
-              listingDataJSX.push(<h4><a href={listing.url}>{listing.title}</a></h4>);
-            }
-            else {
-              listingDataJSX.push(<h4>{listing.title}</h4>);
-            }
-          }
-          listingDataJSX.push(<p className="listing-item">Company: {listing.companyName}</p>);
-          if (listing.location) {
-            listingDataJSX.push(<p className="listing-item">Location: {listing.location}</p>);
-          }
-          listingDataJSX.push(<p className="listing-item">Posted: {listing.postTimeStr}</p>);
-          if (listing.type) {
-            listingDataJSX.push(<p className="listing-item">Type: {listing.type}</p>);
-          }
-          if (listing.compensation) {
-            listingDataJSX.push(<p className="listing-item">Compensation: {listing.compensation}</p>);
-          }
-          listingDataJSX.push(<p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>);
-          listingDataJSX.push(<p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>);
-          listingDataJSX1.push(
-            <div className="job-listing">
-              {hide}
-              <span id="hacker-news" className="source">hn who's hiring</span>
-              {listingDataJSX}
-            </div>
-          );
-        }
-        else if (listing.source === "github" && checked.github === true && !listing.hidden)  {
-          listingDataJSX1.push(
-            <div className="job-listing">
-              {hide}
-              <span id="github" className="source">github</span>
-              <h4><a href={listing.url}>{listing.title}</a></h4>
-              <p className="listing-item">{listing.location}</p>
-              <p className="listing-item">{listing.postTimeStr}</p>
-              <p className="listing-item">{listing.type}</p>
-              <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
-              <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
-            </div>
-          );
-        }
-        else if (listing.source === "stackOverflow" && checked.stackOverflow === true  && !listing.hidden)  {
-          listingDataJSX1.push(
-            <div className="job-listing">
-              {hide}
-              <span id="stack-overflow" className="source">stack overflow</span>
-              <h4><a href={listing.url}>{listing.title}</a></h4>
-              <p className="listing-item">{listing.companyName}</p>
-              <p className="listing-item">{listing.location}</p>
-              <p className="listing-item">{listing.postTimeStr}</p>
-              <p className="listing-item">Technologies: {listing.descriptionHasTech.join(', ')}</p>
-              <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleReadMoreClick}>{readMoreLess}</a></p>
-            </div>
-          );
-        }
-        else if (listing.hidden && unhideAllJSX.length < 1) {
-          unhideAllJSX.push(<button className="listing-options" onClick={this.handleUnhideAll}>unhide all listings</button>);
-        }
-      });
     }
 
     var userData = this.state.userData.slice();
@@ -372,6 +294,8 @@ class App extends Component {
         {loaderJSX}
       </form>
     ];
+
+    showFullDescriptionsJSX = <button className="listing-options" onClick={this.handleReadMoreAll}>show full descriptions</button>;
 
     return (
       <div className="App">
@@ -433,9 +357,7 @@ class App extends Component {
             {noResultsJSX}
             {showFullDescriptionsJSX}
             {unhideAllJSX}
-            <div id="listing-container">
-              {listingDataJSX1}
-            </div>
+            <SearchResults jobListings={filteredListingData} />
           </div>
         </div>
       </div>
