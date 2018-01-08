@@ -126,10 +126,10 @@ class App extends Component {
 
   generateLoaderText(userInputData) {
     let userDataText = "{";
-    userInputData.userData.map(
+    userInputData.userTechnologies.map(
       (element, i) => {
         userDataText = userDataText.concat(element.language + ": " + element.weight);
-        if (i + 1 < this.state.userData.length) {
+        if (i + 1 < userInputData.userTechnologies.length) {
           userDataText = userDataText.concat(', ');
         }
       }

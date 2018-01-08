@@ -198,7 +198,7 @@ function rankScore(dataPackage, description) {
     if (test) {
       allTechsCount[i].isInDescription = 1;
       descriptionHasTech.push(dataPackage.allTechs[i]);
-      dataPackage.userData.map((element) => {
+      dataPackage.userTechnologies.map((element) => {
         if (element.language == dataPackage.allTechs[i]) {
           rankScore += element.weight * allTechsCount[i].isInDescription;
           techUserKnows++;
