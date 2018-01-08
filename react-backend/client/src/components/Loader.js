@@ -23,8 +23,6 @@ class Loader extends Component {
         this.setState({loaderActive:true});
         let loaderTextCopy = loaderText.split('');
         let currentLoaderText = "";
-        let loaderTextCopyLength = loaderTextCopy.length;
-        let loaderTextLength = loaderText.length;
         let intervalFn = () => {
           if (loaderTextCopy.length === 0) {
             currentLoaderText = '';
