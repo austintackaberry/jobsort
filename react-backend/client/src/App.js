@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import SearchResults from './components/SearchResults.js';
+import Loader from './components/Loader.js';
 var async = require('async');
 
 function mobileStylingFn() {
@@ -36,20 +37,26 @@ class App extends Component {
         hackerNews:true
       },
       loaderActive: false,
-      currentLoaderText: "",
-      noResults: false
+      loaderText: "",
+      noResults: false,
+      updateListings: {
+        unhideAll: false,
+        showFullDescriptions: false,
+        showShortDescriptions: false
+      }
     };
     this.state.allTechs.sort();
-    this.handleLangAdd = this.handleLangAdd.bind(this);
-    this.handleStep1Change = this.handleStep1Change.bind(this);
-    this.handleLangDelClick = this.handleLangDelClick.bind(this);
+    this.addTechnology = this.addTechnology.bind(this);
+    this.handleJobTitleLocationChange = this.handleJobTitleLocationChange.bind(this);
+    this.removeTechnology = this.removeTechnology.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
-    this.handleHideClick = this.handleHideClick.bind(this);
-    this.handleUnhideAll = this.handleUnhideAll.bind(this);
-    this.handleReadMoreAll = this.handleReadMoreAll.bind(this);
+    this.unhideAll = this.unhideAll.bind(this);
+    this.showFullDescriptions = this.showFullDescriptions.bind(this);
+    this.showShortDescriptions = this.showShortDescriptions.bind(this);
     this.filterListingData = this.filterListingData.bind(this);
-    this.loader = this.loader.bind(this);
+    this.activateLoader = this.activateLoader.bind(this);
+    this.generateLoaderText = this.generateLoaderText.bind(this);
     window.addEventListener("resize", mobileStylingFn);
     window.addEventListener("load", mobileStylingFn);
   }
@@ -65,29 +72,28 @@ class App extends Component {
     return filteredListingData;
   }
 
-  handleStep1Change(event) {
+  handleJobTitleLocationChange(event) {
     var jobTitle = this.refs.jobTitle.value;
     var jobLocation = this.refs.jobLocation.value;
     this.setState({jobTitle:jobTitle, jobLocation:jobLocation});
     event.preventDefault();
   }
 
-  handleLangAdd(event) {
-    var lastUserAddedLang = this.refs.userAddLang.value;
-    lastUserAddedLang = lastUserAddedLang.toLowerCase();
-    var userData = this.state.userData.slice();
-    var allTechs = this.state.allTechs.slice();
-    let regexVar = lastUserAddedLang;
-    if (!userData.some((element) => {return element.language === lastUserAddedLang}) && allTechs.includes(lastUserAddedLang)) {
+  addTechnology(event) {
+    let lastUserAddedTechnology = this.refs.userAddLang.value;
+    lastUserAddedTechnology = lastUserAddedTechnology.toLowerCase();
+    let userData = this.state.userData.slice();
+    let allTechs = this.state.allTechs.slice();
+    let regexVar = lastUserAddedTechnology;
+    if (!userData.some((element) => {return element.language === lastUserAddedTechnology}) && allTechs.includes(lastUserAddedTechnology)) {
       document.getElementById('userLangInput').value ="";
-      userData.push({language:lastUserAddedLang});
+      userData.push({language:lastUserAddedTechnology});
     }
-
     event.preventDefault();
     this.setState({userData:userData});
   }
 
-  handleLangDelClick(event) {
+  removeTechnology(event) {
     var elemNum = event.target.id.slice(-1);
     var userData = this.state.userData.slice();
     userData.splice(elemNum, 1);
@@ -111,117 +117,95 @@ class App extends Component {
   }
 
   handleWeightsSubmit(event) {
-    var checked = this.state.checked;
+    this.activateLoader();
     var userData = this.state.userData.slice();
     var allTechs = this.state.allTechs.slice();
     for (let i = 0; i < userData.length; i++) {
       userData[i].weight = parseFloat(this.refs['langWeight'+i].value);
     }
     event.preventDefault();
-    let noResults = this.state.noResults;
-    if (noResults) {
-      this.setState({userData:userData, receivedListingData:[], noResults:false});
+    let newState = {userData:userData, receivedListingData:[]};
+    if (this.state.noResults) {
+      newState.noResults = false;
     }
-    else {
-      this.setState({userData:userData, receivedListingData:[]});
-    }
+    this.setState({newState});
+
     var dataPackage = {
       jobTitle: this.state.jobTitle,
       jobLocation: this.state.jobLocation,
       userData: userData,
       allTechs: allTechs,
-      checked: checked
+      checked: this.state.checked
     };
 
-    var receivedListingData;
+    let receivedListingData;
     async.series([
       (callback) => {
-        this.loader();
         fetch('/getresults/', {
           method: 'POST',
           body: JSON.stringify(dataPackage)
         }).then(function(res) {
           return res.json();
         }).then(function(response) {
-          // var data = JSON.parse(response);
           receivedListingData = response.slice();
           callback();
         });
       },
       (callback) => {
-        window.clearInterval(this.loaderInterval);
-        let filteredListingData = this.filterListingData(receivedListingData);
-        this.setState({filteredListingData:filteredListingData});
-        if (receivedListingData.length === 0) {
-          this.setState({receivedListingData:receivedListingData, loaderActive: false, noResults: true});
-        }
-        else {
-          this.setState({receivedListingData:receivedListingData, loaderActive: false, noResults: false});
-        }
+        let newState = {receivedListingData:receivedListingData, filteredListingData:receivedListingData, loaderActive: false};
+        newState.noResults = ((receivedListingData.length === 0) ? true : false);
+        this.setState({newState});
         callback();
       }
     ]);
   }
 
-  handleHideClick(event) {
-    var listingIndex = event.target.getAttribute('data-value');
-    var receivedListingData = this.state.receivedListingData;
-    receivedListingData[listingIndex].hidden = true;
-    this.setState({receivedListingData:receivedListingData});
-  }
-
-  handleUnhideAll() {
-    var receivedListingData = this.state.receivedListingData;
-    receivedListingData.map((listing)=>{
-      listing.hidden = false;
+  unhideAll() {
+    this.setState({
+      updateListings: {
+        unhideAll: true,
+        showFullDescriptions: false,
+        showShortDescriptions: false
+      }
     });
-    this.setState({receivedListingData:receivedListingData});
   }
 
-  handleReadMoreAll() {
-    var receivedListingData = this.state.receivedListingData;
-    receivedListingData.map((listing)=>{
-      listing.readMore = true;
+  showFullDescriptions() {
+    this.setState({
+      updateListings: {
+        unhideAll: false,
+        showFullDescriptions: true,
+        showShortDescriptions: false
+      }
     });
-    this.setState({receivedListingData:receivedListingData});
+  }
+  showShortDescriptions() {
+    this.setState({
+      updateListings: {
+        unhideAll: false,
+        showFullDescriptions: false,
+        showShortDescriptions: true
+      }
+    });
   }
 
-  loader() {
-    let jobTitle = this.state.jobTitle;
-    let jobLocation = this.state.jobLocation;
-    let userData = this.state.userData;
+  activateLoader() {
+    let loaderText = this.generateLoaderText();
+    this.setState({loaderText:loaderText, loaderActive: true});
+  }
+
+  generateLoaderText() {
     let userDataText = "{";
-    userData.map(
+    this.state.userData.map(
       (element, i) => {
         userDataText = userDataText.concat(element.language + ": " + element.weight);
-        if (i + 1 < userData.length) {
+        if (i + 1 < this.state.userData.length) {
           userDataText = userDataText.concat(', ');
         }
       }
     );
     userDataText = userDataText.concat('}');
-    let checked = this.state.checked;
-    let loaderText = "jobSort({title: '" + jobTitle + "', location: '" + jobLocation + "', checked: {hackerNews: " + checked.hackerNews + ", stackOverflow: " + checked.stackOverflow + ", github: " + checked.github + "}, technologies: " + userDataText + "});";
-    let loaderTextCopy = loaderText.split('');
-    let currentLoaderText = "";
-    let loaderTextCopyLength = loaderTextCopy.length;
-    let loaderTextLength = loaderText.length;
-    let intervalFn = () => {
-      if (loaderTextCopy.length === 0) {
-        currentLoaderText = '';
-        loaderTextCopy = loaderText.split('');
-      }
-      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
-      this.setState({currentLoaderText: currentLoaderText, loaderActive: true});
-    };
-    this.loaderInterval = window.setInterval(intervalFn, 70);
-  }
-
-  componentDidUpdate() {
-    let loaderActive = this.state.loaderActive;
-    if (loaderActive) {
-      this.loaderEl.focus();
-    }
+    return "jobSort({title: '" + this.state.jobTitle + "', location: '" + this.state.jobLocation + "', checked: {hackerNews: " + this.state.checked.hackerNews + ", stackOverflow: " + this.state.checked.stackOverflow + ", github: " + this.state.checked.github + "}, technologies: " + userDataText + "});";
   }
 
   render() {
@@ -236,26 +220,13 @@ class App extends Component {
       </datalist>
     ];
 
-    const filteredListingData = this.state.filteredListingData.slice();
-    var receivedListingDataJSX = [];
-    var receivedListingDataJSX1 = [];
-    var receivedListingData = this.state.receivedListingData;
-    var checked = this.state.checked;
-    var unhideAllJSX = [];
-    var showFullDescriptionsJSX = [];
-    let noResults = this.state.noResults;
-    let noResultsJSX = [];
-    if (noResults) {
-      noResultsJSX.push(<p>no results found</p>);
-    }
-
     var userData = this.state.userData.slice();
     var userDataJSX = [];
     var userLangWeightsJSX = [];
     for (let i = 0; i < userData.length; i++) {
       userDataJSX.push(
         <div className="user-lang-div">
-          <button id={'langButt'+i} className="exit" onClick={this.handleLangDelClick}>&#10006;</button>
+          <button id={'langButt'+i} className="exit" onClick={this.removeTechnology}>&#10006;</button>
           <span className="user-lang-span" onClick = {this.sendMsg}>{userData[i].language}</span>
         </div>
       );
@@ -275,28 +246,6 @@ class App extends Component {
       ];
     }
 
-    let currentLoaderText = this.state.currentLoaderText;
-    let loaderActive = this.state.loaderActive;
-    let loaderJSX = [];
-    if (loaderActive) {
-      loaderJSX.push(
-        <input id="loader" data-lpignore='true' readonly="true" value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
-      );
-    }
-    userLangWeightsJSX = [
-      <form onSubmit={this.handleWeightsSubmit}>
-        <div className="content-group">
-          <h3 className="instructions">assign weights to each technology based on how well you know them</h3>
-          <p>(a higher number means you are more familiar with that technology)</p>
-          {userLangWeightsJSX}
-        </div>
-        <input type="submit" id="get-results" value="get results" />
-        {loaderJSX}
-      </form>
-    ];
-
-    showFullDescriptionsJSX = <button className="listing-options" onClick={this.handleReadMoreAll}>show full descriptions</button>;
-
     return (
       <div className="App">
         <div id="title-container" style={{height: "100%"}}>
@@ -310,8 +259,8 @@ class App extends Component {
               </h3>
               <div>
                 <form>
-                  <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleStep1Change}/>
-                  <input id="userJobLocation" className="textbox" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleStep1Change}/>
+                  <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleJobTitleLocationChange}/>
+                  <input id="userJobLocation" className="textbox" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleJobTitleLocationChange}/>
                 </form>
               </div>
             </div>
@@ -319,21 +268,21 @@ class App extends Component {
               <h3 className="instructions">
                 check the job boards you want included in the search
               </h3>
-              <div style={{"margin-top":"7px"}}>
+              <div style={{"marginTop":"7px"}}>
                 <form id="job-board-checkbox-form">
                   <div id="checkbox-container">
                     <div id="checkbox-group">
                       <div className="checkbox">
                         <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                        <label for="hn-checkbox">hacker news: who's hiring</label>
+                        <label htmlFor="hn-checkbox">hacker news: who's hiring</label>
                       </div>
                       <div className="checkbox">
                         <input id="so-checkbox" type="checkbox" disabled="disabled" onChange={this.handleCheckboxChange}/>
-                        <label for="so-checkbox">stack overflow</label>
+                        <label htmlFor="so-checkbox">stack overflow</label>
                       </div>
                       <div className="checkbox">
                         <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
-                        <label for="gh-checkbox">github</label>
+                        <label htmlFor="gh-checkbox">github</label>
                       </div>
                     </div>
                   </div>
@@ -344,8 +293,8 @@ class App extends Component {
               <h3 className="instructions">
                 input technologies that you know
               </h3>
-              <div style={{"margin-top":"7px"}}>
-                <form onSubmit={this.handleLangAdd}>
+              <div style={{"marginTop":"7px"}}>
+                <form onSubmit={this.addTechnology}>
                   <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
                   {allTechsJSX}
                   <input type="submit" id="add" value="add" />
@@ -353,11 +302,26 @@ class App extends Component {
               </div>
               {userDataJSX}
             </div>
-            {userLangWeightsJSX}
-            {noResultsJSX}
-            {showFullDescriptionsJSX}
-            {unhideAllJSX}
-            <SearchResults jobListings={filteredListingData} />
+            <form onSubmit={this.handleWeightsSubmit}>
+              <div className="content-group">
+                <h3 className="instructions">assign weights to each technology based on how well you know them</h3>
+                <p>(a higher number means you are more familiar with that technology)</p>
+                {userLangWeightsJSX}
+              </div>
+              <input type="submit" id="get-results" value="get results" />
+              <Loader
+                loaderActive={this.state.loaderActive}
+                loaderText={this.state.loaderText}
+              />
+            </form>
+            <button className="listing-options show-full-descriptions" id="show-full-descriptions" style={{display:"none"}} onClick={this.showFullDescriptions}>show full descriptions</button>
+            <button className="listing-options show-short-descriptions" id="show-short-descriptions" style={{display:"none"}} onClick={this.showShortDescriptions}>show short descriptions</button>
+            <button className="listing-options unhide-all" id="unhide-all" style={{display:"none"}} onClick={this.unhideAll}>unhide all</button>
+            <SearchResults
+              noResults={this.state.noResults}
+              updateListings={this.state.updateListings}
+              jobListings={this.state.filteredListingData}
+            />
           </div>
         </div>
       </div>
