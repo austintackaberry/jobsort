@@ -3,8 +3,8 @@ import JobListing from "./Listing.js";
 
 class SearchResults extends Component {
 
-  componentWillUpdate() {
-    if (this.props.jobListings.length > 0) {
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.jobListings.length > 0) {
       document.getElementById('show-full-descriptions').style.display = "inline-block";
     }
   }
