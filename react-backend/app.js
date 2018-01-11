@@ -11,9 +11,6 @@ const rp = require('request-promise');
 var htmlToText = require('html-to-text');
 const mysql = require('mysql');
 
-// var index = require('./routes/index');
-// var users = require('./routes/users');
-
 var app = express();
 
 if (process.env.NODE_ENV === "production") {
@@ -30,36 +27,6 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
-// app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
-
-function githubFormatTimePosted(passedDate) {
-  let milliseconds = Date.now() - Date.parse(passedDate);
-  let postTimeObj = {postTimeInMs: milliseconds};
-  let seconds = milliseconds/1000.0;
-  if (seconds < 60) {
-    postTimeObj.postTimeStr = Math.round(seconds) + "s ago";
-    return postTimeObj;
-  }
-  let minutes = seconds/60;
-  if (minutes < 60) {
-    postTimeObj.postTimeStr = Math.round(minutes) + "min ago";
-    return postTimeObj;
-  }
-  let hours = minutes/60;
-  if (hours < 24) {
-    postTimeObj.postTimeStr = Math.round(hours) + "h ago";
-    return postTimeObj;
-  }
-  let days = hours/24;
-  if (days < 7) {
-    postTimeObj.postTimeStr = Math.round(days) + "d ago";
-    return postTimeObj;
-  }
-  let weeks = days/7;
-  postTimeObj.postTimeStr = Math.round(weeks) + "w ago";
-  return postTimeObj;
-}
 
 function getDistanceInMilesFromUser(userCoordinates, jobCoordinates) {
   lat1 = userCoordinates.lat;
@@ -91,10 +58,16 @@ function getHnDistance(userCoordinates, latitude, longitude) {
   return getDistanceInMilesFromUser(userCoordinates, jobCoordinates);
 }
 
-function hackerNewsFormatTimePosted(postTime) {
+function githubHackerNewsFormatTimePosted(postTime) {
   let dateNow = new Date();
   let timeNow = dateNow.getTime();
-  let relativePostTime = timeNow - postTime;
+  let relativePostTime;
+  if (isNaN(relativePostTime)) {
+    relativePostTime = timeNow - Date.parse(postTime)
+  }
+  else {
+    relativePostTime = timeNow - postTime;
+  }
 
   let seconds = relativePostTime/1000.0;
   if (seconds < 60) {
@@ -147,6 +120,10 @@ function stackOverflowFormatTimePosted(postTimeStr) {
   return postTime;
 }
 
+function generateRegex(re) {
+
+}
+
 function rankScore(dataPackage, description) {
   let allTechsCount = [];
   let descriptionHasTech = [];
@@ -155,36 +132,7 @@ function rankScore(dataPackage, description) {
   for (let i = 0; i < dataPackage.allTechs.length; i++) {
     let test;
     let regexVar = dataPackage.allTechs[i];
-    if (regexVar === '.net') {
-      re = new RegExp(/[^a-z0-9]\.net[^a-z0-9]/i);
-    }
-    else if (regexVar === 'c++') {
-      re = new RegExp(/c\+\+/i);
-    }
-    else {
-      re = new RegExp('[^a-zA-Z0-9é]' + regexVar + '[^a-zA-Z0-9é&]', 'i');
-    }
-    if (regexVar === 'html') {
-      re = new RegExp(/[^\.]html/i);
-    }
-    else if (regexVar === 'react native') {
-      re = new RegExp(/react\s?native/i);
-    }
-    else if (regexVar === 'java') {
-      re = new RegExp(/java(?!script)/i);
-    }
-    else if (regexVar === 'objective-c') {
-      re = new RegExp(/(objective-c)|(objective\sc)/i);
-    }
-    else if (regexVar === 'node') {
-      re = new RegExp(/([^a-zA-Z0-9é]node[^a-zA-Z0-9é&])|([^a-zA-Z0-9é]nodejs[^a-zA-Z0-9é&])/i);
-    }
-    else if (regexVar === 'javascript') {
-      re = new RegExp(/([^a-zA-Z0-9é]javascript[^a-zA-Z0-9é&])|([^a-zA-Z0-9é\.]js[^a-zA-Z0-9é&])/i);
-    }
-    else if (regexVar === 'react') {
-      re = new RegExp(/react(?![a-ik-z])(?!\s?native)/i);
-    }
+    let re = generateRegex(regexVar);
     if (regexVar === 'c') {
       let tempDescription = description;
       tempDescription = tempDescription.replace(/objective\sc|objective\-c|series\sc/ig, "");
@@ -219,6 +167,41 @@ function rankScore(dataPackage, description) {
     rankScore = rankScore*techUserKnows/rankTotal;
   }
   return {rankScore:rankScore, descriptionHasTech:descriptionHasTech};
+}
+
+function generateRegex(regexVar) {
+  let re;
+  if (regexVar === '.net') {
+    re = new RegExp(/[^a-z0-9]\.net[^a-z0-9]/i);
+  }
+  else if (regexVar === 'c++') {
+    re = new RegExp(/c\+\+/i);
+  }
+  else {
+    re = new RegExp('[^a-zA-Z0-9é]' + regexVar + '[^a-zA-Z0-9é&]', 'i');
+  }
+  if (regexVar === 'html') {
+    return new RegExp(/[^\.]html/i);
+  }
+  else if (regexVar === 'react native') {
+    return new RegExp(/react\s?native/i);
+  }
+  else if (regexVar === 'java') {
+    return new RegExp(/java(?!script)/i);
+  }
+  else if (regexVar === 'objective-c') {
+    return new RegExp(/(objective-c)|(objective\sc)/i);
+  }
+  else if (regexVar === 'node') {
+    return new RegExp(/([^a-zA-Z0-9é]node[^a-zA-Z0-9é&])|([^a-zA-Z0-9é]nodejs[^a-zA-Z0-9é&])/i);
+  }
+  else if (regexVar === 'javascript') {
+    return new RegExp(/([^a-zA-Z0-9é]javascript[^a-zA-Z0-9é&])|([^a-zA-Z0-9é\.]js[^a-zA-Z0-9é&])/i);
+  }
+  else if (regexVar === 'react') {
+    return new RegExp(/react(?![a-ik-z])(?!\s?native)/i);
+  }
+  return re;
 }
 
 function jobSort(listingData) {
@@ -297,13 +280,12 @@ app.post('/getresults', function(req, res) {
         githubData = data;
         for (let j = 0; j < githubData.length; j++) {
           let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 80}));
-          let postTimeObj = githubFormatTimePosted(githubData[j].created_at);
+          let formattedPostTime = githubHackerNewsFormatTimePosted(githubData[j].created_at);
           githubFormatted.push(
             {
               url: 'https://jobs.github.com/positions/' + githubData[j].id,
               title: githubData[j].title,
-              postTimeInMs: postTimeObj.postTimeInMs,
-              postTimeStr: postTimeObj.postTimeStr,
+              postTimeStr: formattedPostTime,
               location: githubData[j].location,
               type: githubData[j].type,
               descriptionHTML: githubData[j].description,
@@ -326,6 +308,8 @@ app.post('/getresults', function(req, res) {
       callback();
     }
   };
+
+
   var getHnData = function (callback) {
     if (dataPackage.checked.hackerNews) {
       var connection = mysql.createConnection({
@@ -343,7 +327,7 @@ app.post('/getresults', function(req, res) {
           hnFormatted = results.slice();
           hnFormatted.map(
             (listing, index) => {
-              hnFormatted[index].postTimeStr = hackerNewsFormatTimePosted(listing.postTimeInMs);
+              hnFormatted[index].postTimeStr = githubHackerNewsFormatTimePosted(listing.postTimeInMs);
               if (userCoordinates == "remote") {
                 let re = /remote/ig;
                 if (re.test(listing.type)) {
@@ -389,6 +373,8 @@ app.post('/getresults', function(req, res) {
       callback();
     }
   };
+
+
   var scrapeStackOverflowJobSearchPage = function (callback) {
     if (dataPackage.checked.stackOverflow) {
       const options = {
