@@ -5,6 +5,7 @@ import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
 var async = require('async');
 
+// removes white space on mobile
 function mobileStylingFn() {
   if (document.getElementById('content-lvl1').offsetWidth > window.innerWidth - 16) {
     document.body.style.background = "#9fc2c4";
