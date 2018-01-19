@@ -62,7 +62,7 @@ function githubHackerNewsFormatTimePosted(postTime) {
   let dateNow = new Date();
   let timeNow = dateNow.getTime();
   let relativePostTime;
-  if (isNaN(relativePostTime)) {
+  if (isNaN(postTime)) {
     relativePostTime = timeNow - Date.parse(postTime)
   }
   else {

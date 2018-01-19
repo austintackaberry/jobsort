@@ -44,7 +44,7 @@ class Checkboxes extends Component {
                   <label htmlFor="hn-checkbox">hacker news: who's hiring</label>
                 </div>
                 <div className="checkbox">
-                  <input id="so-checkbox" type="checkbox" /*disabled="disabled"*/ onChange={this.handleCheckboxChange}/>
+                  <input id="so-checkbox" type="checkbox" disabled="disabled" onChange={this.handleCheckboxChange}/>
                   <label htmlFor="so-checkbox">stack overflow</label>
                 </div>
                 <div className="checkbox">
