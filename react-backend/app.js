@@ -229,10 +229,10 @@ app.post('/getresults', function(req, res) {
   var hnFormatted = [];
 
   var getUserCoordinates = function (callback) {
-    if (dataPackage.jobLocation) {
+    if (dataPackage.userLocation) {
       let re = /remote/ig;
-      if (!re.test(dataPackage.jobLocation)) {
-        let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + dataPackage.jobLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
+      if (!re.test(dataPackage.userLocation)) {
+        let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + dataPackage.userLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
         fetch(url, {
           method: 'GET'
         })
@@ -268,7 +268,7 @@ app.post('/getresults', function(req, res) {
   var githubAPI = function (callback) {
     if (dataPackage.checked.github) {
       var githubData = {};
-      var url = "https://jobs.github.com/positions.json?search=" + dataPackage.jobTitle + '&location=' + dataPackage.jobLocation;
+      var url = "https://jobs.github.com/positions.json?search=" + dataPackage.jobTitle + '&location=' + dataPackage.userLocation;
       fetch(url, {
         method: 'GET'
       })
@@ -378,7 +378,7 @@ app.post('/getresults', function(req, res) {
   var scrapeStackOverflowJobSearchPage = function (callback) {
     if (dataPackage.checked.stackOverflow) {
       const options = {
-        uri: 'https://stackoverflow.com/jobs?q=' + dataPackage.jobTitle + '&l=' + dataPackage.jobLocation + '&d=20&u=Miles&sort=i',
+        uri: 'https://stackoverflow.com/jobs?q=' + dataPackage.jobTitle + '&l=' + dataPackage.userLocation + '&d=20&u=Miles&sort=i',
         transform: (body) => {return cheerio.load(body);}
       };
       rp(options)

@@ -9,7 +9,7 @@ class UserInput extends Component {
 
     this.state = {
       jobTitle: '',
-      jobLocation: '',
+      userLocation: '',
       checked: {
         github:true,
         stackOverflow:false,
@@ -19,7 +19,8 @@ class UserInput extends Component {
       allTechs: ['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'],
     };
     this.state.allTechs.sort();
-    this.handleJobTitleLocationChange = this.handleJobTitleLocationChange.bind(this);
+    this.handleJobTitleChange = this.handleJobTitleChange.bind(this);
+    this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleTechnologyChange = this.handleTechnologyChange.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
@@ -29,8 +30,12 @@ class UserInput extends Component {
     this.setState({userTechnologies:userTechnologies});
   }
 
-  handleJobTitleLocationChange(jobTitleLocation) {
-    this.setState({jobTitle:jobTitleLocation.jobTitle, jobLocation:jobTitleLocation.jobLocation});
+  handleJobTitleChange(jobTitle) {
+    this.setState({jobTitle:jobTitle});
+  }
+
+  handleUserLocationChange(userLocation) {
+    this.setState({userLocation:userLocation});
   }
 
   handleCheckboxChange(checked) {
@@ -47,7 +52,7 @@ class UserInput extends Component {
 
     const userInputData = {
       jobTitle: this.state.jobTitle,
-      jobLocation: this.state.jobLocation,
+      userLocation: this.state.userLocation,
       userTechnologies: userTechnologies,
       allTechs: allTechs,
       checked: this.state.checked
@@ -87,7 +92,8 @@ class UserInput extends Component {
     return (
       <div>
         <JobTitleLocation
-          onChange={(jobTitleLocation) => this.handleJobTitleLocationChange(jobTitleLocation)}
+          onJobTitleChange={(jobTitle) => this.handleJobTitleChange(jobTitle)}
+          onUserLocationChange={(userLocation) => this.handleUserLocationChange(userLocation)}
         />
         <Checkboxes
           onChange={(checked) => this.handleCheckboxChange(checked)}

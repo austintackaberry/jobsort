@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
+import JobTitle from './JobTitle.js';
+import UserLocation from './UserLocation.js';
 
 class JobTitleLocation extends Component {
 
   constructor() {
     super();
-    this.handleJobTitleLocationChange = this.handleJobTitleLocationChange.bind(this);
+    this.handleJobTitleChange = this.handleJobTitleChange.bind(this);
+    this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
   }
 
-  handleJobTitleLocationChange(event) {
-    var jobTitle = this.refs.jobTitle.value;
-    var jobLocation = this.refs.jobLocation.value;
-    event.preventDefault();
-    this.props.onChange({jobTitle:jobTitle, jobLocation:jobLocation})
+  handleUserLocationChange(userLocation) {
+    this.props.onUserLocationChange(userLocation);
+  }
+
+  handleJobTitleChange(jobTitle) {
+    this.props.onJobTitleChange(jobTitle);
   }
 
   render() {
@@ -22,8 +26,8 @@ class JobTitleLocation extends Component {
         </h3>
         <div>
           <form>
-            <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleJobTitleLocationChange}/>
-            <input id="userJobLocation" className="textbox" data-lpignore='true' placeholder="location" ref="jobLocation" onChange={this.handleJobTitleLocationChange}/>
+            <JobTitle onChange={(jobTitle) => this.handleJobTitleChange(jobTitle)} />
+            <UserLocation onChange={(userLocation) => this.handleUserLocationChange(userLocation)} />
           </form>
         </div>
       </div>
