@@ -4,6 +4,7 @@
     "travis": "cd react-backend && npm install && cd client && npm install",
     "build": "cd react-backend/client && npm run build",
     "test": "cd react-backend/client && npm run test",
+    "coverage": "cd react-backend/client && npm run coverage",
     "coveralls": "cd react-backend/client && npm run coveralls"
   },
   "dependencies": {
