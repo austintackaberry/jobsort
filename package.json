@@ -3,7 +3,8 @@
     "start": "cd react-backend && npm install && npm start",
     "travis": "cd react-backend && npm install && cd client && npm install",
     "build": "cd react-backend/client && npm run build",
-    "test": "cd react-backend/client && npm run test"
+    "test": "cd react-backend/client && npm run test",
+    "coveralls": "cd react-backend/client && npm run coveralls"
   },
   "dependencies": {
     "node-fetch": "^1.7.3"
