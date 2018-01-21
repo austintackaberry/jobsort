@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "cd react-backend && npm install && npm start",
-    "travis": "cd react-backend && npm install",
+    "travis": "cd react-backend && npm install && cd client && npm install",
     "build": "cd react-backend/client && npm run build",
     "test": "cd react-backend/client && npm run test"
   },
