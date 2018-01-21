@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class JobTitle extends Component {
-
+  /* istanbul ignore next */
   constructor() {
     super();
     this.handleJobTitleChange = this.handleJobTitleChange.bind(this);

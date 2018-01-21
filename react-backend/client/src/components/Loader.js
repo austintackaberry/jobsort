@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 class Loader extends Component {
+  /* istanbul ignore next */
   constructor() {
     super();
     this.state = {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 class JobListing extends Component {
+  /* istanbul ignore next */
   constructor() {
     super()
     this.state = {

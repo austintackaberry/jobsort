@@ -4,6 +4,7 @@ import Checkboxes from './Checkboxes.js';
 import InputTechnologies from './InputTechnologies.js';
 
 class UserInput extends Component {
+  /* istanbul ignore next */
   constructor() {
     super();
 

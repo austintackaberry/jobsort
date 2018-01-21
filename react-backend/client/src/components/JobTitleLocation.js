@@ -3,7 +3,7 @@ import JobTitle from './JobTitle.js';
 import UserLocation from './UserLocation.js';
 
 class JobTitleLocation extends Component {
-
+  /* istanbul ignore next */
   constructor() {
     super();
     this.handleJobTitleChange = this.handleJobTitleChange.bind(this);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 class Checkboxes extends Component {
+  /* istanbul ignore next */
   constructor() {
     super();
     this.state = {

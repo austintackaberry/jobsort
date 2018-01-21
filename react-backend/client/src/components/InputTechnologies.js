@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class InputTechnologies extends Component {
-
+  /* istanbul ignore next */
   constructor() {
     super();
 

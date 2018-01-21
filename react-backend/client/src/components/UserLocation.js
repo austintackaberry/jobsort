@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class UserLocation extends Component {
-
+  /* istanbul ignore next */
   constructor() {
     super();
     this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
