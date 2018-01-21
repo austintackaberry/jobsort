@@ -22,7 +22,7 @@ function mobileStylingFn() {
 
 
 class App extends Component {
-
+  /* istanbul ignore next */
   constructor() {
     super();
     this.state = {

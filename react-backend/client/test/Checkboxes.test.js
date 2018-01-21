@@ -14,16 +14,19 @@ describe('(Component) Checkboxes', () => {
   const handleCheckboxChangeSpy = sinon.spy(Checkboxes.prototype, "handleCheckboxChange");
 
   it('should execute handleCheckboxChange callback on hacker news checkbox change', () => {
+    onChange.reset();
     wrapper.find('#hn-checkbox').simulate('change', {target: {checked: false, id: "hn-checkbox"}});
     expect(handleCheckboxChangeSpy.calledOnce);
   });
 
   it('should trigger onChange callback on hacker news checkbox change', () => {
+    onChange.reset();
     wrapper.find('#hn-checkbox').simulate('change', {target: {checked: false, id: "hn-checkbox"}});
     expect(onChange.calledOnce);
   });
 
   it('should update this.state.checked.hackerNews on hacker news checkbox change', () => {
+    onChange.reset();
     wrapper.find('#hn-checkbox').simulate('change', {target: {checked: false, id: "hn-checkbox"}});
     expect(wrapper.state('checked').hackerNews).to.equal(false);
     wrapper.find('#hn-checkbox').simulate('change', {target: {checked: true, id: "hn-checkbox"}});
@@ -31,16 +34,24 @@ describe('(Component) Checkboxes', () => {
   });
 
   it('should execute handleCheckboxChange callback on stack overflow checkbox change', () => {
+    onChange.reset();
     wrapper.find('#so-checkbox').simulate('change', {target: {checked: false, id: "so-checkbox"}});
     expect(handleCheckboxChangeSpy.calledOnce);
   });
 
   it('should trigger onChange callback on stack overflow checkbox change', () => {
+    onChange.reset();
     wrapper.find('#so-checkbox').simulate('change', {target: {checked: false, id: "so-checkbox"}});
     expect(onChange.calledOnce);
   });
+  it('should not call onChange if id is not hn, so, or gh', () => {
+    onChange.reset();
+    wrapper.find('#so-checkbox').simulate('change', {target: {checked: false, id: "blue-monkey"}});
+    expect(onChange.called).to.be.false;
+  });
 
   it('should update this.state.checked.stackOverflow on stack overflow checkbox change', () => {
+    onChange.reset();
     wrapper.find('#so-checkbox').simulate('change', {target: {checked: false, id: "so-checkbox"}});
     expect(wrapper.state('checked').stackOverflow).to.equal(false);
     wrapper.find('#so-checkbox').simulate('change', {target: {checked: true, id: "so-checkbox"}});
@@ -48,16 +59,19 @@ describe('(Component) Checkboxes', () => {
   });
 
   it('should execute handleCheckboxChange callback on github checkbox change', () => {
+    onChange.reset();
     wrapper.find('#gh-checkbox').simulate('change', {target: {checked: false, id: "gh-checkbox"}});
     expect(handleCheckboxChangeSpy.calledOnce);
   });
 
   it('should trigger onChange callback on github checkbox change', () => {
+    onChange.reset();
     wrapper.find('#gh-checkbox').simulate('change', {target: {checked: false, id: "gh-checkbox"}});
     expect(onChange.calledOnce);
   });
 
   it('should update this.state.checked.github on github checkbox change', () => {
+    onChange.reset();
     wrapper.find('#gh-checkbox').simulate('change', {target: {checked: false, id: "gh-checkbox"}});
     expect(wrapper.state('checked').github).to.equal(false);
     wrapper.find('#gh-checkbox').simulate('change', {target: {checked: true, id: "gh-checkbox"}});

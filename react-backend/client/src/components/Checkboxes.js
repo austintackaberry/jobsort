@@ -26,6 +26,7 @@ class Checkboxes extends Component {
     else if (event.target.id === "so-checkbox") {
       jobBoard = "stackOverflow";
     }
+    else {return 0;}
     checked[jobBoard] = event.target.checked;
     this.setState({checked:checked});
     this.props.onChange(checked);
