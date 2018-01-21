@@ -8,13 +8,13 @@ class JobTitle extends Component {
   }
 
   handleJobTitleChange(event) {
-    const jobTitle = this.refs.jobTitle.value;
+    const jobTitle = event.target.value;
     this.props.onChange(jobTitle);
   }
 
   render() {
     return (
-      <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" ref="jobTitle" onChange={this.handleJobTitleChange}/>
+      <input id="userJobTitle" className="textbox" data-lpignore='true' placeholder="title" onChange={this.handleJobTitleChange}/>
     );
   }
 }
