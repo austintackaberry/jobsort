@@ -42,24 +42,11 @@ class App extends Component {
     this.unhideAll = this.unhideAll.bind(this);
     this.showFullDescriptions = this.showFullDescriptions.bind(this);
     this.showShortDescriptions = this.showShortDescriptions.bind(this);
-    this.filterListingData = this.filterListingData.bind(this);
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
     window.addEventListener("resize", mobileStylingFn);
     window.addEventListener("load", mobileStylingFn);
-  }
-
-  filterListingData(receivedListingData) {
-    let checked = this.state.checked;
-    let filteredListingData = [];
-    receivedListingData.map((listing) => {
-      if ((listing.source === "stackOverflow" && checked.stackOverflow) || (listing.source === "github" && checked.github) || (listing.source === "hackerNews" && checked.hackerNews))  {
-        filteredListingData.push(listing);
-      }
-      return true;
-    });
-    return filteredListingData;
   }
 
   getJobListings(userInputData) {
