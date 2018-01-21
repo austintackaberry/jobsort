@@ -57,6 +57,7 @@ class App extends Component {
       if ((listing.source === "stackOverflow" && checked.stackOverflow) || (listing.source === "github" && checked.github) || (listing.source === "hackerNews" && checked.hackerNews))  {
         filteredListingData.push(listing);
       }
+      return true;
     });
     return filteredListingData;
   }
@@ -133,6 +134,7 @@ class App extends Component {
         if (i + 1 < userInputData.userTechnologies.length) {
           userDataText = userDataText.concat(', ');
         }
+        return true;
       }
     );
     userDataText = userDataText.concat('}');
@@ -149,6 +151,7 @@ class App extends Component {
         <div id="content-lvl1">
           <div id="content-lvl2">
             <UserInput
+              allTechs={['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort()}
               onSubmit={(userInputData) => this.getJobListings(userInputData)}
             />
             <Loader

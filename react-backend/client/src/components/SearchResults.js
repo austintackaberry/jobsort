@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import JobListing from "./Listing.js";
+import JobListing from "./JobListing.js";
 
 class SearchResults extends Component {
 

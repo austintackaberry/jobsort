@@ -21,12 +21,14 @@ class JobListing extends Component {
       document.getElementById('show-short-descriptions').style.display = "inline-block";
     }
     this.setState({fullDescriptionVisible:!fullDescriptionVisible});
+    event.preventDefault();
   }
 
-  handleHideClick() {
+  handleHideClick(event) {
     let hidden = this.state.hidden;
     this.setState({hidden:!hidden});
     document.getElementById('unhide-all').style.display = "inline-block";
+    event.preventDefault();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -83,7 +85,7 @@ class JobListing extends Component {
     if (hidden) {return (null);}
     return (
       <div className="job-listing">
-        <button id="hide" href="javascript: void(0)" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>
+        <button id="hide" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>
         {source}
         {listing.url ? (
           <h4><a href={listing.url}>{listing.title}</a></h4>
@@ -95,7 +97,7 @@ class JobListing extends Component {
         <p className="listing-item">{listing.postTimeStr}</p>
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
-        <p className="listing-item">{text}<a href="javascript: void(0)" data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+        <p className="listing-item">{text}<a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
       </div>
     );
   }
