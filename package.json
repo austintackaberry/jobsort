@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "cd react-backend && npm install && npm start",
-    "build": "cd react-backend && cd client && npm run build",
+    "build": "cd react-backend/client && npm run build"
   },
   "dependencies": {
     "node-fetch": "^1.7.3"
