@@ -4,26 +4,40 @@ import { expect } from 'chai'
 import sinon from 'sinon'
 import SearchResults from '../src/components/SearchResults'
 
+const wrapper = shallow(
+  <SearchResults
+    updateListings={{
+      unhideAll: false,
+      showFullDescriptions: false,
+      showShortDescriptions: false
+    }}
+    jobListings={[]}
+  />
+);
 
 describe('(Component) SearchResults', () => {
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
   })
 
-  it('should display no results found if noResults', () => {
+  it('should display no results found if jobListings.length is zero', () => {
+    expect(wrapper.find('p').text()).to.equal("no results found");
+  });
+
+  it('should display results if jobListings.length is not zero', () => {
     const wrapper = shallow(
       <SearchResults
-        noResults={true}
         updateListings={{
           unhideAll: false,
           showFullDescriptions: false,
           showShortDescriptions: false
         }}
-        jobListings={[]}
+        jobListings={[1,2]}
       />
     );
-    wrapper.find('input').simulate('change', {target: {value: inputValue}})
-    expect(handleChangeSpy.calledOnce);
+    console.log(wrapper.find('p'));
+    expect(wrapper.find('p')).to.have.length(0);
+    expect(wrapper.find('div')).to.have.length(1);
   });
 
   // it('should execute onChange prop method on input change', () => {
