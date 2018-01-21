@@ -14,6 +14,6 @@ deploy:
   provider: pages
   skip_cleanup: true
   github_token: a026741700ccb51002daed89527b9bf16446fb8d
-  local_dir: build
+  local_dir: react-backend/client/build
   on:
     branch: master
