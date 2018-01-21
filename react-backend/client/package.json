@@ -50,6 +50,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "mocha --require ./testSetup.js --compilers babel-core/register ./test/*test.js",
+    "coverage": "mocha --require ./testSetup.js --compilers babel-core/register ./test/*test.js --coverage",
     "coveralls": "cat ./coverage/lcov.info | node node_modules/.bin/coveralls",
     "test:watch": "npm test -- -w"
   },
