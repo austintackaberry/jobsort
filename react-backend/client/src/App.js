@@ -64,12 +64,7 @@ class App extends Component {
 
   getJobListings(userInputData) {
     this.activateLoader(userInputData);
-    let newState = {receivedListingData:[], userInputData:userInputData};
-    if (this.state.noResults) {
-      newState.noResults = false;
-    }
-    this.setState({newState});
-
+    this.setState({receivedListingData:[], userInputData:userInputData, noResults: false});
     let receivedListingData;
     async.series([
       (callback) => {
@@ -84,9 +79,8 @@ class App extends Component {
         });
       },
       (callback) => {
-        let newState = {receivedListingData:receivedListingData, filteredListingData:receivedListingData, loaderActive: false};
-        newState.noResults = ((receivedListingData.length === 0) ? true : false);
-        this.setState(newState);
+        let noResults = ((receivedListingData.length === 0) ? true : false);
+        this.setState({receivedListingData:receivedListingData, filteredListingData:receivedListingData, loaderActive: false, noResults:noResults});
         callback();
       }
     ]);
