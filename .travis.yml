@@ -5,7 +5,7 @@ cache:
   directories:
   - node_modules
 script:
-  - npm start
+  - npm run travis
   - npm run test # Include coverage when running tests
   - npm run build
 after_script: # Upload coverage reports
