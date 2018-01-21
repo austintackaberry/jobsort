@@ -7,19 +7,24 @@ class InputTechnologies extends Component {
 
     this.state = {
       allTechsJSX: [],
-      userTechnologies: []
+      userTechnologies: [],
+      currentUserTechnology: '',
     }
+    this.handleUserInputTechnologyChange = this.handleUserInputTechnologyChange.bind(this);
     this.addTechnology = this.addTechnology.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
   }
 
+  handleUserInputTechnologyChange(event) {
+    this.setState({currentUserTechnology:event.target.value});
+  }
+
   addTechnology(event) {
-    let lastUserAddedTechnology = this.refs.userAddLang.value;
-    lastUserAddedTechnology = lastUserAddedTechnology.toLowerCase();
+    let lastUserAddedTechnology = this.state.currentUserTechnology.toLowerCase();
     let userTechnologies = this.state.userTechnologies.slice();
     let allTechs = this.props.allTechs.slice();
     if (!userTechnologies.some((element) => {return element.language === lastUserAddedTechnology}) && allTechs.includes(lastUserAddedTechnology)) {
-      document.getElementById('userLangInput').value ="";
+      this.refs.userLangInput.value ="";
       userTechnologies.push({language:lastUserAddedTechnology});
     }
     event.preventDefault();
@@ -43,7 +48,7 @@ class InputTechnologies extends Component {
       userTechnologiesJSX.push(
         <div className="user-lang-div">
           <button id={'langButt'+i} className="exit" onClick={this.removeTechnology}>&#10006;</button>
-          <span className="user-lang-span" onClick = {this.sendMsg}>{userTechnologies[i].language}</span>
+          <span className="user-lang-span">{userTechnologies[i].language}</span>
         </div>
       );
     }
@@ -65,8 +70,8 @@ class InputTechnologies extends Component {
           input technologies that you know
         </h3>
         <div style={{"marginTop":"7px"}}>
-          <form onSubmit={this.addTechnology}>
-            <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userAddLang"/>
+          <form onSubmit={(e) => this.addTechnology(e)}>
+            <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userLangInput" onChange={this.handleUserInputTechnologyChange}/>
             {allTechsJSX}
             <input type="submit" id="add" value="add" />
           </form>
