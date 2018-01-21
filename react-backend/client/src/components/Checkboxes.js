@@ -14,7 +14,7 @@ class Checkboxes extends Component {
   }
 
   handleCheckboxChange(event) {
-    var checked = this.state.checked;
+    let checked = this.state.checked;
     var jobBoard = "";
     if (event.target.id === "hn-checkbox") {
       jobBoard = "hackerNews";
@@ -26,10 +26,12 @@ class Checkboxes extends Component {
       jobBoard = "stackOverflow";
     }
     checked[jobBoard] = event.target.checked;
+    this.setState({checked:checked});
     this.props.onChange(checked);
   }
 
   render() {
+    const checked = this.state.checked;
     return (
       <div className="content-group">
         <h3 className="instructions">
@@ -40,15 +42,15 @@ class Checkboxes extends Component {
             <div id="checkbox-container">
               <div id="checkbox-group">
                 <div className="checkbox">
-                  <input id="hn-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                  <input id="hn-checkbox" type="checkbox" defaultChecked={checked.hackerNews} onChange={this.handleCheckboxChange}/>
                   <label htmlFor="hn-checkbox">hacker news: who's hiring</label>
                 </div>
                 <div className="checkbox">
-                  <input id="so-checkbox" type="checkbox" disabled="disabled" onChange={this.handleCheckboxChange}/>
+                  <input id="so-checkbox" type="checkbox" defaultChecked={checked.stackOverflow} disabled="disabled" onChange={this.handleCheckboxChange}/>
                   <label htmlFor="so-checkbox">stack overflow</label>
                 </div>
                 <div className="checkbox">
-                  <input id="gh-checkbox" type="checkbox" defaultChecked="true" onChange={this.handleCheckboxChange}/>
+                  <input id="gh-checkbox" type="checkbox" defaultChecked={checked.github} onChange={this.handleCheckboxChange}/>
                   <label htmlFor="gh-checkbox">github</label>
                 </div>
               </div>
