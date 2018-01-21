@@ -57,6 +57,7 @@ class App extends Component {
       if ((listing.source === "stackOverflow" && checked.stackOverflow) || (listing.source === "github" && checked.github) || (listing.source === "hackerNews" && checked.hackerNews))  {
         filteredListingData.push(listing);
       }
+      return true;
     });
     return filteredListingData;
   }
@@ -133,6 +134,7 @@ class App extends Component {
         if (i + 1 < userInputData.userTechnologies.length) {
           userDataText = userDataText.concat(', ');
         }
+        return true;
       }
     );
     userDataText = userDataText.concat('}');

@@ -43,7 +43,6 @@ class InputTechnologies extends Component {
   render() {
     var userTechnologies = this.state.userTechnologies.slice();
     var userTechnologiesJSX = [];
-    var userTechWeightsJSX = [];
     for (let i = 0; i < userTechnologies.length; i++) {
       userTechnologiesJSX.push(
         <div className="user-lang-div">
