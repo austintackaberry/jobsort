@@ -8,13 +8,13 @@ class UserLocation extends Component {
   }
 
   handleUserLocationChange(event) {
-    const userLocation = this.refs.userLocation.value;
+    const userLocation = event.target.value;
     this.props.onChange(userLocation);
   }
 
   render() {
     return (
-      <input id="userLocation" className="textbox" data-lpignore='true' placeholder="location" ref="userLocation" onChange={this.handleUserLocationChange}/>
+      <input id="userLocation" className="textbox" data-lpignore='true' placeholder="location" onChange={this.handleUserLocationChange}/>
     );
   }
 }
