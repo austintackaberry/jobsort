@@ -3,14 +3,8 @@ import JobListing from "./JobListing.js";
 
 class SearchResults extends Component {
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.jobListings.length > 0) {
-      document.getElementById('show-full-descriptions').style.display = "inline-block";
-    }
-  }
-
   render() {
-    if (this.props.noResults) {
+    if (this.props.jobListings.length === 0) {
       return (
         <p>no results found</p>
       );

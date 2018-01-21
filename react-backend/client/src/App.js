@@ -29,9 +29,7 @@ class App extends Component {
       userData: [],
       loaderActive: false,
       loaderText: "",
-      noResults: false,
       receivedListingData: [],
-      filteredListingData: [],
       updateListings: {
         unhideAll: false,
         showFullDescriptions: false,
@@ -51,7 +49,7 @@ class App extends Component {
 
   getJobListings(userInputData) {
     this.activateLoader(userInputData);
-    this.setState({receivedListingData:[], userInputData:userInputData, noResults: false});
+    this.setState({receivedListingData:[], userInputData:userInputData});
     let receivedListingData;
     async.series([
       (callback) => {
@@ -66,8 +64,10 @@ class App extends Component {
         });
       },
       (callback) => {
-        let noResults = ((receivedListingData.length === 0) ? true : false);
-        this.setState({receivedListingData:receivedListingData, filteredListingData:receivedListingData, loaderActive: false, noResults:noResults});
+        if (receivedListingData.length > 0) {
+          this.refs.showFullDescriptions.style.display = "inline-block";
+        }
+        this.setState({receivedListingData:receivedListingData, loaderActive: false});
         callback();
       }
     ]);
@@ -139,13 +139,12 @@ class App extends Component {
               loaderActive={this.state.loaderActive}
               loaderText={this.state.loaderText}
             />
-            <button className="listing-options show-full-descriptions" id="show-full-descriptions" style={{display:"none"}} onClick={this.showFullDescriptions}>show full descriptions</button>
+            <button className="listing-options show-full-descriptions" ref="showFullDescriptions" id="show-full-descriptions" style={{display:"none"}} onClick={this.showFullDescriptions}>show full descriptions</button>
             <button className="listing-options show-short-descriptions" id="show-short-descriptions" style={{display:"none"}} onClick={this.showShortDescriptions}>show short descriptions</button>
             <button className="listing-options unhide-all" id="unhide-all" style={{display:"none"}} onClick={this.unhideAll}>unhide all</button>
             <SearchResults
-              noResults={this.state.noResults}
               updateListings={this.state.updateListings}
-              jobListings={this.state.filteredListingData}
+              jobListings={this.state.receivedListingData}
             />
           </div>
         </div>
