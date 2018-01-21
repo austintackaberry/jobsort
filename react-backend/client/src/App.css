@@ -139,6 +139,8 @@ input::-webkit-calendar-picker-indicator {
 
 a {
   color: #286063;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 #job-board-checkbox-form {
