@@ -66,6 +66,9 @@ class App extends Component {
         if (receivedListingData.length > 0) {
           this.refs.showFullDescriptions.style.display = "inline-block";
         }
+        else {
+          receivedListingData[0] = "no results found";
+        }
         this.setState({receivedListingData:receivedListingData, loaderActive: false});
         callback();
       }

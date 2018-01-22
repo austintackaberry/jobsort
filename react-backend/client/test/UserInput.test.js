@@ -22,8 +22,6 @@ const mountWrapper = mount(
 );
 const testTechInputInAllTechs = "css";
 
-console.log(mountWrapper.debug());
-
 describe('(Component) UserInput', () => {
   it('renders...', () => {
     expect(wrapper).to.have.length(1);

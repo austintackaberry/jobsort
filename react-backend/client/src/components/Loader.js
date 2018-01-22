@@ -13,7 +13,7 @@ class Loader extends Component {
   componentDidUpdate() {
     let loaderActive = this.state.loaderActive;
     if (loaderActive) {
-      this.loaderEl.focus();
+      this.refs.loaderEl.focus();
     }
   }
 
@@ -48,7 +48,7 @@ class Loader extends Component {
     let loaderActive = this.state.loaderActive;
     if (loaderActive) {
       return (
-        <input id="loader" data-lpignore='true' readOnly="true" value={currentLoaderText} ref={(input) => { this.loaderEl = input; }} />
+        <input id="loader" data-lpignore='true' readOnly="true" value={currentLoaderText} ref="loaderEl" />
       );
     }
     return (null);

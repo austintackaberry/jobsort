@@ -11,7 +11,7 @@ const wrapper = shallow(
       showFullDescriptions: false,
       showShortDescriptions: false
     }}
-    jobListings={[]}
+    jobListings={["no results found"]}
   />
 );
 
@@ -20,7 +20,7 @@ describe('(Component) SearchResults', () => {
     expect(wrapper).to.have.length(1);
   })
 
-  it('should display no results found if jobListings.length is zero', () => {
+  it('should display no results found if jobListings[0] === "no results found"', () => {
     expect(wrapper.find('p').text()).to.equal("no results found");
   });
 

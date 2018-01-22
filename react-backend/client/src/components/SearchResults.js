@@ -4,7 +4,7 @@ import JobListing from "./JobListing.js";
 class SearchResults extends Component {
 
   render() {
-    if (this.props.jobListings.length === 0) {
+    if (this.props.jobListings[0] === "no results found") {
       return (
         <p>no results found</p>
       );
