@@ -40,18 +40,4 @@ describe('(Component) SearchResults', () => {
     expect(wrapper.find('div')).to.have.length(1);
   });
 
-  // it('should execute onChange prop method on input change', () => {
-  //   wrapper.find('input').simulate('change', {target: {value: inputValue}})
-  //   expect(onChange.calledOnce);
-  // });
-  //
-  // it('should have first arg of onChange be value of input', () => {
-  //   wrapper.find('input').simulate('change', {target: {value: inputValue}})
-  //   expect(onChange.args[0][0]).to.equal(inputValue);
-  // });
-  //
-  // it('should send one arg to onChange function', () => {
-  //   wrapper.find('input').simulate('change', {target: {value: inputValue}})
-  //   expect(onChange.args[0].length).to.equal(1);
-  // });
 });
