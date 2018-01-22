@@ -69,7 +69,7 @@ class InputTechnologies extends Component {
           input technologies that you know
         </h3>
         <div style={{"marginTop":"7px"}}>
-          <form onSubmit={(e) => this.addTechnology(e)}>
+          <form id="addTechnologyForm" onSubmit={(e) => this.addTechnology(e)}>
             <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userLangInput" onChange={this.handleUserInputTechnologyChange}/>
             {allTechsJSX}
             <input type="submit" id="add" value="add" />

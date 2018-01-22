@@ -100,7 +100,7 @@ class UserInput extends Component {
           allTechs={this.props.allTechs}
           onChange={(userTechnologies) => this.handleTechnologyChange(userTechnologies)}
         />
-        <form onSubmit={this.handleWeightsSubmit}>
+        <form id="weightsForm" onSubmit={(e) => this.handleWeightsSubmit(e)}>
           <div className="content-group">
             <h3 className="instructions">assign weights to each technology based on how well you know them</h3>
             <p>(a higher number means you are more familiar with that technology)</p>
