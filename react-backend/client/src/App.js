@@ -141,10 +141,10 @@ class App extends Component {
               loaderActive={this.state.loaderActive}
               loaderText={this.state.loaderText}
             />
-            <button className="listing-options show-full-descriptions" ref="showFullDescriptions" id="show-full-descriptions" style={{display:"none"}} onClick={this.showFullDescriptions}>show full descriptions</button>
-            <button className="listing-options show-short-descriptions" id="show-short-descriptions" style={{display:"none"}} onClick={this.showShortDescriptions}>show short descriptions</button>
-            <button className="listing-options unhide-all" id="unhide-all" style={{display:"none"}} onClick={this.unhideAll}>unhide all</button>
             <SearchResults
+              onShortDescriptionClick={this.showShortDescriptions}
+              onFullDescriptionClick={this.showFullDescriptions}
+              onUnhideAllClick={this.unhideAll}
               updateListings={this.state.updateListings}
               jobListings={this.state.receivedListingData}
             />

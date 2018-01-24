@@ -10,6 +10,9 @@ class SearchResults extends Component {
       );
     }
     return (
+      <button className="listing-options show-full-descriptions" ref="showFullDescriptions" id="show-full-descriptions" style={{display:"none"}} onClick={this.onFullDescriptionClick}>show full descriptions</button>
+      <button className="listing-options show-short-descriptions" id="show-short-descriptions" style={{display:"none"}} onClick={this.props.onShortDescriptionClick}>show short descriptions</button>
+      <button className="listing-options unhide-all" id="unhide-all" style={{display:"none"}} onClick={this.props.onUnhideAllClick}>unhide all</button>
       <div id="listing-container">
         {this.props.jobListings.map((listing, index) => <JobListing updateListings={this.props.updateListings} listing={listing} index={index}/>)}
       </div>
