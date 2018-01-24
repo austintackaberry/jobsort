@@ -10,7 +10,7 @@ class SearchResults extends Component {
       );
     }
     return (
-      <div>
+      <div id="search-results-container">
         {!this.props.updateListings.showFullDescriptions && <button className="listing-options show-full-descriptions" ref="showFullDescriptions" id="show-full-descriptions" onClick={() => this.props.onFullDescriptionClick()}>show full descriptions</button>}
         {!this.props.updateListings.showShortDescriptions && <button className="listing-options show-short-descriptions" id="show-short-descriptions" onClick={() => this.props.onShortDescriptionClick()}>show short descriptions</button>}
         {!this.props.updateListings.unhideAll && <button className="listing-options unhide-all" id="unhide-all" onClick={() => this.props.onUnhideAllClick()}>unhide all</button>}
@@ -22,6 +22,7 @@ class SearchResults extends Component {
                 listing={listing}
                 index={index}
                 onHideClick={() => this.props.onHideClick()}
+                descriptionClicked={(readMoreOrLess) => this.props.descriptionClicked(readMoreOrLess)}
               />
             )
           })}

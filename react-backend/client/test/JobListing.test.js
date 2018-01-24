@@ -29,10 +29,10 @@ const listing = {
   type: " Full-Time, Onsite ",
   url: "https://bitmex.com"
 };
-const updateListings = {
+let updateListings = {
   unhideAll: true,
   showFullDescriptions: false,
-  showShortDescriptions: false
+  showShortDescriptions: true
 };
 
 const wrapper = mount(
@@ -52,21 +52,27 @@ describe('(Component) JobListing', () => {
     wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
     expect(wrapper.find('.hacker-news')).to.have.length(1);
   });
-  //
-  // it('should display results if jobListings.length is not zero', () => {
-  //   const wrapper = shallow(
-  //     <SearchResults
-  //       updateListings={{
-  //         unhideAll: false,
-  //         showFullDescriptions: false,
-  //         showShortDescriptions: false
-  //       }}
-  //       jobListings={[1,2]}
-  //     />
-  //   );
-  //   console.log(wrapper.find('p'));
-  //   expect(wrapper.find('p')).to.have.length(0);
-  //   expect(wrapper.find('div')).to.have.length(1);
-  // });
+
+  it('should have stackOverflow class if the source is hackerNews', () => {
+    listing.source = "stackOverflow";
+    wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
+    expect(wrapper.find('.stack-overflow')).to.have.length(1);
+  });
+
+  it('should have stackOverflow class if the source is hackerNews', () => {
+    listing.source = "github";
+    wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
+    expect(wrapper.find('.github')).to.have.length(1);
+  });
+
+  it('should show full descriptions when showFullDescriptions is true', () => {
+    updateListings = {
+      unhideAll: true,
+      showFullDescriptions: true,
+      showShortDescriptions: false
+    };
+    wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
+    expect(wrapper.find('.full-description')).to.have.length(1);
+  })
 
 });

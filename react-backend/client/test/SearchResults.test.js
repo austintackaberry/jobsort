@@ -37,7 +37,7 @@ describe('(Component) SearchResults', () => {
     );
     console.log(wrapper.find('p'));
     expect(wrapper.find('p')).to.have.length(0);
-    expect(wrapper.find('div')).to.have.length(1);
+    expect(wrapper.find('#search-results-container')).to.have.length(1);
   });
 
 });

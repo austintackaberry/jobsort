@@ -37,6 +37,7 @@ class App extends Component {
       userInputData: {}
     };
     this.unhideAll = this.unhideAll.bind(this);
+    this.handleDescriptionClick = this.handleDescriptionClick.bind(this);
     this.showFullDescriptions = this.showFullDescriptions.bind(this);
     this.showShortDescriptions = this.showShortDescriptions.bind(this);
     this.activateLoader = this.activateLoader.bind(this);
@@ -80,6 +81,17 @@ class App extends Component {
   unhideAll() {
     let updateListings = this.state.updateListings;
     updateListings.unhideAll = true;
+    this.setState({updateListings: updateListings});
+  }
+
+  handleDescriptionClick(readMoreOrLess) {
+    let updateListings = this.state.updateListings;
+    if (readMoreOrLess === "read more") {
+      updateListings.showShortDescriptions = false;
+    }
+    else if (readMoreOrLess === "read less") {
+      updateListings.showFullDescriptions = false;
+    }
     this.setState({updateListings: updateListings});
   }
 
@@ -146,6 +158,7 @@ class App extends Component {
               updateListings={this.state.updateListings}
               jobListings={this.state.receivedListingData}
               onHideClick={this.onHideClick}
+              descriptionClicked={(readMoreOrLess) => this.handleDescriptionClick(readMoreOrLess)}
             />
           </div>
         </div>

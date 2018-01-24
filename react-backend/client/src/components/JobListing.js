@@ -16,10 +16,10 @@ class JobListing extends Component {
     let fullDescriptionVisible = this.state.fullDescriptionVisible;
     if (fullDescriptionVisible) {
       event.target.parentElement.parentElement.scrollIntoView(true);
-      document.getElementById('show-full-descriptions').style.display = "inline-block";
+      this.props.descriptionClicked('read less');
     }
     else {
-      document.getElementById('show-short-descriptions').style.display = "inline-block";
+      this.props.descriptionClicked('read more');
     }
     this.setState({fullDescriptionVisible:!fullDescriptionVisible});
     event.preventDefault();
@@ -58,16 +58,9 @@ class JobListing extends Component {
     let listing = this.props.listing;
     let hidden = this.state.hidden;
     let index = this.props.index;
-    let text;
-    if (fullDescriptionVisible) {
-      // text = listing.descriptionText;
-      text = <p dangerouslySetInnerHTML={{__html: listing.descriptionHTML}} />;
-    }
-    else {
-      text = listing.descriptionText.slice(0,200);
-      text = text.slice(0,text.lastIndexOf(" "));
-      text = text.concat('...');
-    }
+    let text = listing.descriptionText.slice(0,200);
+    text = text.slice(0,text.lastIndexOf(" "));
+    text = text.concat('...');
     let source;
     if (listing.source === 'hackerNews') {
       source = <span className="source hacker-news">hn who's hiring</span>;
@@ -93,7 +86,11 @@ class JobListing extends Component {
         <p className="listing-item">{listing.postTimeStr}</p>
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
-        <p className="listing-item">{text}<a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+        {fullDescriptionVisible ?
+          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionHTML}}></span><a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+        :
+          <p className="listing-item short-description">{text}<a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+        }
       </div>
     );
   }
