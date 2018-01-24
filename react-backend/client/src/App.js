@@ -30,9 +30,9 @@ class App extends Component {
       loaderText: "",
       receivedListingData: [],
       updateListings: {
-        unhideAll: false,
-        showFullDescriptions: false,
-        showShortDescriptions: false
+        unhideAll: true,
+        showFullDescriptions: true,
+        showShortDescriptions: true
       },
       userInputData: {}
     };
@@ -42,6 +42,7 @@ class App extends Component {
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
+    this.onHideClick = this.onHideClick.bind(this);
     window.addEventListener("resize", mobileStylingFn);
     window.addEventListener("load", mobileStylingFn);
   }
@@ -50,6 +51,7 @@ class App extends Component {
     this.activateLoader(userInputData);
     this.setState({receivedListingData:[], userInputData:userInputData});
     let receivedListingData;
+    let updateListings = this.state.updateListings;
     async.series([
       (callback) => {
         fetch('/getresults/', {
@@ -64,44 +66,40 @@ class App extends Component {
       },
       (callback) => {
         if (receivedListingData.length > 0) {
-          this.refs.showFullDescriptions.style.display = "inline-block";
+          updateListings.showFullDescriptions = false;
         }
         else {
           receivedListingData[0] = "no results found";
         }
-        this.setState({receivedListingData:receivedListingData, loaderActive: false});
+        this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
         callback();
       }
     ]);
   }
 
   unhideAll() {
-    this.setState({
-      updateListings: {
-        unhideAll: true,
-        showFullDescriptions: false,
-        showShortDescriptions: false
-      }
-    });
+    let updateListings = this.state.updateListings;
+    updateListings.unhideAll = true;
+    this.setState({updateListings: updateListings});
+  }
+
+  onHideClick() {
+    let updateListings = this.state.updateListings;
+    updateListings.unhideAll = false;
+    this.setState({updateListings: updateListings});
   }
 
   showFullDescriptions() {
-    this.setState({
-      updateListings: {
-        unhideAll: false,
-        showFullDescriptions: true,
-        showShortDescriptions: false
-      }
-    });
+    let updateListings = this.state.updateListings;
+    updateListings.showFullDescriptions = true;
+    updateListings.showShortDescriptions = false;
+    this.setState({updateListings: updateListings});
   }
   showShortDescriptions() {
-    this.setState({
-      updateListings: {
-        unhideAll: false,
-        showFullDescriptions: false,
-        showShortDescriptions: true
-      }
-    });
+    let updateListings = this.state.updateListings;
+    updateListings.showShortDescriptions = true;
+    updateListings.showFullDescriptions = false;
+    this.setState({updateListings: updateListings});
   }
 
   activateLoader(userInputData) {
@@ -147,6 +145,7 @@ class App extends Component {
               onUnhideAllClick={this.unhideAll}
               updateListings={this.state.updateListings}
               jobListings={this.state.receivedListingData}
+              onHideClick={this.onHideClick}
             />
           </div>
         </div>

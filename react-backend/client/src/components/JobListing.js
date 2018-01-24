@@ -28,7 +28,7 @@ class JobListing extends Component {
   handleHideClick(event) {
     let hidden = this.state.hidden;
     this.setState({hidden:!hidden});
-    document.getElementById('unhide-all').style.display = "inline-block";
+    this.props.onHideClick();
     event.preventDefault();
   }
 
@@ -40,21 +40,16 @@ class JobListing extends Component {
       if (hidden) {
         this.setState({hidden:false});
       }
-      document.getElementById('unhide-all').style.display = "none";
     }
-    else if (updateListings.showShortDescriptions) {
+    if (updateListings.showShortDescriptions) {
       if (fullDescriptionVisible) {
         this.setState({fullDescriptionVisible:false});
       }
-      document.getElementById('show-full-descriptions').style.display = "inline-block";
-      document.getElementById('show-short-descriptions').style.display = "none";
     }
-    else if (updateListings.showFullDescriptions) {
+    if (updateListings.showFullDescriptions) {
       if (!fullDescriptionVisible) {
         this.setState({fullDescriptionVisible: true});
       }
-      document.getElementById('show-full-descriptions').style.display = "none";
-      document.getElementById('show-short-descriptions').style.display = "inline-block";
     }
   }
 
