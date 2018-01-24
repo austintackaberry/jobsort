@@ -71,6 +71,9 @@ class JobListing extends Component {
     else if (listing.source === 'github') {
       source = <span className="source github">github</span>;
     }
+    else {
+      source = <span className="bad-source"></span>;
+    }
     if (hidden) {return (null);}
     return (
       <div className="job-listing">
@@ -87,9 +90,9 @@ class JobListing extends Component {
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
         {fullDescriptionVisible ?
-          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionHTML}}></span><a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionHTML}}></span><a className="read-less" data-value={index} onClick={this.handleDescriptionLengthToggle}>read less</a></p>
         :
-          <p className="listing-item short-description">{text}<a data-value={index} onClick={this.handleDescriptionLengthToggle}>read {fullDescriptionVisible ? 'less' : 'more'}</a></p>
+          <p className="listing-item short-description">{text}<a className="read-more" data-value={index} onClick={this.handleDescriptionLengthToggle}>read more</a></p>
         }
       </div>
     );
