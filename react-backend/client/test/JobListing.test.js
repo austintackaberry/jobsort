@@ -131,7 +131,8 @@ describe('(Component) JobListing', () => {
 
   it('should hide listing when X is clicked', () => {
     wrapper.setState({hidden:false});
-    wrapper.find('#hide').simulate('click');
+    console.log(wrapper.debug());
+    wrapper.find('.exit').simulate('click');
     expect(wrapper.find('.job-listing')).to.have.length(0);
   })
 

@@ -6,7 +6,7 @@ class SearchResults extends Component {
   render() {
     if (this.props.jobListings[0] === "no results found") {
       return (
-        <p>no results found</p>
+        <p id="no-results">no results found</p>
       );
     }
     return (
