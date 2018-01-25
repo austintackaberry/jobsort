@@ -106,7 +106,31 @@ describe('(Component) JobListing', () => {
     expect(wrapper.find('.job-listing')).to.have.length(1);
   })
 
+  it('should not change state.hidden if unhideAll is false', () => {
+    updateListings = {
+      unhideAll: false,
+      showFullDescriptions: false,
+      showShortDescriptions: true
+    };
+    wrapper.setState({hidden:true});
+    wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
+    expect(wrapper.state('hidden')).to.equal(true);
+  })
+
+  it('should not change state.fullDescriptionVisible if showFullDescriptions is true and full description is already visible', () => {
+    updateListings = {
+      unhideAll: false,
+      showFullDescriptions: true,
+      showShortDescriptions: false
+    };
+    wrapper.setState({fullDescriptionVisible:true});
+    const renderSpy = sinon.spy(JobListing.prototype, "render");
+    wrapper.setProps({updateListings:updateListings, listing:listing, index:index});
+    expect(renderSpy.calledOnce);
+  })
+
   it('should hide listing when X is clicked', () => {
+    wrapper.setState({hidden:false});
     wrapper.find('#hide').simulate('click');
     expect(wrapper.find('.job-listing')).to.have.length(0);
   })
@@ -121,6 +145,13 @@ describe('(Component) JobListing', () => {
     wrapper.setState({fullDescriptionVisible: true, hidden: false});
     wrapper.find('.read-less').simulate('click', {target: {parentElement: {parentElement:{scrollIntoView:sinon.spy()}}}});
     expect(descriptionClickedSpy.args[1][0]).to.equal('read less');
+  })
+
+  it('should not render listing title with an anchor tag if the listing has no url', () => {
+    let listingNoUrl = listing;
+    delete listingNoUrl.url;
+    wrapper.setProps({updateListings:updateListings, listing:listingNoUrl, index:index});
+    expect(wrapper.find('.listing-url')).to.have.length(0);
   })
 
 });

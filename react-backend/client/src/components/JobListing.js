@@ -80,7 +80,7 @@ class JobListing extends Component {
         <button id="hide" className="exit" data-value={index} onClick={this.handleHideClick}>&#10006;</button>
         {source}
         {listing.url ? (
-          <h4><a href={listing.url}>{listing.title}</a></h4>
+          <h4><a className="listing-url" href={listing.url}>{listing.title}</a></h4>
         ) : (
           <h4>{listing.title}</h4>
         )}
