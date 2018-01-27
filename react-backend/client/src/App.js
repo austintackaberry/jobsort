@@ -3,7 +3,6 @@ import './App.css';
 import SearchResults from './components/SearchResults.js';
 import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
-var async = require('async');
 
 function mobileStylingFn() {
   if (document.getElementById('content-lvl1').offsetWidth > window.innerWidth - 16) {
@@ -17,6 +16,15 @@ function mobileStylingFn() {
     document.getElementById("title-container").style.paddingBottom = "20px";
     document.getElementById('content-lvl1').style.border = "1px solid rgb(86, 138, 144)";
   }
+}
+
+async function asyncFetchData(userInputData) {
+  const fetchRes = await fetch('/getresults/', {
+    method: 'POST',
+    body: JSON.stringify(userInputData)
+  });
+  let response = await fetchRes.json();
+  return response;
 }
 
 
@@ -51,31 +59,19 @@ class App extends Component {
   getJobListings(userInputData) {
     this.activateLoader(userInputData);
     this.setState({receivedListingData:[], userInputData:userInputData});
-    let receivedListingData;
     let updateListings = this.state.updateListings;
-    async.series([
-      (callback) => {
-        fetch('/getresults/', {
-          method: 'POST',
-          body: JSON.stringify(userInputData)
-        }).then(function(res) {
-          return res.json();
-        }).then(function(response) {
-          receivedListingData = response.slice();
-          callback();
-        });
-      },
-      (callback) => {
-        if (receivedListingData.length > 0) {
-          updateListings.showFullDescriptions = false;
-        }
-        else {
-          receivedListingData[0] = "no results found";
-        }
-        this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
-        callback();
+    return asyncFetchData(userInputData).then((receivedListingData) => {
+      if (receivedListingData.length > 0) {
+        updateListings.showFullDescriptions = false;
       }
-    ]);
+      else {
+        receivedListingData[0] = "no results found";
+      }
+      console.log('receivedListingData is');
+      console.log(receivedListingData);
+      this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
+      return Promise.resolve(true);
+    });
   }
 
   unhideAll() {
@@ -145,7 +141,7 @@ class App extends Component {
           <div id="content-lvl2">
             <UserInput
               allTechs={['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort()}
-              onSubmit={(userInputData) => this.getJobListings(userInputData)}
+              onSubmit={(userInputData) => {this.getJobListings(userInputData).then((res)=>{return res})}}
             />
             <Loader
               loaderActive={this.state.loaderActive}

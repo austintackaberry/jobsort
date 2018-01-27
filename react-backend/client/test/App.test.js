@@ -43,15 +43,13 @@ function mockFetch(status, body) {
 
 describe('(Component) App', () => {
 
-
   beforeEach(() => {
-    sinon.stub(global, "fetch");
-    global.fetch.returns(mockFetch(200, jobListings));
+    sinon.stub(global, 'fetch');
   });
 
   afterEach(() => {
     global.fetch.restore();
-  })
+  });
 
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
@@ -77,11 +75,6 @@ describe('(Component) App', () => {
     expect(onHideClickSpy.calledOnce);
   });
 
-  it('calls getJobListings when user input is submitted', () => {
-    wrapper.find('UserInput').simulate('submit', userInputData);
-    expect(getJobListingsSpy.calledOnce);
-  });
-
   it('should update state.updateListings.showShortDescriptions to false when "read more" is arg to handleDescriptionClick', () => {
     wrapper.instance().handleDescriptionClick('read more');
     expect(wrapper.state('updateListings').showShortDescriptions).to.equal(false);
@@ -97,8 +90,34 @@ describe('(Component) App', () => {
     expect(wrapper.state('updateListings').unhideAll).to.equal(true);
   })
 
-  it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', () => {
-    mountWrapper.instance().getJobListings(userInputData);
-    expect(wrapper.state('receivedListingData')).to.have.length.above(1);
+  describe('test when results were received from /getresults', () => {
+    beforeEach(() => {
+      global.fetch.returns(mockFetch(200, jobListings));
+    });
+
+    it('calls getJobListings when user input is submitted', () => {
+      wrapper.find('UserInput').simulate('submit', userInputData);
+      expect(getJobListingsSpy.calledOnce);
+    });
+
+    // it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', () => {
+    //   wrapper.instance().getJobListings(userInputData);
+    //   console.log('state is ' + wrapper.state('receivedListingData'));
+    //   expect(wrapper.state('receivedListingData')).to.have.length.above(1);
+    // });
+  });
+
+  describe('test no results received from /getresults', () => {
+
+    beforeEach(() => {
+      global.fetch.returns(mockFetch(200, []));
+    });
+
+    it('should show no results if received data is []', async function() {
+      await wrapper.instance().getJobListings(userInputData);
+      console.log('state is');
+      console.log(wrapper.state('receivedListingData'));
+      expect(wrapper.state('receivedListingData')[0]).to.equal("no results found");
+    })
   })
 })
