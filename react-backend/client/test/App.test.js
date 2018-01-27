@@ -24,8 +24,35 @@ const handleDescriptionClickSpy = sinon.spy(App.prototype, "handleDescriptionCli
 const showShortDescriptionsSpy = sinon.spy(App.prototype, "showShortDescriptions");
 const showFullDescriptionsSpy = sinon.spy(App.prototype, "showFullDescriptions");
 const onHideClickSpy = sinon.spy(App.prototype, "onHideClick");
+let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];
+
+function mockFetch(status, body) {
+  const mockResponse = new global.Response(JSON.stringify(body), {
+    status: status,
+    headers: {
+      'Content-type': 'application/json'
+    }
+  });
+
+  if (status === 200) {
+    console.log('resolve');
+    return Promise.resolve(mockResponse);
+  }
+  return Promise.reject(mockResponse);
+}
 
 describe('(Component) App', () => {
+
+
+  beforeEach(() => {
+    sinon.stub(global, "fetch");
+    global.fetch.returns(mockFetch(200, jobListings));
+  });
+
+  afterEach(() => {
+    global.fetch.restore();
+  })
+
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
   });
@@ -70,9 +97,8 @@ describe('(Component) App', () => {
     expect(wrapper.state('updateListings').unhideAll).to.equal(true);
   })
 
-  // it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', () => {
-  //   mountWrapper.instance().getJobListings(userInputData);
-  //   console.log(mountWrapper.state());
-  //   expect(mountWrapper.state('receivedListingData').length).to.be.above(1);
-  // })
+  it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', () => {
+    mountWrapper.instance().getJobListings(userInputData);
+    expect(wrapper.state('receivedListingData')).to.have.length.above(1);
+  })
 })
