@@ -67,8 +67,6 @@ class App extends Component {
       else {
         receivedListingData[0] = "no results found";
       }
-      console.log('receivedListingData is');
-      console.log(receivedListingData);
       this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
       return Promise.resolve(true);
     });
@@ -134,7 +132,9 @@ class App extends Component {
     let titleContainerStyle;
     let contentLvl1Style;
     let appStyle;
+    console.log(window.innerWidth);
     if (window.innerWidth < 919) {
+      console.log('hey');
       appStyle = {background:"#9fc2c4"};
       titleContainerStyle = {paddingBottom: "0px"};
       contentLvl1Style = {border:"0", paddingTop:"7px"};

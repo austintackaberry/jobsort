@@ -35,7 +35,6 @@ function mockFetch(status, body) {
   });
 
   if (status === 200) {
-    console.log('resolve');
     return Promise.resolve(mockResponse);
   }
   return Promise.reject(mockResponse);
@@ -75,6 +74,12 @@ describe('(Component) App', () => {
     expect(onHideClickSpy.calledOnce);
   });
 
+  it('should have blue background in mobile', () => {
+    window.innerWidth = 700;
+    wrapper.setState();
+    expect(wrapper.find('.App').props().style.background).to.equal("#9fc2c4");
+  });
+
   it('should update state.updateListings.showShortDescriptions to false when "read more" is arg to handleDescriptionClick', () => {
     wrapper.instance().handleDescriptionClick('read more');
     expect(wrapper.state('updateListings').showShortDescriptions).to.equal(false);
@@ -100,11 +105,10 @@ describe('(Component) App', () => {
       expect(getJobListingsSpy.calledOnce);
     });
 
-    // it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', () => {
-    //   wrapper.instance().getJobListings(userInputData);
-    //   console.log('state is ' + wrapper.state('receivedListingData'));
-    //   expect(wrapper.state('receivedListingData')).to.have.length.above(1);
-    // });
+    it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', async function() {
+      await wrapper.instance().getJobListings(userInputData);
+      expect(wrapper.state('receivedListingData')).to.have.length.above(1);
+    });
   });
 
   describe('test no results received from /getresults', () => {
@@ -115,8 +119,6 @@ describe('(Component) App', () => {
 
     it('should show no results if received data is []', async function() {
       await wrapper.instance().getJobListings(userInputData);
-      console.log('state is');
-      console.log(wrapper.state('receivedListingData'));
       expect(wrapper.state('receivedListingData')[0]).to.equal("no results found");
     })
   })
