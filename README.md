@@ -8,16 +8,16 @@ jobSort() is a web application that asynchronously calls github jobs API, scrape
 
 In order to run a dev server on your local host, you will need to first install all the required npm packages.
 
-<npm install>
+`npm install`
   
 Next you will need to navigate to the client folder and execute:
 
-<cd job-sort/react-backend/client>
-<npm start>
+`cd job-sort/react-backend/client`
+`npm start`
   
 This will spin up a server on localhost:3000 for the frontend. Next you will need to open up an additional terminal and start up a server for the backend:
 
-<cd ..>
-<node app.js>
+`cd ..`
+`node app.js`
   
 Now you are all set up!
