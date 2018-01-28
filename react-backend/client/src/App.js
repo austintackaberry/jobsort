@@ -3,6 +3,7 @@ import './App.css';
 import SearchResults from './components/SearchResults.js';
 import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
+import "babel-polyfill";
 
 async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
