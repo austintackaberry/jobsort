@@ -24,3 +24,29 @@ This will spin up a server on localhost:3000 for the frontend. Next you will nee
 `node app.js`
   
 Now you are all set up!
+
+## Running the tests
+
+Tests were created using mocha, chai, enzyme, and sinon
+
+Running these tests is as easy as...
+
+`cd job-sort/react-backend/client`
+
+`npm run coverage`
+
+## Built With
+
+* React
+* Node
+* Cheerio
+* MySQL
+* AWS
+
+## Authors
+
+Austin Tackaberry
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details
