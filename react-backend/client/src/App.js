@@ -3,20 +3,6 @@ import './App.css';
 import SearchResults from './components/SearchResults.js';
 import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
-//
-// function mobileStylingFn() {
-//   if (document.getElementById('content-lvl1').offsetWidth > window.innerWidth - 16) {
-//     document.body.style.background = "#9fc2c4";
-//     document.getElementById("title-container").style.paddingBottom = "0px";
-//     document.getElementById('content-lvl1').style.border = "0";
-//     document.getElementById('content-lvl1').style.paddingTop = "7px";
-//   }
-//   else {
-//     document.body.style.background = "rgb(232, 236, 237)";
-//     document.getElementById("title-container").style.paddingBottom = "20px";
-//     document.getElementById('content-lvl1').style.border = "1px solid rgb(86, 138, 144)";
-//   }
-// }
 
 async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
