@@ -17,7 +17,7 @@ Next you will need to navigate to the client folder and execute:
 
 `npm start`
   
-This will spin up a server on localhost:3000 for the frontend. Next you will need to open up an additional terminal and start up a server for the backend:
+This will spin up a server on port 3000 for the frontend. Next you will need to open up an additional terminal and start up a server for the backend on port 3001:
 
 `cd ..`
 
@@ -38,7 +38,8 @@ Running these tests is as easy as...
 ## Built With
 
 * React
-* Node
+* Nodejs
+* Express
 * Cheerio
 * MySQL
 * AWS
