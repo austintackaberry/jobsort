@@ -10,10 +10,9 @@ async function asyncFetchData(userInputData) {
     method: 'POST',
     body: JSON.stringify(userInputData)
   });
-  let response = await fetchRes.json();
+  const response = await fetchRes.json();
   return response;
 }
-
 
 class App extends Component {
   /* istanbul ignore next */
@@ -39,8 +38,6 @@ class App extends Component {
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
     this.onHideClick = this.onHideClick.bind(this);
-    // window.addEventListener("resize", mobileStylingFn);
-    // window.addEventListener("load", mobileStylingFn);
   }
 
   getJobListings(userInputData) {
@@ -119,9 +116,7 @@ class App extends Component {
     let titleContainerStyle;
     let contentLvl1Style;
     let appStyle;
-    console.log(window.innerWidth);
     if (window.innerWidth < 919) {
-      console.log('hey');
       appStyle = {background:"#9fc2c4"};
       titleContainerStyle = {paddingBottom: "0px"};
       contentLvl1Style = {border:"0", paddingTop:"7px"};
