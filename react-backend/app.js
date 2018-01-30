@@ -58,7 +58,7 @@ function getHnDistance(userCoordinates, latitude, longitude) {
   return getDistanceInMilesFromUser(userCoordinates, jobCoordinates);
 }
 
-function githubHackerNewsFormatTimePosted(postTime) {
+function hackerNewsFormatTimePosted(postTime) {
   let dateNow = new Date();
   let timeNow = dateNow.getTime();
   let relativePostTime;
@@ -96,32 +96,6 @@ function githubHackerNewsFormatTimePosted(postTime) {
   let weeks = days/7;
   postTimeStr = Math.round(weeks) + "w ago";
   return postTimeStr;
-}
-
-function stackOverflowFormatTimePosted(postTimeStr) {
-  let timeArr = postTimeStr.split(' ');
-  let dateNow = new Date();
-  let timeNow = dateNow.getTime();
-  let postTime = timeNow;
-
-  if (timeArr[0].charAt(timeArr[0].length-1) === '<' && timeArr[1] === '1h') {
-    postTime -= timeArr[0]*60*60*1000;
-  }
-  else if (timeArr[0].charAt(timeArr[0].length-1) === 'h') {
-    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*60*60*1000;
-  }
-  else if (timeArr[0].charAt(timeArr[0].length-1) === 'd') {
-    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*24*60*60*1000;
-  }
-  else if (timeArr[0].charAt(timeArr[0].length-1) === 'w') {
-    postTime -= timeArr[0].slice(0,timeArr[0].length-1)*7*24*60*60*1000;
-  }
-
-  return postTime;
-}
-
-function generateRegex(re) {
-
 }
 
 function rankScore(dataPackage, description) {
@@ -214,120 +188,65 @@ function jobSort(listingData) {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static('client/build'));
 }
+
 app.post('/getresults', function(req, res) {
   console.log('getresults received request');
   var dataPackage = JSON.parse(req.body);
   var returnDataPackage = [];
-  var stackOverflowFormatted = [];
-  var asyncFns = [];
-  var asyncFns2 = [];
-  var asyncHnLocationFns = [];
-  asyncHnLocationFns.push()
-  var githubFormatted = [];
   var userCoordinates = {};
-  let asyncSoJobListingFns = [];
   var hnFormatted = [];
 
-  var getUserCoordinates = function (callback) {
-    if (dataPackage.userLocation) {
+  async function fetchGeocodeData(url) {
+    const fetchRes = await fetch(url, {
+      method: 'GET'
+    });
+    const response = fetchRes.json();
+    return response;
+  }
+
+  async function getUserCoordinates(userLocation) {
+    if (userLocation) {
       let re = /remote/ig;
-      if (!re.test(dataPackage.userLocation)) {
-        let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + dataPackage.userLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
-        fetch(url, {
-          method: 'GET'
-        })
-        .then(res => res.json())
-        .catch(e => {
-          console.log(e);
-        })
-        .then(data => {
-          if (!data.results[0]) {
-            console.log(data);
-            userCoordinates = false;
-          }
-          else {
-            userCoordinates = data.results[0].geometry.location;
-          }
-          callback();
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      if (!re.test(userLocation)) {
+        let url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + userLocation + "&key=AIzaSyAFco2ZmRw5uysFTC4Eck6zXdltYMwb4jk";
+        const data = await fetchGeocodeData(url);
+        if (!data.results[0]) {
+          console.log(data);
+          userCoordinates = false;
+        }
+        else {
+          userCoordinates = data.results[0].geometry.location;
+        }
+        return Promise.resolve(userCoordinates)
       }
       else {
-        userCoordinates = 'remote';
-        callback();
+        return Promise.resolve('remote');
       }
     }
     else {
-      userCoordinates = false;
-      callback();
+      return Promise.resolve(false);
     }
   };
 
-  var githubAPI = function (callback) {
-    if (dataPackage.checked.github) {
-      var githubData = {};
-      var url = "https://jobs.github.com/positions.json?search=" + dataPackage.jobTitle + '&location=' + dataPackage.userLocation;
-      fetch(url, {
-        method: 'GET'
-      })
-      .then(res => res.json())
-      .catch(e => {
-        console.log(e);
-      })
-      .then(data => {
-        githubData = data;
-        for (let j = 0; j < githubData.length; j++) {
-          let rankScoreObj = rankScore(dataPackage, htmlToText.fromString(githubData[j].description, {wordwrap: 80}));
-          let formattedPostTime = githubHackerNewsFormatTimePosted(githubData[j].created_at);
-          githubFormatted.push(
-            {
-              url: 'https://jobs.github.com/positions/' + githubData[j].id,
-              title: githubData[j].title,
-              postTimeStr: formattedPostTime,
-              location: githubData[j].location,
-              type: githubData[j].type,
-              descriptionHTML: githubData[j].description,
-              descriptionText: htmlToText.fromString(githubData[j].description, {wordwrap: 80}),
-              descriptionHasTech: rankScoreObj.descriptionHasTech,
-              source: "github",
-              rankScore: rankScoreObj.rankScore,
-              readMore: false,
-              hidden: false
-            }
-          );
-        }
-        callback();
-      })
-      .catch(e => {
-        console.log(e);
-      });
-    }
-    else {
-      callback();
-    }
-  };
+  const getHnData = (userCoordinates) => {
 
-
-  var getHnData = function (callback) {
-    if (dataPackage.checked.hackerNews) {
-      var connection = mysql.createConnection({
-          host: 'austintackaberry-jobsort.c3tu2houar8w.us-west-1.rds.amazonaws.com',
-          user: 'austintackaberry',
-          password: process.env.MYSQL_PASSWORD,
-          database: 'jobsortdb',
-          port: 3306,          //port mysql
-          charset: "utf8mb4"
+    return new Promise(function(resolve, reject) {
+      const connection = mysql.createConnection({
+        host: 'austintackaberry-jobsort.c3tu2houar8w.us-west-1.rds.amazonaws.com',
+        user: 'austintackaberry',
+        password: process.env.MYSQL_PASSWORD,
+        database: 'jobsortdb',
+        port: 3306,          //port mysql
+        charset: "utf8mb4"
       });
-      let queryString = "SELECT * FROM `hackerNewsListings`";
+      const queryString = "SELECT * FROM `hackerNewsListings`";
       connection.query(queryString, function (error, results, fields) {
         if (!error) {
           console.log('success!');
           hnFormatted = results.slice();
           hnFormatted.map(
             (listing, index) => {
-              hnFormatted[index].postTimeStr = githubHackerNewsFormatTimePosted(listing.postTimeInMs);
+              hnFormatted[index].postTimeStr = hackerNewsFormatTimePosted(listing.postTimeInMs);
               if (userCoordinates == "remote") {
                 let re = /remote/ig;
                 if (re.test(listing.type)) {
@@ -361,109 +280,38 @@ app.post('/getresults', function(req, res) {
               hnFormatted[index].descriptionHasTech = rankScoreObj.descriptionHasTech;
             }
           );
-          callback();
+          resolve(hnFormatted);
         }
         else {
           console.log("Query Error: "+error);
+          reject(error);
         }
       });
       connection.end();
-    }
-    else {
-      callback();
-    }
+    })
   };
 
-
-  var scrapeStackOverflowJobSearchPage = function (callback) {
-    if (dataPackage.checked.stackOverflow) {
-      const options = {
-        uri: 'https://stackoverflow.com/jobs?q=' + dataPackage.jobTitle + '&l=' + dataPackage.userLocation + '&d=20&u=Miles&sort=i',
-        transform: (body) => {return cheerio.load(body);}
-      };
-      rp(options)
-      .then(($) => {
-        $('.-job-item').each(function(index, value) {
-          let stackOverflowJobListingFn = (callback) => {
-            stackOverflowFormatted.push({});
-            let postTimeStr = $(this).find('.-posted-date.g-col').text();
-            stackOverflowFormatted[index].postTimeinMs = stackOverflowFormatTimePosted(postTimeStr);
-            stackOverflowFormatted[index].postTimeStr = postTimeStr.trim();
-            var url = 'https://stackoverflow.com/jobs/' + $(this).attr('data-jobid');
-            const options = {
-              uri: url,
-              transform: (body) => {return cheerio.load(body);}
-            };
-            rp(options)
-            .then(($) => {
-              let rankScoreObj = rankScore(dataPackage, $('div.description').text());
-              stackOverflowFormatted[index].title = $('a.title.job-link').attr('title');
-              stackOverflowFormatted[index].companyName = $('a.employer').text();
-              stackOverflowFormatted[index].location = $('div.-location').first().text().trim().replace("- \n","");
-              stackOverflowFormatted[index].url = url;
-              stackOverflowFormatted[index].readMore = false;
-              stackOverflowFormatted[index].hidden = false;
-              stackOverflowFormatted[index].source = "stackOverflow";
-              stackOverflowFormatted[index].descriptionHTML = $('div.description').html();
-              stackOverflowFormatted[index].descriptionText = $('div.description').text();
-              stackOverflowFormatted[index].rankScore = rankScoreObj.rankScore;
-              stackOverflowFormatted[index].descriptionHasTech = rankScoreObj.descriptionHasTech;
-              callback();
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-          }
-          asyncSoJobListingFns.push(stackOverflowJobListingFn);
-        });
-        async.parallel(asyncSoJobListingFns, function(err, results) {
-          callback();
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }
-    else {
-      callback();
-    }
+  async function getAsyncData() {
+    const userCoordinates = await getUserCoordinates(dataPackage.userLocation);
+    const hnFormatted = await getHnData(userCoordinates);
+    return Promise.resolve({hnFormatted:hnFormatted, userCoordinates:userCoordinates});
   }
 
-  var hackerNewsTrack = function(callback2) {
-    async.series(
-      [
-        getUserCoordinates,
-        getHnData
-      ],
-      function(err, results) {
-        callback2();
-      }
-    );
-  }
-
-  async.parallel(
-    [
-      hackerNewsTrack,
-      githubAPI,
-      scrapeStackOverflowJobSearchPage
-    ],
-    function(err, results) {
-      let i = 0;
-      if (userCoordinates) {
-        while (i < hnFormatted.length) {
-          if (!hnFormatted[i].distance) {
-            hnFormatted.splice(i, 1);
-          }
-          else {
-            i++;
-          }
+  getAsyncData().then((results) => {
+    let i = 0;
+    if (results.userCoordinates) {
+      while (i < results.hnFormatted.length) {
+        if (!results.hnFormatted[i].distance) {
+          results.hnFormatted.splice(i, 1);
+        }
+        else {
+          i++;
         }
       }
-      returnDataPackage = returnDataPackage.concat(hnFormatted.concat(githubFormatted.concat(stackOverflowFormatted)));
-      returnDataPackage = jobSort(returnDataPackage);
-      res.send(returnDataPackage);
     }
-  );
+    const returnDataPackage = jobSort(results.hnFormatted);
+    res.send(returnDataPackage);
+  });
 
 });
 

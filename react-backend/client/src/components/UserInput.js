@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import JobTitleLocation from './JobTitleLocation.js';
-import Checkboxes from './Checkboxes.js';
 import InputTechnologies from './InputTechnologies.js';
 
 class UserInput extends Component {
@@ -11,16 +10,10 @@ class UserInput extends Component {
     this.state = {
       jobTitle: '',
       userLocation: '',
-      checked: {
-        github:true,
-        stackOverflow:false,
-        hackerNews:true
-      },
       userTechnologies: []
     };
     this.handleJobTitleChange = this.handleJobTitleChange.bind(this);
     this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleTechnologyChange = this.handleTechnologyChange.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
   }
@@ -37,10 +30,6 @@ class UserInput extends Component {
     this.setState({userLocation:userLocation});
   }
 
-  handleCheckboxChange(checked) {
-    this.setState({checked:checked});
-  }
-
   handleWeightsSubmit(event) {
     var userTechnologies = this.state.userTechnologies.slice();
     for (let i = 0; i < userTechnologies.length; i++) {
@@ -53,7 +42,6 @@ class UserInput extends Component {
       userLocation: this.state.userLocation,
       userTechnologies: userTechnologies,
       allTechs: this.props.allTechs,
-      checked: this.state.checked
     };
     this.props.onSubmit(userInputData);
   }
@@ -92,9 +80,6 @@ class UserInput extends Component {
         <JobTitleLocation
           onJobTitleChange={(jobTitle) => this.handleJobTitleChange(jobTitle)}
           onUserLocationChange={(userLocation) => this.handleUserLocationChange(userLocation)}
-        />
-        <Checkboxes
-          onChange={(checked) => this.handleCheckboxChange(checked)}
         />
         <InputTechnologies
           allTechs={this.props.allTechs}
