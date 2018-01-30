@@ -34,12 +34,6 @@ describe('(Component) UserInput', () => {
     expect(onSubmit.calledOnce);
   });
 
-  it('should trigger handleCheckboxChange when Checkbox onChange prop fn is called', () => {
-    const handleCheckboxChangeSpy = sinon.spy(UserInput.prototype, 'handleCheckboxChange');
-    mountWrapper.find('#hn-checkbox').simulate('change', {target: {checked: false, id: "hn-checkbox"}});
-    expect(handleCheckboxChangeSpy.calledOnce);
-  });
-
   it('should trigger handleTechnologyChange to be called once when adding tech', () => {
     const handleTechnologyChangeSpy = sinon.spy(UserInput.prototype, 'handleTechnologyChange');
     mountWrapper.find('#userLangInput').simulate('change', {target: {value: testTechInputInAllTechs}});
