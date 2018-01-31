@@ -117,14 +117,14 @@ class App extends Component {
     let contentLvl1Style;
     let appStyle;
     if (window.innerWidth < 919) {
-      appStyle = {background:"#9fc2c4"};
+      appStyle = {background:"#a4a4a4"};
       titleContainerStyle = {paddingBottom: "0px"};
       contentLvl1Style = {border:"0", paddingTop:"7px"};
     }
     else {
       appStyle = {background:"rgb(232, 236, 237)"};
       titleContainerStyle = {paddingBottom:"20px"};
-      contentLvl1Style = {border:"1px solid rgb(86, 138, 144)", paddingTop:"7px"};
+      contentLvl1Style = {border:"1px solid rgb(128, 128, 128)", paddingTop:"7px"};
     }
 
     return (

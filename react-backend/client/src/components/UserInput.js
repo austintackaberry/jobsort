@@ -60,7 +60,7 @@ class UserInput extends Component {
       userTechWeightsJSX.push(
         <tr>
           <td className="table-col-lang">{userTechnologies[i].language}: </td>
-          <td><input data-lpignore='true' className="weight-input" type="number" ref={'langWeight'+i} /></td>
+          <td><input data-lpignore='true' className="weight-input textbox" type="number" ref={'langWeight'+i} /></td>
         </tr>
       );
     }
@@ -91,7 +91,7 @@ class UserInput extends Component {
             <p>(a higher number means you are more familiar with that technology)</p>
             {userTechWeightsJSX}
           </div>
-          <input type="submit" id="get-results" value="get results" />
+          <input type="submit" id="get-results" className="button" value="get results" />
         </form>
       </div>
     );
