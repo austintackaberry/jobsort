@@ -15,7 +15,11 @@ class JobListing extends Component {
   handleDescriptionLengthToggle(event) {
     let fullDescriptionVisible = this.state.fullDescriptionVisible;
     if (fullDescriptionVisible) {
-      event.target.parentElement.parentElement.scrollIntoView(true);
+      const listingEl = event.target.parentElement.parentElement;
+      const ListingElDistFromTop = listingEl.getBoundingClientRect().top;
+      if (ListingElDistFromTop < 0) {
+        listingEl.scrollIntoView({block: 'start',  behavior: 'smooth'});
+      }
       this.props.descriptionClicked('read less');
     }
     else {
