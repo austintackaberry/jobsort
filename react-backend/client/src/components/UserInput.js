@@ -8,11 +8,9 @@ class UserInput extends Component {
     super();
 
     this.state = {
-      jobTitle: '',
       userLocation: '',
       userTechnologies: []
     };
-    this.handleJobTitleChange = this.handleJobTitleChange.bind(this);
     this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
     this.handleTechnologyChange = this.handleTechnologyChange.bind(this);
     this.handleWeightsSubmit = this.handleWeightsSubmit.bind(this);
@@ -20,10 +18,6 @@ class UserInput extends Component {
 
   handleTechnologyChange(userTechnologies) {
     this.setState({userTechnologies:userTechnologies});
-  }
-
-  handleJobTitleChange(jobTitle) {
-    this.setState({jobTitle:jobTitle});
   }
 
   handleUserLocationChange(userLocation) {
@@ -38,7 +32,6 @@ class UserInput extends Component {
     event.preventDefault();
 
     const userInputData = {
-      jobTitle: this.state.jobTitle,
       userLocation: this.state.userLocation,
       userTechnologies: userTechnologies,
       allTechs: this.props.allTechs,
@@ -78,7 +71,6 @@ class UserInput extends Component {
     return (
       <div>
         <JobTitleLocation
-          onJobTitleChange={(jobTitle) => this.handleJobTitleChange(jobTitle)}
           onUserLocationChange={(userLocation) => this.handleUserLocationChange(userLocation)}
         />
         <InputTechnologies

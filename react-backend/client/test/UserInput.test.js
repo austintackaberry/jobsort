@@ -4,7 +4,6 @@ import { mount } from 'enzyme'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import UserInput from '../src/components/UserInput'
-import JobTitle from '../src/components/JobTitle'
 import UserLocation from '../src/components/UserLocation'
 
 const onSubmit = sinon.spy();
@@ -40,13 +39,6 @@ describe('(Component) UserInput', () => {
     const form = mountWrapper.find('#addTechnologyForm');
     mountWrapper.find('#addTechnologyForm').simulate('submit', form);
     expect(handleTechnologyChangeSpy.calledOnce);
-  });
-
-  it('should execute handleJobTitleChange onChange of JobTitle', () => {
-    const handleJobTitleChangeSpy = sinon.spy(UserInput.prototype, 'handleJobTitleChange');
-    const jobTitleValue = "web developer";
-    mountWrapper.find(JobTitle).simulate('change', jobTitleValue);
-    expect(handleJobTitleChangeSpy.calledOnce);
   });
 
   it('should execute handleUserLocationChange onChange of UserLocation', () => {

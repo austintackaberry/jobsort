@@ -108,11 +108,6 @@ input::-webkit-calendar-picker-indicator {
   border-radius: 50%;
 }
 
-#userJobTitle {
-  display: block;
-  margin: 0 auto;
-  margin-top: 10px;
-}
 #userJobLocation {
   display: block;
   margin: 0 auto;

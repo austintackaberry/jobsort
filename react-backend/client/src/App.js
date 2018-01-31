@@ -109,7 +109,7 @@ class App extends Component {
       }
     );
     userDataText = userDataText.concat('}');
-    return "jobSort({title: '" + userInputData.jobTitle + "', location: '" + userInputData.userLocation + "', technologies: " + userDataText + "});";
+    return "jobSort({location: '" + userInputData.userLocation + "', technologies: " + userDataText + "});";
   }
 
   render() {
