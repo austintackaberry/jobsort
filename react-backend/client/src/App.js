@@ -4,6 +4,9 @@ import SearchResults from './components/SearchResults.js';
 import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
 import "babel-polyfill";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actionCreators from './actions/actionCreators.js';
 
 async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
@@ -158,4 +161,16 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    showFullDescriptions: state.showFullDescriptions,
+    showShortDescriptions: state.showShortDescriptions,
+    unhideAll: state.unhideAll,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(actionCreators, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
