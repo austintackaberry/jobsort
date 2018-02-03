@@ -8,13 +8,21 @@ class UserLocation extends Component {
   }
 
   handleUserLocationChange(event) {
-    const userLocation = event.target.value;
-    this.props.onChange(userLocation);
+    this.props.onUserLocationChange(event.target.value);
   }
 
   render() {
     return (
-      <input id="userLocation" className="textbox" data-lpignore='true' placeholder="location" onChange={this.handleUserLocationChange}/>
+      <div className="content-group">
+        <h3 className="instructions">
+          input location or "remote"
+        </h3>
+        <div style={{marginTop:"7px"}}>
+          <form>
+            <input id="userLocation" className="textbox" data-lpignore='true' placeholder="location" onChange={this.handleUserLocationChange.bind(this)}/>
+          </form>
+        </div>
+      </div>
     );
   }
 }

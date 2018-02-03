@@ -4,6 +4,9 @@ import SearchResults from './components/SearchResults.js';
 import Loader from './components/Loader.js';
 import UserInput from './components/UserInput.js'
 import "babel-polyfill";
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as actionCreators from './actions/actionCreators.js';
 
 async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
@@ -19,82 +22,50 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      userData: [],
       loaderActive: false,
       loaderText: "",
-      receivedListingData: [],
-      updateListings: {
-        unhideAll: true,
-        showFullDescriptions: true,
-        showShortDescriptions: true
-      },
-      userInputData: {}
     };
-    this.unhideAll = this.unhideAll.bind(this);
-    this.handleDescriptionClick = this.handleDescriptionClick.bind(this);
-    this.showFullDescriptions = this.showFullDescriptions.bind(this);
-    this.showShortDescriptions = this.showShortDescriptions.bind(this);
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
-    this.onHideClick = this.onHideClick.bind(this);
+    this.allTechs=['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort();
   }
 
-  getJobListings(userInputData) {
+  getJobListings(event) {
+    event.preventDefault();
+    const userInputData = {
+      allTechs: this.allTechs,
+      userLocation: this.props.userLocation,
+      userTechnologies: [...this.props.userTechnologies]
+    }
     this.activateLoader(userInputData);
-    this.setState({receivedListingData:[], userInputData:userInputData});
-    let updateListings = this.state.updateListings;
-    return asyncFetchData(userInputData).then((receivedListingData) => {
-      if (receivedListingData.length > 0) {
-        updateListings.showFullDescriptions = false;
-      }
-      else {
-        receivedListingData[0] = "no results found";
-      }
-      this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
+    this.setState({userInputData:userInputData});
+    return asyncFetchData(userInputData).then((listings) => {
+      this.props.receivedJobListingResults(listings);
+      this.deactivateLoader();
       return Promise.resolve(true);
     });
   }
 
-  unhideAll() {
-    let updateListings = this.state.updateListings;
-    updateListings.unhideAll = true;
-    this.setState({updateListings: updateListings});
-  }
-
-  handleDescriptionClick(readMoreOrLess) {
-    let updateListings = this.state.updateListings;
-    if (readMoreOrLess === "read more") {
-      updateListings.showShortDescriptions = false;
-    }
-    else if (readMoreOrLess === "read less") {
-      updateListings.showFullDescriptions = false;
-    }
-    this.setState({updateListings: updateListings});
-  }
-
-  onHideClick() {
-    let updateListings = this.state.updateListings;
-    updateListings.unhideAll = false;
-    this.setState({updateListings: updateListings});
-  }
-
-  showFullDescriptions() {
-    let updateListings = this.state.updateListings;
-    updateListings.showFullDescriptions = true;
-    updateListings.showShortDescriptions = false;
-    this.setState({updateListings: updateListings});
-  }
-  showShortDescriptions() {
-    let updateListings = this.state.updateListings;
-    updateListings.showShortDescriptions = true;
-    updateListings.showFullDescriptions = false;
-    this.setState({updateListings: updateListings});
-  }
-
   activateLoader(userInputData) {
     let loaderText = this.generateLoaderText(userInputData);
-    this.setState({loaderText:loaderText, loaderActive: true});
+    this.props.activateLoader();
+    let loaderTextCopy = loaderText.split('');
+    let currentLoaderText = "";
+    let intervalFn = () => {
+      if (loaderTextCopy.length === 0) {
+        currentLoaderText = '';
+        loaderTextCopy = loaderText.split('');
+      }
+      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
+      this.props.setCurrentLoaderText(currentLoaderText);
+    };
+    this.loaderInterval = window.setInterval(intervalFn, 70);
+  }
+
+  deactivateLoader() {
+    window.clearInterval(this.loaderInterval);
+    this.props.deactivateLoader();
   }
 
   generateLoaderText(userInputData) {
@@ -135,19 +106,17 @@ class App extends Component {
         <div id="content-lvl1" style={contentLvl1Style}>
           <div id="content-lvl2">
             <UserInput
-              allTechs={['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort()}
-              onSubmit={(userInputData) => {this.getJobListings(userInputData).then((res)=>{return res})}}
+              onSubmit={(event) => {this.getJobListings(event).then((res)=>{return res})}}
+              allTechs={this.allTechs}
             />
             <Loader
-              loaderActive={this.state.loaderActive}
-              loaderText={this.state.loaderText}
+              currentLoaderText={this.props.currentLoaderText}
+              loaderActive={this.props.loaderActive}
             />
             <SearchResults
               onShortDescriptionClick={this.showShortDescriptions}
               onFullDescriptionClick={this.showFullDescriptions}
               onUnhideAllClick={this.unhideAll}
-              updateListings={this.state.updateListings}
-              jobListings={this.state.receivedListingData}
               onHideClick={this.onHideClick}
               descriptionClicked={(readMoreOrLess) => this.handleDescriptionClick(readMoreOrLess)}
             />
@@ -158,4 +127,21 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    showFullDescriptions: state.showFullDescriptions,
+    showShortDescriptions: state.showShortDescriptions,
+    listings: state.listings,
+    unhideAll: state.unhideAll,
+    userTechnologies: state.userTechnologies,
+    userLocation: state.userLocation,
+    loaderActive: state.loaderActive,
+    currentLoaderText: state.currentLoaderText
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(actionCreators, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
