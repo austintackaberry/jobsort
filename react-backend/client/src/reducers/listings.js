@@ -14,7 +14,7 @@ function listings(state = [], action) {
       return listings;
     }
     case 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       listings.map((listing) => {
         listing.descriptionShown = listing.descriptionHTML;
         listing.readMoreOrLess = 'read less';
@@ -23,7 +23,7 @@ function listings(state = [], action) {
       return listings;
     }
     case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       listings.map((listing) => {
         let text = listing.descriptionText.slice(0,200);
         text = text.slice(0,text.lastIndexOf(" "));
@@ -35,7 +35,7 @@ function listings(state = [], action) {
       return listings;
     }
     case 'UNHIDE_ALL_BUTTON_CLICKED' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       listings.map((listing) => {
         listing.hidden = false;
         return listing;
@@ -43,14 +43,14 @@ function listings(state = [], action) {
       return listings;
     }
     case 'READ_MORE_CLICKED' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       let listing = listings[action.index];
       listing.descriptionShown = listing.descriptionHTML;
       listing.readMoreOrLess = 'read less';
       return listings;
     }
     case 'READ_LESS_CLICKED' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       let listing = listings[action.index];
       let text = listing.descriptionText.slice(0,200);
       text = text.slice(0,text.lastIndexOf(" "));
@@ -60,7 +60,7 @@ function listings(state = [], action) {
       return listings;
     }
     case 'HIDE_LISTING' : {
-      let listings = action.listings.slice();
+      let listings = state.listings.slice();
       let listing = listings[action.index];
       listing.hidden = true;
       return listings;

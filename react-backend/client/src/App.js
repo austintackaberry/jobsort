@@ -24,14 +24,20 @@ class App extends Component {
     this.state = {
       loaderActive: false,
       loaderText: "",
-      userInputData: {}
     };
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
+    this.allTechs=['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort();
   }
 
-  getJobListings(userInputData) {
+  getJobListings(event) {
+    event.preventDefault();
+    const userInputData = {
+      allTechs: this.allTechs,
+      userLocation: this.props.userLocation,
+      userTechnologies: [...this.props.userTechnologies]
+    }
     this.activateLoader(userInputData);
     this.setState({userInputData:userInputData});
     return asyncFetchData(userInputData).then((listings) => {
@@ -84,8 +90,8 @@ class App extends Component {
         <div id="content-lvl1" style={contentLvl1Style}>
           <div id="content-lvl2">
             <UserInput
-              allTechs={['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort()}
-              onSubmit={(userInputData) => {this.getJobListings(userInputData).then((res)=>{return res})}}
+              onSubmit={(event) => {this.getJobListings(event).then((res)=>{return res})}}
+              allTechs={this.allTechs}
             />
             <Loader
               loaderActive={this.state.loaderActive}
@@ -111,6 +117,8 @@ function mapStateToProps(state) {
     showShortDescriptions: state.showShortDescriptions,
     listings: state.listings,
     unhideAll: state.unhideAll,
+    userTechnologies: state.userTechnologies,
+    userLocation: state.userLocation
   }
 }
 

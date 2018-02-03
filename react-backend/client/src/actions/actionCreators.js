@@ -6,47 +6,70 @@ export function receivedJobListingResults(listings) {
   }
 }
 
-export function showFullDescriptionsButtonClicked(listings) {
+export function showFullDescriptionsButtonClicked() {
   return {
-    type: 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED',
-    listings
+    type: 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED'
   }
 }
 
-export function showShortDescriptionsButtonClicked(listings) {
+export function showShortDescriptionsButtonClicked() {
   return {
-    type: 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED',
-    listings
+    type: 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED'
   }
 }
 
-export function unhideAllButtonClicked(listings) {
+export function unhideAllButtonClicked() {
   return {
-    type: 'UNHIDE_ALL_BUTTON_CLICKED',
-    listings
+    type: 'UNHIDE_ALL_BUTTON_CLICKED'
   }
 }
 
-export function readLessClicked(index, listings) {
+export function readLessClicked(index) {
   return {
     type: 'READ_LESS_CLICKED',
-    index,
-    listings
+    index
   }
 }
 
-export function readMoreClicked(index, listings) {
+export function readMoreClicked(index) {
   return {
     type: 'READ_MORE_CLICKED',
-    index,
-    listings
+    index
   }
 }
 
-export function hideListing(index, listings) {
+export function hideListing(index) {
   return {
     type: 'HIDE_LISTING',
+    index
+  }
+}
+
+export function addTechnology(technologyToAdd) {
+  return {
+    type: 'ADD_TECHNOLOGY',
+    technologyToAdd
+  }
+}
+
+export function removeTechnology(index) {
+  return {
+    type: 'REMOVE_TECHNOLOGY',
+    index
+  }
+}
+
+export function changeUserTechnologyWeight(index, event) {
+  return {
+    type: 'CHANGE_USER_TECHNOLOGY_WEIGHT',
+    weight: event.target.value,
     index,
-    listings
+  }
+}
+
+export function changeUserLocation(userLocation) {
+  return {
+    type: 'CHANGE_USER_LOCATION',
+    userLocation,
   }
 }

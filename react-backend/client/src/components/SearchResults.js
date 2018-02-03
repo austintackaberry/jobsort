@@ -27,9 +27,9 @@ class SearchResults extends Component {
   render() {
     return (
       <div id="search-results-container">
-        {this.props.showFullDescriptionsButtonVisible && <button className="listing-options show-full-descriptions button" ref="showFullDescriptions" id="show-full-descriptions" onClick={this.props.showFullDescriptionsButtonClicked.bind(null, this.props.listings)}>show full descriptions</button>}
-        {this.props.showShortDescriptionsButtonVisible && <button className="listing-options show-short-descriptions button" id="show-short-descriptions" onClick={this.props.showShortDescriptionsButtonClicked.bind(null, this.props.listings)}>show short descriptions</button>}
-        {this.props.unhideAllButtonVisible && <button className="listing-options unhide-all button" id="unhide-all" onClick={this.props.unhideAllButtonClicked.bind(null, this.props.listings)}>unhide all</button>}
+        {this.props.showFullDescriptionsButtonVisible && <button className="listing-options show-full-descriptions button" ref="showFullDescriptions" id="show-full-descriptions" onClick={this.props.showFullDescriptionsButtonClicked.bind(null)}>show full descriptions</button>}
+        {this.props.showShortDescriptionsButtonVisible && <button className="listing-options show-short-descriptions button" id="show-short-descriptions" onClick={this.props.showShortDescriptionsButtonClicked.bind(null)}>show short descriptions</button>}
+        {this.props.unhideAllButtonVisible && <button className="listing-options unhide-all button" id="unhide-all" onClick={this.props.unhideAllButtonClicked.bind(null)}>unhide all</button>}
         <div id="listing-container">
           {this.props.listings.map((listing, index) => {
             return (
@@ -55,6 +55,7 @@ function mapStateToProps(state) {
     showShortDescriptionsButtonVisible: state.showShortDescriptionsButtonVisible,
     unhideAllButtonVisible: state.unhideAllButtonVisible,
     listings: state.listings,
+    userLocation: state.userLocation
   }
 }
 

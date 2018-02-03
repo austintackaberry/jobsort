@@ -4,44 +4,28 @@ class InputTechnologies extends Component {
   /* istanbul ignore next */
   constructor() {
     super();
-
-    this.state = {
-      allTechsJSX: [],
-      userTechnologies: [],
-      currentUserTechnology: '',
-    }
-    this.handleUserInputTechnologyChange = this.handleUserInputTechnologyChange.bind(this);
     this.addTechnology = this.addTechnology.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
   }
 
-  handleUserInputTechnologyChange(event) {
-    this.setState({currentUserTechnology:event.target.value});
-  }
-
   addTechnology(event) {
-    let lastUserAddedTechnology = this.state.currentUserTechnology.toLowerCase();
-    let userTechnologies = this.state.userTechnologies.slice();
-    let allTechs = this.props.allTechs.slice();
+    const lastUserAddedTechnology = this.refs.lastUserAddedTechnology.value.toLowerCase();
+    const userTechnologies = this.props.userTechnologies.slice();
+    const allTechs = this.props.allTechs.slice();
     if (!userTechnologies.some((element) => {return element.language === lastUserAddedTechnology}) && allTechs.includes(lastUserAddedTechnology)) {
-      this.refs.userLangInput.value ="";
-      userTechnologies.push({language:lastUserAddedTechnology});
+      this.refs.lastUserAddedTechnology.value ="";
+      this.props.addTechnology(lastUserAddedTechnology);
     }
     event.preventDefault();
-    this.setState({userTechnologies:userTechnologies});
-    this.props.onChange(userTechnologies);
   }
 
   removeTechnology(event) {
-    var elemNum = event.target.id.slice(-1);
-    var userTechnologies = this.state.userTechnologies.slice();
-    userTechnologies.splice(elemNum, 1);
-    this.setState({userTechnologies:userTechnologies});
-    this.props.onChange(userTechnologies);
+    const index = event.target.id.slice(-1);
+    this.props.removeTechnology(index);
   }
 
   render() {
-    var userTechnologies = this.state.userTechnologies.slice();
+    var userTechnologies = this.props.userTechnologies.slice();
     var userTechnologiesJSX = [];
     for (let i = 0; i < userTechnologies.length; i++) {
       userTechnologiesJSX.push(
@@ -53,7 +37,7 @@ class InputTechnologies extends Component {
     }
 
     var allTechs = this.props.allTechs.slice();
-    var allTechsJSX = [];
+    let allTechsJSX = [];
     for (let i = 0; i < allTechs.length; i++) {
       allTechsJSX.push(<option value={allTechs[i]} key={i} />);
     }
@@ -70,7 +54,7 @@ class InputTechnologies extends Component {
         </h3>
         <div style={{"marginTop":"7px"}}>
           <form id="addTechnologyForm" onSubmit={(e) => this.addTechnology(e)}>
-            <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="userLangInput" onChange={this.handleUserInputTechnologyChange}/>
+            <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="lastUserAddedTechnology"/>
             {allTechsJSX}
             <input type="submit" id="add" value="add" />
           </form>

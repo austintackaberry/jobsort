@@ -6,7 +6,9 @@ const defaultState = {
   showFullDescriptionsButtonVisible: false,
   showShortDescriptionsButtonVisible: false,
   unhideAllButtonVisible: false,
-  listings: []
+  listings: [],
+  userTechnologies: [],
+  userLocation: ''
 }
 
 const store = createStore(rootReducer, defaultState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
