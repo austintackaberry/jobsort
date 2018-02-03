@@ -9,6 +9,7 @@ const defaultState = {
   receivedListingData: [],
   showFullDescriptionsButtonVisible: false,
   showShortDescriptionsButtonVisible: false,
+  unhideAllButtonVisible: false,
   userInputData: {},
   listings: []
 }

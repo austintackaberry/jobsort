@@ -10,6 +10,12 @@ function showFullDescriptionsButtonVisible(state = [], action) {
       return true;
     case 'READ_LESS_CLICKED' :
       return true;
+    case 'READ_MORE_CLICKED' :
+      let listings = action.listings.slice();
+      listings.splice(action.index,1);
+      return listings.some((listing) => {
+        return listing.readMoreOrLess === "read more";
+      });
     default:
       return state;
   }

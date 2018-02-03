@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 import showFullDescriptionsButtonVisible from './showFullDescriptionsButtonVisible';
 import showShortDescriptionsButtonVisible from './showShortDescriptionsButtonVisible';
 import listings from './listings';
-import unhideAll from './unhideAll';
+import unhideAllButtonVisible from './unhideAllButtonVisible';
 
-const rootReducer = combineReducers({showFullDescriptionsButtonVisible, showShortDescriptionsButtonVisible, unhideAll, listings});
+const rootReducer = combineReducers({showFullDescriptionsButtonVisible, showShortDescriptionsButtonVisible, unhideAllButtonVisible, listings});
 
 export default rootReducer;

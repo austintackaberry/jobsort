@@ -23,6 +23,26 @@ function listings(state = [], action) {
       })
       return listings;
     }
+    case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED' : {
+      let listings = action.listings.slice();
+      listings.map((listing) => {
+        let text = listing.descriptionText.slice(0,200);
+        text = text.slice(0,text.lastIndexOf(" "));
+        text = text.concat('...');
+        listing.descriptionShown = text;
+        listing.readMoreOrLess = 'read more';
+        return listing;
+      })
+      return listings;
+    }
+    case 'UNHIDE_ALL_BUTTON_CLICKED' : {
+      let listings = action.listings.slice();
+      listings.map((listing) => {
+        listing.hidden = false;
+        return listing;
+      })
+      return listings;
+    }
     case 'READ_MORE_CLICKED' : {
       let listings = action.listings.slice();
       let listing = listings[action.index];
@@ -38,6 +58,12 @@ function listings(state = [], action) {
       text = text.concat('...');
       listing.descriptionShown = text;
       listing.readMoreOrLess = 'read more';
+      return listings;
+    }
+    case 'HIDE_LISTING' : {
+      let listings = action.listings.slice();
+      let listing = listings[action.index];
+      listing.hidden = true;
       return listings;
     }
     default:

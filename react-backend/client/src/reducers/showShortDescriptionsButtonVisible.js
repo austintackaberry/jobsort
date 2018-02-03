@@ -8,6 +8,12 @@ function showShortDescriptionsButtonVisible(state = [], action) {
       return true;
     case 'READ_MORE_CLICKED' :
       return true;
+    case 'READ_LESS_CLICKED' :
+    let listings = action.listings.slice();
+    listings.splice(action.index,1);
+    return listings.some((listing) => {
+      return listing.readMoreOrLess === "read less";
+    });
     default:
       return state;
   }

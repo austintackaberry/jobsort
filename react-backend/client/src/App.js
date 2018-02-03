@@ -25,68 +25,21 @@ class App extends Component {
       userData: [],
       loaderActive: false,
       loaderText: "",
-      receivedListingData: [],
-      updateListings: {
-        unhideAll: true,
-        showFullDescriptions: true,
-        showShortDescriptions: true
-      },
       userInputData: {}
     };
-    this.unhideAll = this.unhideAll.bind(this);
-    this.handleDescriptionClick = this.handleDescriptionClick.bind(this);
-    this.showFullDescriptions = this.showFullDescriptions.bind(this);
-    this.showShortDescriptions = this.showShortDescriptions.bind(this);
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
-    this.onHideClick = this.onHideClick.bind(this);
   }
 
   getJobListings(userInputData) {
     this.activateLoader(userInputData);
-    this.setState({receivedListingData:[], userInputData:userInputData});
+    this.setState({userInputData:userInputData});
     return asyncFetchData(userInputData).then((listings) => {
       this.props.receivedJobListingResults(listings);
       this.setState({loaderActive: false});
       return Promise.resolve(true);
     });
-  }
-
-  unhideAll() {
-    let updateListings = this.state.updateListings;
-    updateListings.unhideAll = true;
-    this.setState({updateListings: updateListings});
-  }
-
-  handleDescriptionClick(readMoreOrLess) {
-    let updateListings = this.state.updateListings;
-    if (readMoreOrLess === "read more") {
-      updateListings.showShortDescriptions = false;
-    }
-    else if (readMoreOrLess === "read less") {
-      updateListings.showFullDescriptions = false;
-    }
-    this.setState({updateListings: updateListings});
-  }
-
-  onHideClick() {
-    let updateListings = this.state.updateListings;
-    updateListings.unhideAll = false;
-    this.setState({updateListings: updateListings});
-  }
-
-  showFullDescriptions() {
-    let updateListings = this.state.updateListings;
-    updateListings.showFullDescriptions = true;
-    updateListings.showShortDescriptions = false;
-    this.setState({updateListings: updateListings});
-  }
-  showShortDescriptions() {
-    let updateListings = this.state.updateListings;
-    updateListings.showShortDescriptions = true;
-    updateListings.showFullDescriptions = false;
-    this.setState({updateListings: updateListings});
   }
 
   activateLoader(userInputData) {
@@ -143,8 +96,6 @@ class App extends Component {
               onShortDescriptionClick={this.showShortDescriptions}
               onFullDescriptionClick={this.showFullDescriptions}
               onUnhideAllClick={this.unhideAll}
-              updateListings={this.state.updateListings}
-              jobListings={this.state.receivedListingData}
               onHideClick={this.onHideClick}
               descriptionClicked={(readMoreOrLess) => this.handleDescriptionClick(readMoreOrLess)}
             />
