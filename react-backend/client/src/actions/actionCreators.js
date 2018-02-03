@@ -6,15 +6,17 @@ export function receivedJobListingResults(listings) {
   }
 }
 
-export function showFullDescriptionsButtonClicked() {
+export function showFullDescriptionsButtonClicked(listings) {
   return {
-    type: 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED'
+    type: 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED',
+    listings
   }
 }
 
-export function showShortDescriptionsButtonClicked() {
+export function showShortDescriptionsButtonClicked(listings) {
   return {
-    type: 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED'
+    type: 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED',
+    listings
   }
 }
 
@@ -24,17 +26,19 @@ export function unhideAllButtonClicked() {
   }
 }
 
-export function readLessClicked(index) {
+export function readLessClicked(index, listings) {
   return {
     type: 'READ_LESS_CLICKED',
-    index
+    index,
+    listings
   }
 }
 
-export function readMoreClicked(index) {
+export function readMoreClicked(index, listings) {
   return {
     type: 'READ_MORE_CLICKED',
-    index
+    index,
+    listings
   }
 }
 
@@ -71,5 +75,24 @@ export function changeUserLocation(userLocation) {
   return {
     type: 'CHANGE_USER_LOCATION',
     userLocation,
+  }
+}
+
+export function setCurrentLoaderText(currentLoaderText) {
+  return {
+    type: 'SET_CURRENT_LOADER_TEXT',
+    currentLoaderText,
+  }
+}
+
+export function activateLoader() {
+  return {
+    type: 'ACTIVATE_LOADER'
+  }
+}
+
+export function deactivateLoader() {
+  return {
+    type: 'DEACTIVATE_LOADER'
   }
 }

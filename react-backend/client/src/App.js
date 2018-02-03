@@ -42,14 +42,30 @@ class App extends Component {
     this.setState({userInputData:userInputData});
     return asyncFetchData(userInputData).then((listings) => {
       this.props.receivedJobListingResults(listings);
-      this.setState({loaderActive: false});
+      this.deactivateLoader();
       return Promise.resolve(true);
     });
   }
 
   activateLoader(userInputData) {
     let loaderText = this.generateLoaderText(userInputData);
-    this.setState({loaderText:loaderText, loaderActive: true});
+    this.props.activateLoader();
+    let loaderTextCopy = loaderText.split('');
+    let currentLoaderText = "";
+    let intervalFn = () => {
+      if (loaderTextCopy.length === 0) {
+        currentLoaderText = '';
+        loaderTextCopy = loaderText.split('');
+      }
+      currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
+      this.props.setCurrentLoaderText(currentLoaderText);
+    };
+    this.loaderInterval = window.setInterval(intervalFn, 70);
+  }
+
+  deactivateLoader() {
+    window.clearInterval(this.loaderInterval);
+    this.props.deactivateLoader();
   }
 
   generateLoaderText(userInputData) {
@@ -94,8 +110,8 @@ class App extends Component {
               allTechs={this.allTechs}
             />
             <Loader
-              loaderActive={this.state.loaderActive}
-              loaderText={this.state.loaderText}
+              currentLoaderText={this.props.currentLoaderText}
+              loaderActive={this.props.loaderActive}
             />
             <SearchResults
               onShortDescriptionClick={this.showShortDescriptions}
@@ -118,7 +134,9 @@ function mapStateToProps(state) {
     listings: state.listings,
     unhideAll: state.unhideAll,
     userTechnologies: state.userTechnologies,
-    userLocation: state.userLocation
+    userLocation: state.userLocation,
+    loaderActive: state.loaderActive,
+    currentLoaderText: state.currentLoaderText
   }
 }
 
