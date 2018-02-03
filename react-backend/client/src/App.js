@@ -22,7 +22,6 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      userData: [],
       loaderActive: false,
       loaderText: "",
       userInputData: {}

@@ -1,6 +1,5 @@
 
 function listings(state = [], action) {
-  console.log(state, action);
   switch (action.type) {
     case 'RECEIVED_JOB_LISTING_RESULTS' : {
       let listings = action.listings.slice();

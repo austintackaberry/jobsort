@@ -1,6 +1,5 @@
 
 function unhideAllButtonVisible(state = [], action) {
-  console.log(state, action);
   switch (action.type) {
     case 'HIDE_LISTING': {
       return true;
@@ -8,8 +7,9 @@ function unhideAllButtonVisible(state = [], action) {
     case 'UNHIDE_ALL_BUTTON_CLICKED': {
       return false;
     }
+    default:
+      return state;
   }
-  return state;
 }
 
 export default unhideAllButtonVisible;

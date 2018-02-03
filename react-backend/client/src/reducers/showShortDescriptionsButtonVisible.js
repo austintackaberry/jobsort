@@ -1,6 +1,5 @@
 
 function showShortDescriptionsButtonVisible(state = [], action) {
-  console.log(state, action);
   switch (action.type) {
     case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED' :
       return false;

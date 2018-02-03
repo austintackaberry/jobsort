@@ -1,16 +1,11 @@
-import { createStore, compose } from 'redux';
+import { createStore } from 'redux';
 
 import rootReducer from './reducers/index';
 
 const defaultState = {
-  userData: [],
-  loaderActive: false,
-  loaderText: "",
-  receivedListingData: [],
   showFullDescriptionsButtonVisible: false,
   showShortDescriptionsButtonVisible: false,
   unhideAllButtonVisible: false,
-  userInputData: {},
   listings: []
 }
 

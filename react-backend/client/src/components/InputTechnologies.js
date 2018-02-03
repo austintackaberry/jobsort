@@ -55,10 +55,10 @@ class InputTechnologies extends Component {
     var allTechs = this.props.allTechs.slice();
     var allTechsJSX = [];
     for (let i = 0; i < allTechs.length; i++) {
-      allTechsJSX.push(<option value={allTechs[i]} />);
+      allTechsJSX.push(<option value={allTechs[i]} key={i} />);
     }
     allTechsJSX = [
-      <datalist id="technologies">
+      <datalist id="technologies" key={0}>
         {allTechsJSX}
       </datalist>
     ];
