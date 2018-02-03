@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 
 class JobListing extends Component {
   /* istanbul ignore next */
-  constructor() {
-    super()
-    this.handleHideClick = this.handleHideClick.bind(this);
-  }
 
   render() {
     let listing = this.props.listing;
@@ -20,7 +16,7 @@ class JobListing extends Component {
           <h4>{listing.title}</h4>
         )}
         <p className="listing-item">{listing.companyName}</p>
-        <p className="listing-item">{listing.location}</p>
+        {listing.location != 0 && <p className="listing-item">{listing.location}</p>}
         <p className="listing-item">{listing.postTimeStr}</p>
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>

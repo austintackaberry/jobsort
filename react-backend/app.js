@@ -122,8 +122,7 @@ function rankScore(dataPackage, description) {
       descriptionHasTech.push(dataPackage.allTechs[i]);
       dataPackage.userTechnologies.map((element) => {
         if (element.language == dataPackage.allTechs[i]) {
-          rankScore += element.weight * allTechsCount[i].isInDescription;
-          techUserKnows++;
+          rankScore += element.weight;
         }
         return element.language == dataPackage.allTechs[i];
       });
@@ -138,7 +137,7 @@ function rankScore(dataPackage, description) {
     rankScore = 0.000000001;
   }
   else {
-    rankScore = rankScore*techUserKnows/rankTotal;
+    rankScore = rankScore/rankTotal;
   }
   return {rankScore:rankScore, descriptionHasTech:descriptionHasTech};
 }
@@ -258,7 +257,7 @@ app.post('/getresults', function(req, res) {
               }
               else {
                 let distance = getHnDistance(userCoordinates, listing.latitude, listing.longitude);
-                if (distance > 100) {
+                if (distance > 100 || (listing.latitude == 0 && listing.longitude == 0)) {
                   hnFormatted[index].distance = false;
                 }
                 else {
