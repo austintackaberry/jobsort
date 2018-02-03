@@ -2,6 +2,8 @@
 function showFullDescriptionsButtonVisible(state = [], action) {
   console.log(state, action);
   switch (action.type) {
+    case 'RECEIVED_JOB_LISTING_RESULTS' :
+      return true;
     case 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED' :
       return false;
     case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED' :

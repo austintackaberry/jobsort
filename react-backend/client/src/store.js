@@ -7,14 +7,12 @@ const defaultState = {
   loaderActive: false,
   loaderText: "",
   receivedListingData: [],
-  updateListings: {
-    unhideAll: true,
-    showFullDescriptions: true,
-    showShortDescriptions: true
-  },
-  userInputData: {}
+  showFullDescriptionsButtonVisible: false,
+  showShortDescriptionsButtonVisible: false,
+  userInputData: {},
+  listings: []
 }
 
-const store = createStore(rootReducer, defaultState);
+const store = createStore(rootReducer, defaultState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 export default store;

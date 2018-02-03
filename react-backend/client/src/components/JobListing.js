@@ -8,26 +8,22 @@ class JobListing extends Component {
       fullDescriptionVisible: false,
       hidden: false
     };
-    this.handleDescriptionLengthToggle = this.handleDescriptionLengthToggle.bind(this);
+    // this.handleDescriptionLengthToggle = this.handleDescriptionLengthToggle.bind(this);
     this.handleHideClick = this.handleHideClick.bind(this);
   }
 
-  handleDescriptionLengthToggle(event) {
-    let fullDescriptionVisible = this.state.fullDescriptionVisible;
-    if (fullDescriptionVisible) {
-      const listingEl = event.target.parentElement.parentElement;
-      const ListingElDistFromTop = listingEl.getBoundingClientRect().top;
-      if (ListingElDistFromTop < 0) {
-        listingEl.scrollIntoView({block: 'start',  behavior: 'smooth'});
-      }
-      this.props.descriptionClicked('read less');
-    }
-    else {
-      this.props.descriptionClicked('read more');
-    }
-    this.setState({fullDescriptionVisible:!fullDescriptionVisible});
-    event.preventDefault();
-  }
+  // handleDescriptionLengthToggle(event) {
+  //   let fullDescriptionVisible = this.state.fullDescriptionVisible;
+  //   if (fullDescriptionVisible) {
+  //     const listingEl = event.target.parentElement.parentElement;
+  //     const ListingElDistFromTop = listingEl.getBoundingClientRect().top;
+  //     if (ListingElDistFromTop < 0) {
+  //       listingEl.scrollIntoView({block: 'start',  behavior: 'smooth'});
+  //     }
+  //     this.props.descriptionClicked('read less');
+  //   }
+  //   event.preventDefault();
+  // }
 
   handleHideClick(event) {
     let hidden = this.state.hidden;
@@ -62,22 +58,6 @@ class JobListing extends Component {
     let listing = this.props.listing;
     let hidden = this.state.hidden;
     let index = this.props.index;
-    let text = listing.descriptionText.slice(0,200);
-    text = text.slice(0,text.lastIndexOf(" "));
-    text = text.concat('...');
-    let source;
-    if (listing.source === 'hackerNews') {
-      source = <span className="source hacker-news">hn who's hiring</span>;
-    }
-    else if (listing.source === 'stackOverflow') {
-      source = <span className="source stack-overflow">stack overflow</span>;
-    }
-    else if (listing.source === 'github') {
-      source = <span className="source github">github</span>;
-    }
-    else {
-      source = <span className="bad-source"></span>;
-    }
     if (hidden) {return (null);}
     return (
       <div className="job-listing">
@@ -92,10 +72,10 @@ class JobListing extends Component {
         <p className="listing-item">{listing.postTimeStr}</p>
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
-        {fullDescriptionVisible ?
-          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionHTML}}></span><a className="read-less" data-value={index} onClick={this.handleDescriptionLengthToggle}>read less</a></p>
+        {listing.readMoreOrLess === "read less" ?
+          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionShown}}></span><a className="read-less" data-value={index} onClick={this.props.handleReadLessClick.bind(null, index)}>{listing.readMoreOrLess}</a></p>
         :
-          <p className="listing-item short-description">{text}<a className="read-more" data-value={index} onClick={this.handleDescriptionLengthToggle}>read more</a></p>
+          <p className="listing-item short-description">{listing.descriptionShown}<a className="read-more" data-value={index} onClick={this.props.handleReadMoreClick.bind(this, index)}>{listing.readMoreOrLess}</a></p>
         }
       </div>
     );

@@ -46,15 +46,9 @@ class App extends Component {
   getJobListings(userInputData) {
     this.activateLoader(userInputData);
     this.setState({receivedListingData:[], userInputData:userInputData});
-    let updateListings = this.state.updateListings;
-    return asyncFetchData(userInputData).then((receivedListingData) => {
-      if (receivedListingData.length > 0) {
-        updateListings.showFullDescriptions = false;
-      }
-      else {
-        receivedListingData[0] = "no results found";
-      }
-      this.setState({receivedListingData:receivedListingData, loaderActive: false, updateListings:updateListings});
+    return asyncFetchData(userInputData).then((listings) => {
+      this.props.receivedJobListingResults(listings);
+      this.setState({loaderActive: false});
       return Promise.resolve(true);
     });
   }
@@ -165,6 +159,7 @@ function mapStateToProps(state) {
   return {
     showFullDescriptions: state.showFullDescriptions,
     showShortDescriptions: state.showShortDescriptions,
+    listings: state.listings,
     unhideAll: state.unhideAll,
   }
 }
