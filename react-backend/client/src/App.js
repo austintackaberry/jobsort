@@ -113,13 +113,7 @@ export class App extends Component {
               currentLoaderText={this.props.currentLoaderText}
               loaderActive={this.props.loaderActive}
             />
-            <SearchResults
-              onShortDescriptionClick={this.showShortDescriptions}
-              onFullDescriptionClick={this.showFullDescriptions}
-              onUnhideAllClick={this.unhideAll}
-              onHideClick={this.onHideClick}
-              descriptionClicked={(readMoreOrLess) => this.handleDescriptionClick(readMoreOrLess)}
-            />
+            <SearchResults />
           </div>
         </div>
       </div>

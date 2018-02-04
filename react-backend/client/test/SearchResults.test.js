@@ -5,6 +5,31 @@ import sinon from 'sinon'
 import ConnectedSearchResults, { SearchResults } from '../src/components/SearchResults'
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
+import * as actionCreators from '../src/actions/actionCreators.js';
+
+const listing = {
+  companyName: "BitMEX: Bitcoin Mercantile Exchange ",
+  compensation: null,
+  descriptionHTML: "<div>Wow, what a great job posting</div>",
+  descriptionHasTech: ['css', 'html', 'c++'],
+  descriptionText: "A really fantastic opportunity",
+  distance: 11.044484195418875,
+  fullPostText: "This is the full text post",
+  hidden: false,
+  id: 587,
+  latitude: 37.7749295,
+  location: " San Francisco, CA ",
+  longitude: -122.4194155,
+  month: "(January 2018)",
+  postTimeInMs: "1514961083829",
+  postTimeStr: "3w ago",
+  rankScore: 3,
+  readMore: false,
+  source: "hackerNews",
+  title: null,
+  type: " Full-Time, Onsite ",
+  url: "https://bitmex.com"
+};
 
 const middlewares = []
 const mockStore = configureStore(middlewares)
@@ -12,53 +37,75 @@ const initialState = {
   showFullDescriptionsButtonVisible: false,
   showShortDescriptionsButtonVisible: false,
   unhideAllButtonVisible: false,
-  listings: [],
+  listings: [listing],
   userTechnologies: [],
   userLocation: '',
   loaderActive: false,
   currentLoaderText: ''
 }
-const store = mockStore(initialState);
+const unhideAllState = {
+  showFullDescriptionsButtonVisible: false,
+  showShortDescriptionsButtonVisible: false,
+  unhideAllButtonVisible: true,
+  listings: [listing],
+  userTechnologies: [],
+  userLocation: '',
+  loaderActive: false,
+  currentLoaderText: ''
+}
+let store = mockStore(initialState);
 
-const showShortDescriptionsSpy = sinon.spy();
-const showFullDescriptionsSpy = sinon.spy();
-const unhideAllSpy = sinon.spy();
-const onHideClickSpy = sinon.spy();
-const handleDescriptionClickSpy = sinon.spy();
-const updateListingsAllTrue = {
-  unhideAll: true,
-  showFullDescriptions: true,
-  showShortDescriptions: true
-};
-let updateListingsAllFalse = {
-  unhideAll: false,
-  showFullDescriptions: false,
-  showShortDescriptions: false
-};
-let jobListingsNoResults = ["no results found"]
+const readLessClickedSpy = sinon.spy();
+const readMoreClickedSpy = sinon.spy();
 
-const wrapper = mount(
-  <Provider store={store}>
-    <ConnectedSearchResults
-      onShortDescriptionClick={showShortDescriptionsSpy}
-      onFullDescriptionClick={showFullDescriptionsSpy}
-      onUnhideAllClick={unhideAllSpy}
-      updateListings={updateListingsAllFalse}
-      jobListings={jobListingsNoResults}
-      onHideClick={onHideClickSpy}
-      descriptionClicked={handleDescriptionClickSpy}
-    />
-  </Provider>
-);
+const changeState = (stateChangeObj) => {
+  const initialState = stateChangeObj.initialState;
+  const changeType =  stateChangeObj.changeType;
+  const changeValue =  stateChangeObj.changeValue;
+  initialState[changeType] = changeValue;
+  return initialState;
+}
+
+const mountWrapper = (store) => {
+  return mount(
+    <Provider store={store}>
+      <ConnectedSearchResults
+        readLessClicked={readLessClickedSpy}
+        readMoreClicked={readMoreClickedSpy}
+      />
+    </Provider>
+  );
+}
+
+let wrapper = mountWrapper(store);
+
+function createMockDiv (top) {
+  const div = document.createElement("div");
+  Object.assign(div.style, {
+    width: "10px",
+    height: "10px",
+  });
+  // we have to mock this for jsdom.
+  div.getBoundingClientRect = () => ({
+    width:10,
+    height: 10,
+    top: top,
+    left: 0,
+    right: 10,
+    bottom: 10,
+  });
+
+  div.scrollIntoView = (scrollObj) => {scrollObj};
+  return div;
+}
+
+const eventPositiveTop = {target:{parentElement:{parentElement:createMockDiv(10)}}};
+const eventNegativeTop = {target:{parentElement:{parentElement:createMockDiv(-10)}}};
 
 describe('(Component) SearchResults', () => {
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
   })
-
-  it('should display no results found if jobListings[0] === "no results found"', () => {
-    expect(wrapper.find('p').text()).to.equal("no results found");
-  });
 
   it('should display results if jobListings.length is not zero', () => {
     let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];
@@ -67,39 +114,36 @@ describe('(Component) SearchResults', () => {
     expect(wrapper.find('#search-results-container')).to.have.length(1);
   });
 
-  it('should call handleDescriptionClick with arg "read more" when read more clicked', () => {
-    wrapper.setState({fullDescriptionVisible: false, hidden: false});
-    wrapper.find('.read-more').first().simulate('click');
-    expect(handleDescriptionClickSpy.args[0][0]).to.equal('read more');
-  })
+  it('should execute readMoreClicked when JobListing handleReadMoreClick is called', () => {
+    wrapper.find('JobListing').prop('handleReadMoreClick')(0);
+    expect(readMoreClickedSpy.calledOnce);
+  });
 
-  it('should call onHideClick when X clicked', () => {
-    wrapper.find('.exit').first().simulate('click');
-    expect(onHideClickSpy.calledOnce);
-  })
+  it('should execute readLessClicked when JobListing handleReadLessClick is called with positive event top', () => {
+    wrapper.find('JobListing').prop('handleReadLessClick')(0, eventPositiveTop);
+    expect(readLessClickedSpy.calledOnce);
+  });
 
-  it('should show full description button if this.props.updateListings.showFullDescriptions is false, not show if true', () => {
+  it('should execute readLessClicked when JobListing handleReadLessClick is called with negative event top', () => {
+    wrapper.find('JobListing').prop('handleReadLessClick')(0, eventNegativeTop);
+    expect(readLessClickedSpy.calledOnce);
+  });
+
+  it('should show unhideAll button when unhideAllButtonVisible is true', () => {
+    let store = mockStore(changeState({initialState, changeType:"unhideAllButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
+    expect(wrapper.find('.unhide-all')).to.have.length(1);
+  });
+
+  it('should show showShortDescriptions button when showShortDescriptionsButtonVisible is true', () => {
+    let store = mockStore(changeState({initialState, changeType:"showShortDescriptionsButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
+    expect(wrapper.find('.show-short-descriptions')).to.have.length(1);
+  });
+
+  it('should show showFullDescriptions button when showFullDescriptionsButtonVisible is true', () => {
+    let store = mockStore(changeState({initialState, changeType:"showFullDescriptionsButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
     expect(wrapper.find('.show-full-descriptions')).to.have.length(1);
-    wrapper.setProps({updateListings:updateListingsAllTrue});
-    expect(wrapper.find('.show-full-descriptions')).to.have.length(0);
-  })
-
-  it('should call showFullDescriptions method when full description button clicked', () => {
-    wrapper.setProps({updateListings:updateListingsAllFalse});
-    wrapper.find('.show-full-descriptions').simulate('click');
-    expect(showFullDescriptionsSpy.calledOnce);
-  })
-
-  it('should call showShortDescriptions method when short description button clicked', () => {
-    wrapper.setProps({updateListings:updateListingsAllFalse});
-    wrapper.find('.show-short-descriptions').simulate('click');
-    expect(showShortDescriptionsSpy.calledOnce);
-  })
-
-  it('should call unhideAll method when unhide all button clicked', () => {
-    wrapper.setProps({updateListings:updateListingsAllFalse});
-    wrapper.find('.unhide-all').simulate('click');
-    expect(unhideAllSpy.calledOnce);
-  })
-
+  });
 });

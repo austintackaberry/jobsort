@@ -20,9 +20,9 @@ class JobListing extends Component {
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
         {listing.readMoreOrLess === "read less" ?
-          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionShown}}></span><a className="read-less" data-value={index} onClick={this.props.handleReadLessClick.bind(null, index)}>{listing.readMoreOrLess}</a></p>
+          <p className="listing-item full-description"><span dangerouslySetInnerHTML={{__html: listing.descriptionShown}}></span><a className="read-less" data-value={index} onClick={this.props.handleReadLessClick.bind(this, index)}>{listing.readMoreOrLess}</a></p>
         :
-          <p className="listing-item short-description">{listing.descriptionShown}<a className="read-more" data-value={index} onClick={this.props.handleReadMoreClick.bind(this, index)}>{listing.readMoreOrLess}</a></p>
+          <p className="listing-item short-description">{listing.descriptionShown}<a className="read-more" data-value={index} onClick={this.props.handleReadMoreClick.bind(null, index)}>{listing.readMoreOrLess}</a></p>
         }
       </div>
     );

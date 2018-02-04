@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import * as actionCreators from '../actions/actionCreators.js';
 
 export class SearchResults extends Component {
+  /* istanbul ignore next */
   constructor() {
     super();
     this.readMoreClicked = this.readMoreClicked.bind(this);
