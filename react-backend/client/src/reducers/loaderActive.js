@@ -1,6 +1,5 @@
 
 function loaderActive(state = [], action) {
-  console.log(state, action);
   switch (action.type) {
     case 'DEACTIVATE_LOADER': {
       return false;

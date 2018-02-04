@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 class JobListing extends Component {
-  /* istanbul ignore next */
 
   render() {
     let listing = this.props.listing;

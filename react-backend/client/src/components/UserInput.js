@@ -9,32 +9,6 @@ export class UserInput extends Component {
 
   render() {
     let userTechnologies = this.props.userTechnologies;
-    var userTechnologiesJSX = [];
-    var userTechWeightsJSX = [];
-    for (let i = 0; i < userTechnologies.length; i++) {
-      userTechnologiesJSX.push(
-        <div className="user-lang-div">
-          <button id={'langButt'+i} className="exit" onClick={this.props.removeTechnology.bind(null, i)}>&#10006;</button>
-          <span className="user-lang-span" onClick = {this.sendMsg}>{userTechnologies[i].language}</span>
-        </div>
-      );
-      userTechWeightsJSX.push(
-        <tr>
-          <td className="table-col-lang">{userTechnologies[i].language}: </td>
-          <td><input data-lpignore='true' className="weight-input textbox" type="number" ref={'langWeight'+i} onChange={this.props.changeUserTechnologyWeight.bind(this, i)} /></td>
-        </tr>
-      );
-    }
-
-    if (userTechWeightsJSX.length > 0) {
-      userTechWeightsJSX = [
-        <table id='lang-table'>
-          <tbody>
-            {userTechWeightsJSX}
-          </tbody>
-        </table>
-      ];
-    }
 
     return (
       <div>
@@ -51,7 +25,18 @@ export class UserInput extends Component {
           <div className="content-group">
             <h3 className="instructions">assign weights to each technology based on how well you know them</h3>
             <p>(a higher number means you are more familiar with that technology)</p>
-            {userTechWeightsJSX}
+            <table id='lang-table'>
+              <tbody>
+                {userTechnologies.map((technology, i) => {
+                  return (
+                    <tr>
+                      <td className="table-col-lang">{technology.language}: </td>
+                      <td><input data-lpignore='true' className="weight-input textbox" type="number" ref={'langWeight'+i} onChange={this.props.changeUserTechnologyWeight.bind(this, i)} /></td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
           <input type="submit" id="get-results" className="button" value="get results" />
         </form>

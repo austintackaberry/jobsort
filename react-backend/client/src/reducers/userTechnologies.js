@@ -1,6 +1,5 @@
 
 function userTechnologies(state = [], action) {
-  console.log(state, action);
   switch (action.type) {
     case 'ADD_TECHNOLOGY': {
       return [...state, {language: action.technologyToAdd, weight: "0"}];
