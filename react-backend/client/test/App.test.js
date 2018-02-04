@@ -112,6 +112,16 @@ describe('(Component) App', () => {
     expect(wrapper.state('updateListings').unhideAll).to.equal(true);
   })
 
+
+    // it('currentLoaderText should not be empty if loader interval fn has been executed multiple times', () => {
+    //   var clock = sinon.useFakeTimers();
+    //   wrapper.setProps({loaderActive:true, currentLoaderText:currentLoaderText});
+    //   clock.tick(5000);
+    //   expect(wrapper.state('currentLoaderText')).to.not.equal('');
+    //   clock.restore();
+    //   wrapper.setProps({loaderActive:false, currentLoaderText:currentLoaderText});
+    // });
+
   describe('test when results were received from /getresults', () => {
     beforeEach(() => {
       global.fetch.returns(mockFetch(200, jobListings));

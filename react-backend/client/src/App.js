@@ -21,10 +21,6 @@ export class App extends Component {
   /* istanbul ignore next */
   constructor() {
     super();
-    this.state = {
-      loaderActive: false,
-      loaderText: "",
-    };
     this.activateLoader = this.activateLoader.bind(this);
     this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
@@ -39,7 +35,6 @@ export class App extends Component {
       userTechnologies: [...this.props.userTechnologies]
     }
     this.activateLoader(userInputData);
-    this.setState({userInputData:userInputData});
     return asyncFetchData(userInputData).then((listings) => {
       this.props.receivedJobListingResults(listings);
       this.deactivateLoader();
