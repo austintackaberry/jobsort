@@ -34,16 +34,20 @@ let updateListings = {
   showFullDescriptions: false,
   showShortDescriptions: true
 };
-const onHideClickSpy = sinon.spy();
+const handleHideListingSpy = sinon.spy();
 const descriptionClickedSpy = sinon.spy();
+const handleReadMoreClickSpy = sinon.spy();
+const handleReadLessClickSpy = sinon.spy();
 
 const wrapper = mount(
   <JobListing
     updateListings={updateListings}
     listing={listing}
     index={index}
-    onHideClick={onHideClickSpy}
+    handleHideListing={handleHideListingSpy}
     descriptionClicked={descriptionClickedSpy}
+    handleReadLessClick={handleReadLessClickSpy}
+    handleReadMoreClick={handleReadMoreClickSpy}
   />
 );
 

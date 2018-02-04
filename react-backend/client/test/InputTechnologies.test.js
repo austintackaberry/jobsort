@@ -8,11 +8,13 @@ import InputTechnologies from '../src/components/InputTechnologies'
 const onChange = sinon.spy();
 const testTechInputInAllTechs = "css";
 const testTechInputNotInAllTechs = "hockey";
+const userTechnologies = [{language:"css", weight: "1"}];
 const allTechs = ["javascript", testTechInputInAllTechs, "html", "react", "python"];
 const wrapper = shallow(
   <InputTechnologies
     allTechs={allTechs.sort()}
     onChange={onChange}
+    userTechnologies={userTechnologies}
   />
 );
 

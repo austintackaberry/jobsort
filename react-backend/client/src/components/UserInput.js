@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../actions/actionCreators.js';
 
-class UserInput extends Component {
+export class UserInput extends Component {
 
   render() {
     let userTechnologies = this.props.userTechnologies;

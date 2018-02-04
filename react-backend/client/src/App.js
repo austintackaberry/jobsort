@@ -17,7 +17,7 @@ async function asyncFetchData(userInputData) {
   return response;
 }
 
-class App extends Component {
+export class App extends Component {
   /* istanbul ignore next */
   constructor() {
     super();

@@ -3,7 +3,23 @@ import { shallow } from 'enzyme'
 import { mount } from 'enzyme'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import App from '../src/App'
+import ConnectedApp, { App } from '../src/App'
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
+
+const middlewares = []
+const mockStore = configureStore(middlewares)
+const initialState = {
+  showFullDescriptionsButtonVisible: false,
+  showShortDescriptionsButtonVisible: false,
+  unhideAllButtonVisible: false,
+  listings: [],
+  userTechnologies: [],
+  userLocation: '',
+  loaderActive: false,
+  currentLoaderText: ''
+}
+const store = mockStore(initialState);
 
 const allTechs = ['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws', 'graphql', 'bootstrap', 'rust', 'docker', 'redux', 'react native', 'express', 'react', 'vue', 'd3', 'ember', 'django', 'flask', 'sql', 'java', 'c#', 'python', 'php', 'c++', 'c', 'clojure', 'typescript', 'ruby', 'swift', 'objective-c', '.net', 'assembly', 'r', 'perl', 'vba', 'matlab', 'golang', 'scala', 'haskell', 'node', 'angular', '.net core', 'cordova', 'mysql', 'sqlite', 'postgresql', 'mongodb', 'oracle', 'redis', 'html', 'css'].sort();
 const userInputData = {
@@ -16,13 +32,15 @@ const userInputData = {
     hackerNews:true
   }
 };
-const wrapper = shallow(<App />);
-const mountWrapper = mount(<App />);
+const wrapper = mount(
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>
+);
 const getJobListingsSpy = sinon.spy(App.prototype, "getJobListings");
-const handleDescriptionClickSpy = sinon.spy(App.prototype, "handleDescriptionClick");
-const showShortDescriptionsSpy = sinon.spy(App.prototype, "showShortDescriptions");
-const showFullDescriptionsSpy = sinon.spy(App.prototype, "showFullDescriptions");
-const onHideClickSpy = sinon.spy(App.prototype, "onHideClick");
+const activateLoaderSpy = sinon.spy(App.prototype, "activateLoader");
+const deactivateLoaderSpy = sinon.spy(App.prototype, "deactivateLoader");
+const generateLoaderTextSpy = sinon.spy(App.prototype, "generateLoaderText");
 let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];
 
 function mockFetch(status, body) {

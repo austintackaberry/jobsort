@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from '../actions/actionCreators.js';
 
-class SearchResults extends Component {
+export class SearchResults extends Component {
   constructor() {
     super();
     this.readMoreClicked = this.readMoreClicked.bind(this);
