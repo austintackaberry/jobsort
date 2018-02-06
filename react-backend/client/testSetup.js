@@ -7,7 +7,6 @@ import { JSDOM } from 'jsdom';
 
 Enzyme.configure({ adapter: new Adapter() });
 
-// npm install jsdom
 const jsdom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>');
 const { window } = jsdom;
 

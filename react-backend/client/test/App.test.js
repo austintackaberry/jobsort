@@ -125,8 +125,7 @@ describe('(Component) App', () => {
   });
 
     it('setCurrentLoaderText should be called when loader is activated and run', () => {
-      let clock = sinon.useFakeTimers();
-      // wrapper.setProps({loaderActive:true, currentLoaderText:currentLoaderText});
+      let clock = sinon.useFakeTimers({toFake: ["setTimeout", "clearTimeout", "setImmediate", "clearImmediate","setInterval", "clearInterval", "Date"]});
       shallowWrapper.instance().activateLoader(userInputData);
       clock.tick(10000);
       expect(setCurrentLoaderTextSpy.calledOnce);

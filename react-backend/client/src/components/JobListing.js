@@ -15,7 +15,7 @@ class JobListing extends Component {
           <h4>{listing.title}</h4>
         )}
         <p className="listing-item">{listing.companyName}</p>
-        {listing.location != 0 && <p className="listing-item">{listing.location}</p>}
+        {listing.location !== "0" && <p className="listing-item">{listing.location}</p>}
         <p className="listing-item">{listing.postTimeStr}</p>
         <p className="listing-item">{listing.type}</p>
         <p className="listing-item">Technologies: {listing.descriptionHasTech.join(' ')}</p>
