@@ -4,6 +4,8 @@ import { mount } from 'enzyme'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import ConnectedApp, { App } from '../src/App'
+import {asyncFetchData} from '../src/App'
+import * as actionCreators from '../src/actions/actionCreators.js';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
@@ -25,23 +27,51 @@ const allTechs = ['javascript', 'git', 'jquery', 'sass', 'rails', 'kafka', 'aws'
 const userInputData = {
   userLocation: 'san francisco',
   userTechnologies: ['css', 'html', 'c++'],
-  allTechs: allTechs,
-  checked: {
-    github:true,
-    stackOverflow:false,
-    hackerNews:true
-  }
+  allTechs: allTechs
 };
 const wrapper = mount(
   <Provider store={store}>
-    <ConnectedApp />
+    <ConnectedApp/>
   </Provider>
 );
+
+const changeState = (stateChangeObj) => {
+  const initialState = stateChangeObj.initialState;
+  const changeType =  stateChangeObj.changeType;
+  const changeValue =  stateChangeObj.changeValue;
+  initialState[changeType] = changeValue;
+  return initialState;
+}
+
+const mountWrapper = (store) => {
+  return mount(
+    <Provider store={store}>
+      <ConnectedApp />
+    </Provider>
+  );
+}
+
+const receivedJobListingResultsSpy = sinon.spy();
+const activateLoaderPropsSpy = sinon.spy();
+const deactivateLoaderPropsSpy = sinon.spy();
+const setCurrentLoaderTextSpy = sinon.spy();
+let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];
+
+const shallowWrapper = shallow(
+  <App
+    userLocation={"berkeley"}
+    userTechnologies={[{language:"css", weight: "1"}, {language:"html", weight: "2"}]}
+    receivedJobListingResults={receivedJobListingResultsSpy}
+    activateLoader={activateLoaderPropsSpy}
+    deactivateLoader={deactivateLoaderPropsSpy}
+    setCurrentLoaderText={setCurrentLoaderTextSpy}
+  />
+);
+
 const getJobListingsSpy = sinon.spy(App.prototype, "getJobListings");
 const activateLoaderSpy = sinon.spy(App.prototype, "activateLoader");
 const deactivateLoaderSpy = sinon.spy(App.prototype, "deactivateLoader");
 const generateLoaderTextSpy = sinon.spy(App.prototype, "generateLoaderText");
-let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];
 
 function mockFetch(status, body) {
   const mockResponse = new global.Response(JSON.stringify(body), {
@@ -55,6 +85,12 @@ function mockFetch(status, body) {
     return Promise.resolve(mockResponse);
   }
   return Promise.reject(mockResponse);
+}
+
+const getEvent = (value) => {
+  let event = {target:{value}};
+  event.preventDefault = () => {return true}
+  return event;
 }
 
 describe('(Component) App', () => {
@@ -71,82 +107,50 @@ describe('(Component) App', () => {
     expect(wrapper).to.have.length(1);
   });
 
-  it('calls handleDescriptionClick when SearchResults.props.descriptionClicked is called', () => {
-    wrapper.find('SearchResults').prop('descriptionClicked')();
-    expect(handleDescriptionClickSpy.calledOnce);
+  it('should return currentLoaderText when setCurrentLoaderText is dispatched', () => {
+    store.dispatch(actionCreators.setCurrentLoaderText("Hey"));
+    const actions = store.getActions()
+    const expectedPayload = { type: 'SET_CURRENT_LOADER_TEXT', currentLoaderText:"Hey" }
+    expect(actions).to.deep.equal([expectedPayload]);
   });
 
-  it('calls showFullDescriptions when SearchResults.props.fullDescriptionClick is called', () => {
-    wrapper.find('SearchResults').prop('onFullDescriptionClick')();
-    expect(showFullDescriptionsSpy.calledOnce);
+  it('should have light gray background for larger screens', () => {
+    expect(wrapper.find('.App').props().style.background).to.equal("rgb(232, 236, 237)");
   });
 
-  it('calls showShortDescriptions when SearchResults.props.shortDescriptionClick is called', () => {
-    wrapper.find('SearchResults').prop('onShortDescriptionClick')();
-    expect(showShortDescriptionsSpy.calledOnce);
-  });
-
-  it('calls onHideClick when SearchResults.props.onHideClick is called', () => {
-    wrapper.find('SearchResults').prop('onHideClick')();
-    expect(onHideClickSpy.calledOnce);
-  });
-
-  it('should have blue background in mobile', () => {
+  it('should have gray background in mobile', () => {
     window.innerWidth = 700;
-    wrapper.setState();
-    expect(wrapper.find('.App').props().style.background).to.equal("#9fc2c4");
+    const smallWindowWrapper = mountWrapper(store);
+    expect(smallWindowWrapper.find('.App').props().style.background).to.equal("#a4a4a4");
   });
 
-  it('should update state.updateListings.showShortDescriptions to false when "read more" is arg to handleDescriptionClick', () => {
-    wrapper.instance().handleDescriptionClick('read more');
-    expect(wrapper.state('updateListings').showShortDescriptions).to.equal(false);
-  })
-
-  it('should update state.updateListings.showFullDescriptions to false when "read less" is arg to handleDescriptionClick', () => {
-    wrapper.instance().handleDescriptionClick('read less');
-    expect(wrapper.state('updateListings').showFullDescriptions).to.equal(false);
-  })
-
-  it('should update state.updateListings.unhideAll to true when unhideAll is called', () => {
-    wrapper.instance().unhideAll();
-    expect(wrapper.state('updateListings').unhideAll).to.equal(true);
-  })
-
-
-    // it('currentLoaderText should not be empty if loader interval fn has been executed multiple times', () => {
-    //   var clock = sinon.useFakeTimers();
-    //   wrapper.setProps({loaderActive:true, currentLoaderText:currentLoaderText});
-    //   clock.tick(5000);
-    //   expect(wrapper.state('currentLoaderText')).to.not.equal('');
-    //   clock.restore();
-    //   wrapper.setProps({loaderActive:false, currentLoaderText:currentLoaderText});
-    // });
+    it('setCurrentLoaderText should be called when loader is activated and run', () => {
+      let clock = sinon.useFakeTimers();
+      // wrapper.setProps({loaderActive:true, currentLoaderText:currentLoaderText});
+      shallowWrapper.instance().activateLoader(userInputData);
+      clock.tick(10000);
+      expect(setCurrentLoaderTextSpy.calledOnce);
+      clock.restore();
+    });
 
   describe('test when results were received from /getresults', () => {
     beforeEach(() => {
       global.fetch.returns(mockFetch(200, jobListings));
     });
 
-    it('calls getJobListings when user input is submitted', () => {
-      wrapper.find('UserInput').simulate('submit', userInputData);
+    it('should execute getJobListings onSubmit of UserInput', async function() {
+      await wrapper.find('UserInput').prop('onSubmit')(getEvent(true));
       expect(getJobListingsSpy.calledOnce);
     });
 
-    it('should have state.receivedListingData.length > 1 when valid userInputData sent to getJobListings', async function() {
-      await wrapper.instance().getJobListings(userInputData);
-      expect(wrapper.state('receivedListingData')).to.have.length.above(1);
+    it('should call receivedJobListingResults when valid userInputData sent to getJobListings', async function() {
+      await shallowWrapper.instance().getJobListings(getEvent(true));
+      expect(receivedJobListingResultsSpy.calledOnce);
+    });
+
+    it('should call deactivateLoader when valid userInputData sent to asyncFetchData', async function() {
+      await asyncFetchData(userInputData);
+      expect(deactivateLoaderSpy.calledOnce);
     });
   });
-
-  describe('test no results received from /getresults', () => {
-
-    beforeEach(() => {
-      global.fetch.returns(mockFetch(200, []));
-    });
-
-    it('should show no results if received data is []', async function() {
-      await wrapper.instance().getJobListings(userInputData);
-      expect(wrapper.state('receivedListingData')[0]).to.equal("no results found");
-    })
-  })
 })

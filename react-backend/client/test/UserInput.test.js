@@ -4,6 +4,7 @@ import { mount } from 'enzyme'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import ConnectedUserInput, { UserInput } from '../src/components/UserInput'
+import * as actionCreators from '../src/actions/actionCreators.js';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 
@@ -44,6 +45,15 @@ describe('(Component) UserInput', () => {
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
   })
+
+  it('should return type, weight, index when changeUserTechnologyWeight is dispatched', () => {
+    const index = 0;
+    const event = {target:{value:1}}
+    store.dispatch(actionCreators.changeUserTechnologyWeight(index, event));
+    const actions = store.getActions()
+    const expectedPayload = { type: 'CHANGE_USER_TECHNOLOGY_WEIGHT', weight:1, index:0 }
+    expect(actions).to.deep.equal([expectedPayload]);
+  });
 
   it('should execute changeUserLocation onChange of UserLocation', () => {
     const userLocationValue = "san francisco";

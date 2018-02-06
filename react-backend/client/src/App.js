@@ -8,11 +8,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as actionCreators from './actions/actionCreators.js';
 
-async function asyncFetchData(userInputData) {
+export async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
     method: 'POST',
     body: JSON.stringify(userInputData)
   });
+  if (!fetchRes) return
   const response = await fetchRes.json();
   return response;
 }

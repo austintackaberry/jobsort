@@ -43,16 +43,6 @@ const initialState = {
   loaderActive: false,
   currentLoaderText: ''
 }
-const unhideAllState = {
-  showFullDescriptionsButtonVisible: false,
-  showShortDescriptionsButtonVisible: false,
-  unhideAllButtonVisible: true,
-  listings: [listing],
-  userTechnologies: [],
-  userLocation: '',
-  loaderActive: false,
-  currentLoaderText: ''
-}
 let store = mockStore(initialState);
 
 const readLessClickedSpy = sinon.spy();
@@ -106,6 +96,34 @@ describe('(Component) SearchResults', () => {
   it('renders...', () => {
     expect(wrapper).to.have.length(1);
   })
+
+  it('should return type, index when hideListing is dispatched', () => {
+    store.dispatch(actionCreators.hideListing(0));
+    const actions = store.getActions()
+    const expectedPayload = { type: 'HIDE_LISTING', index:0 }
+    expect(actions).to.deep.equal([expectedPayload]);
+  });
+
+  it('should return type when unhideAllButtonClicked is dispatched', () => {
+    store.dispatch(actionCreators.unhideAllButtonClicked());
+    const actions = store.getActions()
+    const expectedPayload = { type: 'UNHIDE_ALL_BUTTON_CLICKED' }
+    expect(actions[actions.length - 1]).to.deep.equal(expectedPayload);
+  });
+
+  it('should return type, listings when showShortDescriptionsButtonClicked is dispatched', () => {
+    store.dispatch(actionCreators.showShortDescriptionsButtonClicked('hey'));
+    const actions = store.getActions()
+    const expectedPayload = { type: 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED', listings:'hey' }
+    expect(actions[actions.length - 1]).to.deep.equal(expectedPayload);
+  });
+
+  it('should return type, listings when showFullDescriptionsButtonClicked is dispatched', () => {
+    store.dispatch(actionCreators.showFullDescriptionsButtonClicked('hey'));
+    const actions = store.getActions()
+    const expectedPayload = { type: 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED', listings:'hey' }
+    expect(actions[actions.length - 1]).to.deep.equal(expectedPayload);
+  });
 
   it('should display results if jobListings.length is not zero', () => {
     let jobListings = [{descriptionText:"Hey", descriptionHasTech:["css","html"]}, {descriptionText:"Ho", descriptionHasTech:["c", "c++"]}];

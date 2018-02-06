@@ -27,6 +27,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "jsdom": "^11.6.2",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
@@ -111,6 +112,6 @@
     "nyc": "^11.4.1",
     "react-addons-test-utils": "^15.6.2",
     "redux-mock-store": "^1.5.1",
-    "sinon": "^4.1.6"
+    "sinon": "^4.2.2"
   }
 }
