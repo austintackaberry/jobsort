@@ -10,6 +10,10 @@ jobSort() is a web application that queries a MySQL database for Hacker News dat
 In order to run a dev server on your local host, you will need to first install all the required npm packages.
 
 `npm install`
+
+`cd react-backend && npm install`
+
+`cd client && npm install`
   
 Next you will need to navigate to the client folder and execute:
 
