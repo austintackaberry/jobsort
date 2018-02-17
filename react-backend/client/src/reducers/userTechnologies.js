@@ -14,7 +14,7 @@ function userTechnologies(state = [], action) {
       action.weight === '' ? (weight = 0) : (weight = action.weight);
       return [
         ...state.slice(0, action.index),
-        { language: state[action.index].language, weight: weight },
+        { language: state[action.index].language, weight },
         ...state.slice(action.index + 1),
       ];
     }

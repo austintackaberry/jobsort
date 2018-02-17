@@ -7,7 +7,7 @@ import * as actionCreators from '../actions/actionCreators.js';
 
 export class UserInput extends Component {
   render() {
-    let userTechnologies = this.props.userTechnologies;
+    const userTechnologies = this.props.userTechnologies;
 
     return (
       <div>
@@ -34,27 +34,25 @@ export class UserInput extends Component {
             </p>
             <table id="lang-table">
               <tbody>
-                {userTechnologies.map((technology, i) => {
-                  return (
-                    <tr>
-                      <td className="table-col-lang">
-                        {technology.language}:{' '}
-                      </td>
-                      <td>
-                        <input
-                          data-lpignore="true"
-                          className="weight-input textbox"
-                          type="number"
-                          ref={'langWeight' + i}
-                          onChange={this.props.changeUserTechnologyWeight.bind(
+                {userTechnologies.map((technology, i) => (
+                  <tr>
+                    <td className="table-col-lang">
+                      {technology.language}:{' '}
+                    </td>
+                    <td>
+                      <input
+                        data-lpignore="true"
+                        className="weight-input textbox"
+                        type="number"
+                        ref={`langWeight${i}`}
+                        onChange={this.props.changeUserTechnologyWeight.bind(
                             this,
-                            i
+                            i,
                           )}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+                      />
+                    </td>
+                  </tr>
+                  ))}
               </tbody>
             </table>
           </div>

@@ -35,7 +35,7 @@ export class SearchResults extends Component {
             id="show-full-descriptions"
             onClick={this.props.showFullDescriptionsButtonClicked.bind(
               null,
-              this.props.listings
+              this.props.listings,
             )}
           >
             show full descriptions
@@ -47,7 +47,7 @@ export class SearchResults extends Component {
             id="show-short-descriptions"
             onClick={this.props.showShortDescriptionsButtonClicked.bind(
               null,
-              this.props.listings
+              this.props.listings,
             )}
           >
             show short descriptions
@@ -63,22 +63,20 @@ export class SearchResults extends Component {
           </button>
         )}
         <div id="listing-container">
-          {this.props.listings.map((listing, index) => {
-            return (
-              <JobListing
-                listing={listing}
-                index={index}
-                handleHideListing={index =>
+          {this.props.listings.map((listing, index) => (
+            <JobListing
+              listing={listing}
+              index={index}
+              handleHideListing={index =>
                   this.props.hideListing.bind(null, index, this.props.listings)
                 }
-                handleReadMoreClick={index => this.readMoreClicked(index)}
-                handleReadLessClick={(event, index) =>
+              handleReadMoreClick={index => this.readMoreClicked(index)}
+              handleReadLessClick={(event, index) =>
                   this.readLessClicked(event, index)
                 }
-                key={index}
-              />
-            );
-          })}
+              key={index}
+            />
+            ))}
         </div>
       </div>
     );

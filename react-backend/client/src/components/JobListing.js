@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 
 class JobListing extends Component {
   render() {
-    let listing = this.props.listing;
-    let index = this.props.index;
+    const listing = this.props.listing;
+    const index = this.props.index;
     if (listing.hidden) {
       return null;
     }

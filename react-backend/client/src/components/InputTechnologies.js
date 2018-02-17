@@ -13,9 +13,7 @@ class InputTechnologies extends Component {
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
     if (
-      !userTechnologies.some(element => {
-        return element.language === lastUserAddedTechnology;
-      }) &&
+      !userTechnologies.some(element => element.language === lastUserAddedTechnology) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
       this.refs.lastUserAddedTechnology.value = '';
@@ -30,24 +28,22 @@ class InputTechnologies extends Component {
   }
 
   render() {
-    var userTechnologies = this.props.userTechnologies.slice();
-    var userTechnologiesJSX = [];
+    const userTechnologies = this.props.userTechnologies.slice();
+    const userTechnologiesJSX = [];
     for (let i = 0; i < userTechnologies.length; i++) {
-      userTechnologiesJSX.push(
-        <div className="user-lang-div">
-          <button
-            id={'langButt' + i}
-            className="exit"
-            onClick={this.removeTechnology}
-          >
+      userTechnologiesJSX.push(<div className="user-lang-div">
+        <button
+          id={`langButt${i}`}
+          className="exit"
+          onClick={this.removeTechnology}
+        >
             &#10006;
-          </button>
-          <span className="user-lang-span">{userTechnologies[i].language}</span>
-        </div>
-      );
+        </button>
+        <span className="user-lang-span">{userTechnologies[i].language}</span>
+      </div>);
     }
 
-    var allTechs = this.props.allTechs.slice();
+    const allTechs = this.props.allTechs.slice();
     let allTechsJSX = [];
     for (let i = 0; i < allTechs.length; i++) {
       allTechsJSX.push(<option value={allTechs[i]} key={i} />);

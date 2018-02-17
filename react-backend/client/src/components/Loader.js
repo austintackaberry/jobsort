@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 
 class Loader extends Component {
   componentDidUpdate() {
-    let loaderActive = this.props.loaderActive;
+    const loaderActive = this.props.loaderActive;
     if (loaderActive) {
       this.refs.loaderEl.focus();
     }
   }
 
   render() {
-    let currentLoaderText = this.props.currentLoaderText;
-    let loaderActive = this.props.loaderActive;
+    const currentLoaderText = this.props.currentLoaderText;
+    const loaderActive = this.props.loaderActive;
     if (loaderActive) {
       return (
         <input

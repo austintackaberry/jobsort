@@ -90,7 +90,7 @@ export class App extends Component {
       userTechnologies: [...this.props.userTechnologies],
     };
     this.activateLoader(userInputData);
-    return asyncFetchData(userInputData).then(listings => {
+    return asyncFetchData(userInputData).then((listings) => {
       this.props.receivedJobListingResults(listings);
       this.deactivateLoader();
       return Promise.resolve(true);
@@ -98,11 +98,11 @@ export class App extends Component {
   }
 
   activateLoader(userInputData) {
-    let loaderText = this.generateLoaderText(userInputData);
+    const loaderText = this.generateLoaderText(userInputData);
     this.props.activateLoader();
     let loaderTextCopy = loaderText.split('');
     let currentLoaderText = '';
-    let intervalFn = () => {
+    const intervalFn = () => {
       if (loaderTextCopy.length === 0) {
         currentLoaderText = '';
         loaderTextCopy = loaderText.split('');
@@ -121,9 +121,7 @@ export class App extends Component {
   generateLoaderText(userInputData) {
     let userDataText = '{';
     userInputData.userTechnologies.map((element, i) => {
-      userDataText = userDataText.concat(
-        element.language + ': ' + element.weight
-      );
+      userDataText = userDataText.concat(`${element.language}: ${element.weight}`);
       if (i + 1 < userInputData.userTechnologies.length) {
         userDataText = userDataText.concat(', ');
       }
@@ -131,11 +129,11 @@ export class App extends Component {
     });
     userDataText = userDataText.concat('}');
     return (
-      "jobSort({location: '" +
-      userInputData.userLocation +
-      "', technologies: " +
-      userDataText +
-      '});'
+      `jobSort({location: '${
+        userInputData.userLocation
+      }', technologies: ${
+        userDataText
+      }});`
     );
   }
 
@@ -164,10 +162,8 @@ export class App extends Component {
         <div id="content-lvl1" style={contentLvl1Style}>
           <div id="content-lvl2">
             <UserInput
-              onSubmit={event => {
-                this.getJobListings(event).then(res => {
-                  return res;
-                });
+              onSubmit={(event) => {
+                this.getJobListings(event).then(res => res);
               }}
               allTechs={this.allTechs}
             />
