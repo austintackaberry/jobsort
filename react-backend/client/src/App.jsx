@@ -19,7 +19,7 @@ export async function asyncFetchData(userInputData) {
   return response;
 }
 
-function generateLoaderText(userInputData) {
+export function generateLoaderText(userInputData) {
   let userDataText = '{';
   userInputData.userTechnologies.map((element, i) => {
     userDataText = userDataText.concat(
@@ -184,8 +184,8 @@ App.propTypes = {
   activateLoader: PropTypes.func.isRequired,
   setCurrentLoaderText: PropTypes.func.isRequired,
   deactivateLoader: PropTypes.func.isRequired,
-  currentLoaderText: PropTypes.string.isRequired,
-  loaderActive: PropTypes.bool.isRequired,
+  currentLoaderText: PropTypes.string,
+  loaderActive: PropTypes.bool,
 };
 
 function mapStateToProps(state) {

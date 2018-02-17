@@ -71,7 +71,6 @@ const shallowWrapper = shallow(
 const getJobListingsSpy = sinon.spy(App.prototype, "getJobListings");
 const activateLoaderSpy = sinon.spy(App.prototype, "activateLoader");
 const deactivateLoaderSpy = sinon.spy(App.prototype, "deactivateLoader");
-const generateLoaderTextSpy = sinon.spy(App.prototype, "generateLoaderText");
 
 function mockFetch(status, body) {
   const mockResponse = new global.Response(JSON.stringify(body), {

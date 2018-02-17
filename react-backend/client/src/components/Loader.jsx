@@ -29,8 +29,8 @@ class Loader extends Component {
 }
 
 Loader.propTypes = {
-  loaderActive: PropTypes.bool.isRequired,
-  currentLoaderText: PropTypes.string.isRequired,
+  loaderActive: PropTypes.bool,
+  currentLoaderText: PropTypes.string,
 };
 
 export default Loader;
