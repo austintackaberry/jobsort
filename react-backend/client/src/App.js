@@ -128,13 +128,9 @@ export class App extends Component {
       return true;
     });
     userDataText = userDataText.concat('}');
-    return (
-      `jobSort({location: '${
-        userInputData.userLocation
-      }', technologies: ${
-        userDataText
-      }});`
-    );
+    return `jobSort({location: '${
+      userInputData.userLocation
+    }', technologies: ${userDataText}});`;
   }
 
   render() {

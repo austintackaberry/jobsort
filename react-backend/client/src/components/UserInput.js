@@ -36,9 +36,7 @@ export class UserInput extends Component {
               <tbody>
                 {userTechnologies.map((technology, i) => (
                   <tr>
-                    <td className="table-col-lang">
-                      {technology.language}:{' '}
-                    </td>
+                    <td className="table-col-lang">{technology.language}: </td>
                     <td>
                       <input
                         data-lpignore="true"
@@ -46,13 +44,13 @@ export class UserInput extends Component {
                         type="number"
                         ref={`langWeight${i}`}
                         onChange={this.props.changeUserTechnologyWeight.bind(
-                            this,
-                            i,
-                          )}
+                          this,
+                          i,
+                        )}
                       />
                     </td>
                   </tr>
-                  ))}
+                ))}
               </tbody>
             </table>
           </div>

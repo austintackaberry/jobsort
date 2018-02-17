@@ -68,15 +68,15 @@ export class SearchResults extends Component {
               listing={listing}
               index={index}
               handleHideListing={index =>
-                  this.props.hideListing.bind(null, index, this.props.listings)
-                }
+                this.props.hideListing.bind(null, index, this.props.listings)
+              }
               handleReadMoreClick={index => this.readMoreClicked(index)}
               handleReadLessClick={(event, index) =>
-                  this.readLessClicked(event, index)
-                }
+                this.readLessClicked(event, index)
+              }
               key={index}
             />
-            ))}
+          ))}
         </div>
       </div>
     );
