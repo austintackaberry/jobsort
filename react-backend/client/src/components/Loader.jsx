@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 
 class Loader extends Component {
   componentDidUpdate() {
-    const loaderActive = this.props.loaderActive;
+    const { loaderActive } = this.props;
     if (loaderActive) {
-      this.refs.loaderEl.focus();
+      this.loaderEl.focus();
     }
   }
 
   render() {
-    const currentLoaderText = this.props.currentLoaderText;
-    const loaderActive = this.props.loaderActive;
+    const { loaderActive, currentLoaderText } = this.props;
     if (loaderActive) {
       return (
         <input
@@ -18,7 +17,9 @@ class Loader extends Component {
           data-lpignore="true"
           readOnly="true"
           value={currentLoaderText}
-          ref="loaderEl"
+          ref={(el) => {
+            this.loaderEl = el;
+          }}
         />
       );
     }

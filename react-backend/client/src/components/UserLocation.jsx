@@ -14,7 +14,7 @@ class UserLocation extends Component {
   render() {
     return (
       <div className="content-group">
-        <h3 className="instructions">input location or "remote"</h3>
+        <h3 className="instructions">input location or &quotremote&quot</h3>
         <div style={{ marginTop: '7px' }}>
           <form>
             <input
@@ -22,7 +22,7 @@ class UserLocation extends Component {
               className="textbox"
               data-lpignore="true"
               placeholder="location"
-              onChange={this.handleUserLocationChange.bind(this)}
+              onChange={this.handleUserLocationChange}
             />
           </form>
         </div>

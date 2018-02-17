@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 
 class JobListing extends Component {
   render() {
-    const listing = this.props.listing;
-    const index = this.props.index;
+    const { listing, index } = this.props;
     if (listing.hidden) {
       return null;
     }
@@ -39,24 +38,24 @@ class JobListing extends Component {
             <span
               dangerouslySetInnerHTML={{ __html: listing.descriptionShown }}
             />
-            <a
+            <button
               className="read-less"
               data-value={index}
               onClick={this.props.handleReadLessClick.bind(this, index)}
             >
               {listing.readMoreOrLess}
-            </a>
+            </button>
           </p>
         ) : (
           <p className="listing-item short-description">
             {listing.descriptionShown}
-            <a
+            <button
               className="read-more"
               data-value={index}
               onClick={this.props.handleReadMoreClick.bind(null, index)}
             >
               {listing.readMoreOrLess}
-            </a>
+            </button>
           </p>
         )}
       </div>

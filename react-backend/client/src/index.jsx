@@ -1,15 +1,15 @@
+import { Provider } from 'react-redux';
+import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import 'babel-polyfill';
-import App from './App';
+import ConnectedApp from './App';
 import registerServiceWorker from './registerServiceWorker';
-import { Provider } from 'react-redux';
 import store from './store';
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ConnectedApp />
   </Provider>,
   document.getElementById('root'),
 );

@@ -9,14 +9,14 @@ class InputTechnologies extends Component {
   }
 
   addTechnology(event) {
-    const lastUserAddedTechnology = this.refs.lastUserAddedTechnology.value.toLowerCase();
+    const lastUserAddedTechnology = this.lastUserAddedTechnology.value.toLowerCase();
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
     if (
       !userTechnologies.some(element => element.language === lastUserAddedTechnology) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
-      this.refs.lastUserAddedTechnology.value = '';
+      this.lastUserAddedTechnology.value = '';
       this.props.addTechnology(lastUserAddedTechnology);
     }
     event.preventDefault();
@@ -30,7 +30,7 @@ class InputTechnologies extends Component {
   render() {
     const userTechnologies = this.props.userTechnologies.slice();
     const userTechnologiesJSX = [];
-    for (let i = 0; i < userTechnologies.length; i++) {
+    for (let i = 0; i < userTechnologies.length; i += 1) {
       userTechnologiesJSX.push(<div className="user-lang-div">
         <button
           id={`langButt${i}`}
@@ -45,7 +45,7 @@ class InputTechnologies extends Component {
 
     const allTechs = this.props.allTechs.slice();
     let allTechsJSX = [];
-    for (let i = 0; i < allTechs.length; i++) {
+    for (let i = 0; i < allTechs.length; i += 1) {
       allTechsJSX.push(<option value={allTechs[i]} key={i} />);
     }
     allTechsJSX = [
@@ -65,7 +65,9 @@ class InputTechnologies extends Component {
               data-lpignore="true"
               list="technologies"
               name="technologies"
-              ref="lastUserAddedTechnology"
+              ref={(el) => {
+                this.lastUserAddedTechnology = el;
+              }}
             />
             {allTechsJSX}
             <input type="submit" id="add" value="add" />

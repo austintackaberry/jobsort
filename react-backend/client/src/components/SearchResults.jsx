@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import JobListing from './JobListing.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actionCreators from '../actions/actionCreators.js';
+import React, { Component } from 'react';
+import JobListing from './JobListing';
+import * as actionCreators from '../actions/actionCreators';
 
 export class SearchResults extends Component {
   /* istanbul ignore next */
@@ -31,7 +31,6 @@ export class SearchResults extends Component {
         {this.props.showFullDescriptionsButtonVisible && (
           <button
             className="listing-options show-full-descriptions button"
-            ref="showFullDescriptions"
             id="show-full-descriptions"
             onClick={this.props.showFullDescriptionsButtonClicked.bind(
               null,
@@ -67,14 +66,12 @@ export class SearchResults extends Component {
             <JobListing
               listing={listing}
               index={index}
-              handleHideListing={index =>
+              handleHideListing={() =>
                 this.props.hideListing.bind(null, index, this.props.listings)
               }
-              handleReadMoreClick={index => this.readMoreClicked(index)}
-              handleReadLessClick={(event, index) =>
-                this.readLessClicked(event, index)
-              }
-              key={index}
+              handleReadMoreClick={() => this.readMoreClicked(index)}
+              handleReadLessClick={event => this.readLessClicked(event, index)}
+              key={listing.id}
             />
           ))}
         </div>

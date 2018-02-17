@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import UserLocation from './UserLocation.js';
-import InputTechnologies from './InputTechnologies.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actionCreators from '../actions/actionCreators.js';
+import UserLocation from './UserLocation';
+import InputTechnologies from './InputTechnologies';
+import * as actionCreators from '../actions/actionCreators';
 
 export class UserInput extends Component {
   render() {
-    const userTechnologies = this.props.userTechnologies;
+    const { userTechnologies } = this.props;
 
     return (
       <div>

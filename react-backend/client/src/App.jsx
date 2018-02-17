@@ -1,21 +1,36 @@
 import React, { Component } from 'react';
-import './App.css';
-import SearchResults from './components/SearchResults.js';
-import Loader from './components/Loader.js';
-import UserInput from './components/UserInput.js';
 import 'babel-polyfill';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as actionCreators from './actions/actionCreators.js';
+import './App.css';
+import ConnectedSearchResults from './components/SearchResults';
+import Loader from './components/Loader';
+import ConnectedUserInput from './components/UserInput';
+import * as actionCreators from './actions/actionCreators';
 
 export async function asyncFetchData(userInputData) {
   const fetchRes = await fetch('/getresults/', {
     method: 'POST',
     body: JSON.stringify(userInputData),
   });
-  if (!fetchRes) return;
+  if (!fetchRes) return false;
   const response = await fetchRes.json();
   return response;
+}
+
+function generateLoaderText(userInputData) {
+  let userDataText = '{';
+  userInputData.userTechnologies.map((element, i) => {
+    userDataText = userDataText.concat(`${element.language}: ${element.weight}`);
+    if (i + 1 < userInputData.userTechnologies.length) {
+      userDataText = userDataText.concat(', ');
+    }
+    return true;
+  });
+  userDataText = userDataText.concat('}');
+  return `jobSort({location: '${
+    userInputData.userLocation
+  }', technologies: ${userDataText}});`;
 }
 
 export class App extends Component {
@@ -23,7 +38,6 @@ export class App extends Component {
   constructor() {
     super();
     this.activateLoader = this.activateLoader.bind(this);
-    this.generateLoaderText = this.generateLoaderText.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
     this.allTechs = [
       'javascript',
@@ -98,7 +112,7 @@ export class App extends Component {
   }
 
   activateLoader(userInputData) {
-    const loaderText = this.generateLoaderText(userInputData);
+    const loaderText = generateLoaderText(userInputData);
     this.props.activateLoader();
     let loaderTextCopy = loaderText.split('');
     let currentLoaderText = '';
@@ -116,21 +130,6 @@ export class App extends Component {
   deactivateLoader() {
     window.clearInterval(this.loaderInterval);
     this.props.deactivateLoader();
-  }
-
-  generateLoaderText(userInputData) {
-    let userDataText = '{';
-    userInputData.userTechnologies.map((element, i) => {
-      userDataText = userDataText.concat(`${element.language}: ${element.weight}`);
-      if (i + 1 < userInputData.userTechnologies.length) {
-        userDataText = userDataText.concat(', ');
-      }
-      return true;
-    });
-    userDataText = userDataText.concat('}');
-    return `jobSort({location: '${
-      userInputData.userLocation
-    }', technologies: ${userDataText}});`;
   }
 
   render() {
@@ -157,7 +156,7 @@ export class App extends Component {
         </div>
         <div id="content-lvl1" style={contentLvl1Style}>
           <div id="content-lvl2">
-            <UserInput
+            <ConnectedUserInput
               onSubmit={(event) => {
                 this.getJobListings(event).then(res => res);
               }}
@@ -167,7 +166,7 @@ export class App extends Component {
               currentLoaderText={this.props.currentLoaderText}
               loaderActive={this.props.loaderActive}
             />
-            <SearchResults />
+            <ConnectedSearchResults />
           </div>
         </div>
       </div>
