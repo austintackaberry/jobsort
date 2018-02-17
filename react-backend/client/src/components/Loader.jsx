@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Loader extends Component {
   componentDidUpdate() {
@@ -17,7 +18,7 @@ class Loader extends Component {
           data-lpignore="true"
           readOnly="true"
           value={currentLoaderText}
-          ref={(el) => {
+          ref={el => {
             this.loaderEl = el;
           }}
         />
@@ -26,5 +27,10 @@ class Loader extends Component {
     return null;
   }
 }
+
+Loader.propTypes = {
+  loaderActive: PropTypes.bool.isRequired,
+  currentLoaderText: PropTypes.string.isRequired,
+};
 
 export default Loader;

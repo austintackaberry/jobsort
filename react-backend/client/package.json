@@ -26,6 +26,7 @@
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
     "promise": "8.0.1",
+    "prop-types": "^15.6.0",
     "raf": "3.4.0",
     "react": "^16.2.0",
     "react-dev-utils": "^4.2.1",
@@ -48,7 +49,7 @@
     "coveralls": "nyc report --reporter=text-lcov | node node_modules/.bin/coveralls",
     "test:watch": "npm test -- -w",
     "format": "prettier --trailing-comma es5 --single-quote --write 'src/*/*.js' 'src/*/*.jsx' 'src/*.js' 'src/*.jsx' 'src/*/!(node_modules)/**/*.js'",
-    "lint": "npm run format && eslint --ext .jsx,.js --fix --config .eslintrc.js src"
+    "lint": "npm run format && eslint --fix --ext .jsx,.js --config .eslintrc.js src"
   },
   "proxy": "http://localhost:3001/",
   "jest": {
@@ -101,6 +102,7 @@
     "chai": "^4.1.2",
     "enzyme": "^3.3.0",
     "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",

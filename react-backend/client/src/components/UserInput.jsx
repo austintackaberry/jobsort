@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import UserLocation from './UserLocation';
 import InputTechnologies from './InputTechnologies';
 import * as actionCreators from '../actions/actionCreators';
@@ -24,7 +25,7 @@ export class UserInput extends Component {
           }
           removeTechnology={index => this.props.removeTechnology(index)}
         />
-        <form id="weightsForm" onSubmit={this.props.onSubmit.bind(this)}>
+        <form id="weightsForm" onSubmit={this.props.onSubmit}>
           <div className="content-group">
             <h3 className="instructions">
               assign weights to each technology based on how well you know them
@@ -35,7 +36,7 @@ export class UserInput extends Component {
             <table id="lang-table">
               <tbody>
                 {userTechnologies.map((technology, i) => (
-                  <tr>
+                  <tr key={technology.id}>
                     <td className="table-col-lang">{technology.language}: </td>
                     <td>
                       <input
@@ -43,10 +44,9 @@ export class UserInput extends Component {
                         className="weight-input textbox"
                         type="number"
                         ref={`langWeight${i}`}
-                        onChange={this.props.changeUserTechnologyWeight.bind(
-                          this,
-                          i,
-                        )}
+                        onChange={e =>
+                          this.props.changeUserTechnologyWeight(i, e)
+                        }
                       />
                     </td>
                   </tr>
@@ -65,6 +65,16 @@ export class UserInput extends Component {
     );
   }
 }
+
+UserInput.propTypes = {
+  userTechnologies: PropTypes.arrayOf(PropTypes.object).isRequired,
+  changeUserLocation: PropTypes.func.isRequired,
+  allTechs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  addTechnology: PropTypes.func.isRequired,
+  removeTechnology: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  changeUserTechnologyWeight: PropTypes.func.isRequired,
+};
 
 function mapStateToProps(state) {
   return {

@@ -1,8 +1,8 @@
 function listings(state = [], action) {
   switch (action.type) {
     case 'RECEIVED_JOB_LISTING_RESULTS': {
-      let stateListings = action.stateListings.slice();
-      stateListings = stateListings.map((element) => {
+      let stateListings = action.listings.slice();
+      stateListings = stateListings.map(element => {
         const listing = element;
         let text = listing.descriptionText.slice(0, 200);
         text = text.slice(0, text.lastIndexOf(' '));
@@ -15,7 +15,7 @@ function listings(state = [], action) {
     }
     case 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED': {
       let stateListings = state.slice();
-      stateListings = stateListings.map((element) => {
+      stateListings = stateListings.map(element => {
         const listing = element;
         listing.descriptionShown = listing.descriptionHTML;
         listing.readMoreOrLess = 'read less';
@@ -25,7 +25,7 @@ function listings(state = [], action) {
     }
     case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED': {
       let stateListings = state.slice();
-      stateListings = stateListings.map((element) => {
+      stateListings = stateListings.map(element => {
         const listing = element;
         let text = listing.descriptionText.slice(0, 200);
         text = text.slice(0, text.lastIndexOf(' '));
@@ -38,7 +38,7 @@ function listings(state = [], action) {
     }
     case 'UNHIDE_ALL_BUTTON_CLICKED': {
       let stateListings = state.slice();
-      stateListings = stateListings.map((element) => {
+      stateListings = stateListings.map(element => {
         const listing = element;
         listing.hidden = false;
         return listing;

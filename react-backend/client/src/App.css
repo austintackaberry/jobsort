@@ -190,6 +190,17 @@ a {
   display: inline-block;
 }
 
+.read-less, .read-more {
+     background:none;
+     color: #205254;
+     border:none;
+     padding:0;
+     font: inherit;
+     /*border is optional*/
+     border-bottom:1px solid #444;
+     cursor: pointer;
+}
+
 #checkbox-container {
   margin: 0 auto;
   text-align: center;

@@ -1,7 +1,11 @@
 function userTechnologies(state = [], action) {
   switch (action.type) {
     case 'ADD_TECHNOLOGY': {
-      return [...state, { language: action.technologyToAdd, weight: '0' }];
+      let id = 1;
+      if (state.length !== 0) {
+        id = state[state.length - 1].id + 1;
+      }
+      return [...state, { language: action.technologyToAdd, weight: '0', id }];
     }
     case 'REMOVE_TECHNOLOGY': {
       return [
@@ -16,7 +20,11 @@ function userTechnologies(state = [], action) {
       }
       return [
         ...state.slice(0, action.index),
-        { language: state[action.index].language, weight },
+        {
+          language: state[action.index].language,
+          weight,
+          id: state[action.index].id,
+        },
         ...state.slice(action.index + 1),
       ];
     }

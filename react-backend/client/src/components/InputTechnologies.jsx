@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class InputTechnologies extends Component {
   /* istanbul ignore next */
@@ -13,7 +14,9 @@ class InputTechnologies extends Component {
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
     if (
-      !userTechnologies.some(element => element.language === lastUserAddedTechnology) &&
+      !userTechnologies.some(
+        element => element.language === lastUserAddedTechnology
+      ) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
       this.lastUserAddedTechnology.value = '';
@@ -31,16 +34,18 @@ class InputTechnologies extends Component {
     const userTechnologies = this.props.userTechnologies.slice();
     const userTechnologiesJSX = [];
     for (let i = 0; i < userTechnologies.length; i += 1) {
-      userTechnologiesJSX.push(<div className="user-lang-div">
-        <button
-          id={`langButt${i}`}
-          className="exit"
-          onClick={this.removeTechnology}
-        >
+      userTechnologiesJSX.push(
+        <div className="user-lang-div" key={userTechnologies[i].id}>
+          <button
+            id={`langButt${i}`}
+            className="exit"
+            onClick={this.removeTechnology}
+          >
             &#10006;
-        </button>
-        <span className="user-lang-span">{userTechnologies[i].language}</span>
-      </div>);
+          </button>
+          <span className="user-lang-span">{userTechnologies[i].language}</span>
+        </div>
+      );
     }
 
     const allTechs = this.props.allTechs.slice();
@@ -65,7 +70,7 @@ class InputTechnologies extends Component {
               data-lpignore="true"
               list="technologies"
               name="technologies"
-              ref={(el) => {
+              ref={el => {
                 this.lastUserAddedTechnology = el;
               }}
             />
@@ -78,5 +83,12 @@ class InputTechnologies extends Component {
     );
   }
 }
+
+InputTechnologies.propTypes = {
+  userTechnologies: PropTypes.arrayOf(PropTypes.object).isRequired,
+  allTechs: PropTypes.arrayOf(PropTypes.string).isRequired,
+  addTechnology: PropTypes.func.isRequired,
+  removeTechnology: PropTypes.func.isRequired,
+};
 
 export default InputTechnologies;

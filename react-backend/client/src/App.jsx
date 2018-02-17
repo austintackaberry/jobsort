@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import 'babel-polyfill';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import './App.css';
 import ConnectedSearchResults from './components/SearchResults';
 import Loader from './components/Loader';
@@ -21,7 +22,9 @@ export async function asyncFetchData(userInputData) {
 function generateLoaderText(userInputData) {
   let userDataText = '{';
   userInputData.userTechnologies.map((element, i) => {
-    userDataText = userDataText.concat(`${element.language}: ${element.weight}`);
+    userDataText = userDataText.concat(
+      `${element.language}: ${element.weight}`
+    );
     if (i + 1 < userInputData.userTechnologies.length) {
       userDataText = userDataText.concat(', ');
     }
@@ -104,7 +107,7 @@ export class App extends Component {
       userTechnologies: [...this.props.userTechnologies],
     };
     this.activateLoader(userInputData);
-    return asyncFetchData(userInputData).then((listings) => {
+    return asyncFetchData(userInputData).then(listings => {
       this.props.receivedJobListingResults(listings);
       this.deactivateLoader();
       return Promise.resolve(true);
@@ -157,7 +160,7 @@ export class App extends Component {
         <div id="content-lvl1" style={contentLvl1Style}>
           <div id="content-lvl2">
             <ConnectedUserInput
-              onSubmit={(event) => {
+              onSubmit={event => {
                 this.getJobListings(event).then(res => res);
               }}
               allTechs={this.allTechs}
@@ -173,6 +176,17 @@ export class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  userLocation: PropTypes.string.isRequired,
+  userTechnologies: PropTypes.arrayOf(PropTypes.object).isRequired,
+  receivedJobListingResults: PropTypes.func.isRequired,
+  activateLoader: PropTypes.func.isRequired,
+  setCurrentLoaderText: PropTypes.func.isRequired,
+  deactivateLoader: PropTypes.func.isRequired,
+  currentLoaderText: PropTypes.string.isRequired,
+  loaderActive: PropTypes.bool.isRequired,
+};
 
 function mapStateToProps(state) {
   return {
