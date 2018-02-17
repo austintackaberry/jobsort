@@ -1,5 +1,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/austintackaberry/jobsort/badge.svg?branch=master)](https://coveralls.io/github/austintackaberry/jobsort?branch=master)
 [![Build Status](https://travis-ci.org/austintackaberry/jobsort.svg?branch=master)](https://travis-ci.org/austintackaberry/jobsort)
+[![eslint: airbnb](https://img.shields.io/badge/eslint-airbnb-%23fd5c63.svg)](https://www.npmjs.com/package/eslint-config-airbnb)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 # jobSort()
