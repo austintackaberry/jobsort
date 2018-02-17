@@ -10,8 +10,10 @@ function userTechnologies(state = [], action) {
       ];
     }
     case 'CHANGE_USER_TECHNOLOGY_WEIGHT': {
-      let weight;
-      action.weight === '' ? (weight = 0) : (weight = action.weight);
+      let { weight } = action;
+      if (weight === '') {
+        weight = 0;
+      }
       return [
         ...state.slice(0, action.index),
         { language: state[action.index].language, weight },

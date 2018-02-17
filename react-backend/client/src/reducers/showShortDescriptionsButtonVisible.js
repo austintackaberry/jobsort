@@ -6,10 +6,11 @@ function showShortDescriptionsButtonVisible(state = [], action) {
       return true;
     case 'READ_MORE_CLICKED':
       return true;
-    case 'READ_LESS_CLICKED':
+    case 'READ_LESS_CLICKED': {
       const listings = action.listings.slice();
       listings.splice(action.index, 1);
       return listings.some(listing => listing.readMoreOrLess === 'read less');
+    }
     default:
       return state;
   }

@@ -1,8 +1,9 @@
 function listings(state = [], action) {
   switch (action.type) {
     case 'RECEIVED_JOB_LISTING_RESULTS': {
-      const listings = action.listings.slice();
-      listings.map((listing) => {
+      let stateListings = action.stateListings.slice();
+      stateListings = stateListings.map((element) => {
+        const listing = element;
         let text = listing.descriptionText.slice(0, 200);
         text = text.slice(0, text.lastIndexOf(' '));
         text = text.concat('...');
@@ -10,20 +11,22 @@ function listings(state = [], action) {
         listing.readMoreOrLess = 'read more';
         return listing;
       });
-      return listings;
+      return stateListings;
     }
     case 'SHOW_FULL_DESCRIPTIONS_BUTTON_CLICKED': {
-      const listings = state.slice();
-      listings.map((listing) => {
+      let stateListings = state.slice();
+      stateListings = stateListings.map((element) => {
+        const listing = element;
         listing.descriptionShown = listing.descriptionHTML;
         listing.readMoreOrLess = 'read less';
         return listing;
       });
-      return listings;
+      return stateListings;
     }
     case 'SHOW_SHORT_DESCRIPTIONS_BUTTON_CLICKED': {
-      const listings = state.slice();
-      listings.map((listing) => {
+      let stateListings = state.slice();
+      stateListings = stateListings.map((element) => {
+        const listing = element;
         let text = listing.descriptionText.slice(0, 200);
         text = text.slice(0, text.lastIndexOf(' '));
         text = text.concat('...');
@@ -31,38 +34,39 @@ function listings(state = [], action) {
         listing.readMoreOrLess = 'read more';
         return listing;
       });
-      return listings;
+      return stateListings;
     }
     case 'UNHIDE_ALL_BUTTON_CLICKED': {
-      const listings = state.slice();
-      listings.map((listing) => {
+      let stateListings = state.slice();
+      stateListings = stateListings.map((element) => {
+        const listing = element;
         listing.hidden = false;
         return listing;
       });
-      return listings;
+      return stateListings;
     }
     case 'READ_MORE_CLICKED': {
-      const listings = state.slice();
-      const listing = listings[action.index];
+      const stateListings = state.slice();
+      const listing = stateListings[action.index];
       listing.descriptionShown = listing.descriptionHTML;
       listing.readMoreOrLess = 'read less';
-      return listings;
+      return stateListings;
     }
     case 'READ_LESS_CLICKED': {
-      const listings = state.slice();
-      const listing = listings[action.index];
+      const stateListings = state.slice();
+      const listing = stateListings[action.index];
       let text = listing.descriptionText.slice(0, 200);
       text = text.slice(0, text.lastIndexOf(' '));
       text = text.concat('...');
       listing.descriptionShown = text;
       listing.readMoreOrLess = 'read more';
-      return listings;
+      return stateListings;
     }
     case 'HIDE_LISTING': {
-      const listings = state.slice();
-      const listing = listings[action.index];
+      const stateListings = state.slice();
+      const listing = stateListings[action.index];
       listing.hidden = true;
-      return listings;
+      return stateListings;
     }
     default:
       return state;
