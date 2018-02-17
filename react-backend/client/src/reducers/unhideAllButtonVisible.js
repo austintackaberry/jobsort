@@ -1,4 +1,3 @@
-
 function unhideAllButtonVisible(state = [], action) {
   switch (action.type) {
     case 'HIDE_LISTING': {

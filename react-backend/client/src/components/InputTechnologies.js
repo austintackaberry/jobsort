@@ -12,8 +12,13 @@ class InputTechnologies extends Component {
     const lastUserAddedTechnology = this.refs.lastUserAddedTechnology.value.toLowerCase();
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
-    if (!userTechnologies.some((element) => {return element.language === lastUserAddedTechnology}) && allTechs.includes(lastUserAddedTechnology)) {
-      this.refs.lastUserAddedTechnology.value ="";
+    if (
+      !userTechnologies.some(element => {
+        return element.language === lastUserAddedTechnology;
+      }) &&
+      allTechs.includes(lastUserAddedTechnology)
+    ) {
+      this.refs.lastUserAddedTechnology.value = '';
       this.props.addTechnology(lastUserAddedTechnology);
     }
     event.preventDefault();
@@ -30,7 +35,13 @@ class InputTechnologies extends Component {
     for (let i = 0; i < userTechnologies.length; i++) {
       userTechnologiesJSX.push(
         <div className="user-lang-div">
-          <button id={'langButt'+i} className="exit" onClick={this.removeTechnology}>&#10006;</button>
+          <button
+            id={'langButt' + i}
+            className="exit"
+            onClick={this.removeTechnology}
+          >
+            &#10006;
+          </button>
           <span className="user-lang-span">{userTechnologies[i].language}</span>
         </div>
       );
@@ -44,17 +55,22 @@ class InputTechnologies extends Component {
     allTechsJSX = [
       <datalist id="technologies" key={0}>
         {allTechsJSX}
-      </datalist>
+      </datalist>,
     ];
 
     return (
       <div className="content-group">
-        <h3 className="instructions">
-          input technologies that you know
-        </h3>
-        <div style={{"marginTop":"7px"}}>
-          <form id="addTechnologyForm" onSubmit={(e) => this.addTechnology(e)}>
-            <input id="userLangInput" className="textbox" data-lpignore='true' list='technologies' name='technologies' ref="lastUserAddedTechnology"/>
+        <h3 className="instructions">input technologies that you know</h3>
+        <div style={{ marginTop: '7px' }}>
+          <form id="addTechnologyForm" onSubmit={e => this.addTechnology(e)}>
+            <input
+              id="userLangInput"
+              className="textbox"
+              data-lpignore="true"
+              list="technologies"
+              name="technologies"
+              ref="lastUserAddedTechnology"
+            />
             {allTechsJSX}
             <input type="submit" id="add" value="add" />
           </form>

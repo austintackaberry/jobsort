@@ -1,4 +1,3 @@
-
 function loaderActive(state = [], action) {
   switch (action.type) {
     case 'DEACTIVATE_LOADER': {

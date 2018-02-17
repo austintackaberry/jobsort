@@ -1,4 +1,3 @@
-
 function userLocation(state = [], action) {
   switch (action.type) {
     case 'CHANGE_USER_LOCATION': {

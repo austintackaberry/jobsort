@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 class Loader extends Component {
-
   componentDidUpdate() {
     let loaderActive = this.props.loaderActive;
     if (loaderActive) {
@@ -14,10 +13,16 @@ class Loader extends Component {
     let loaderActive = this.props.loaderActive;
     if (loaderActive) {
       return (
-        <input id="loader" data-lpignore='true' readOnly="true" value={currentLoaderText} ref="loaderEl" />
+        <input
+          id="loader"
+          data-lpignore="true"
+          readOnly="true"
+          value={currentLoaderText}
+          ref="loaderEl"
+        />
       );
     }
-    return (null);
+    return null;
   }
 }
 

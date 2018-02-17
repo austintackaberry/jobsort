@@ -52,7 +52,9 @@
     "test": "mocha --require isomorphic-fetch --require ./testSetup.js --compilers babel-core/register --require babel-polyfill ./test/*test.js",
     "coverage": "nyc mocha --require isomorphic-fetch --require ./testSetup.js --compilers babel-core/register --require babel-polyfill ./test/*test.js",
     "coveralls": "nyc report --reporter=text-lcov | node node_modules/.bin/coveralls",
-    "test:watch": "npm test -- -w"
+    "test:watch": "npm test -- -w",
+    "format": "prettier --trailing-comma es5 --single-quote --write 'src/*/*.js' 'src/*.js' 'src/*/!(node_modules)/**/*.js'",
+    "lint": "npm run format && eslint --fix --config .eslintrc src"
   },
   "proxy": "http://localhost:3001/",
   "jest": {
