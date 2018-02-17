@@ -177,6 +177,11 @@ export class App extends Component {
   }
 }
 
+App.defaultProps = {
+  loaderActive: false,
+  currentLoaderText: '',
+};
+
 App.propTypes = {
   userLocation: PropTypes.string.isRequired,
   userTechnologies: PropTypes.arrayOf(PropTypes.object).isRequired,
