@@ -8,8 +8,8 @@ import InputTechnologies from '../src/components/InputTechnologies'
 const onChange = sinon.spy();
 const testTechInputInAllTechs = "html";
 const testTechInputNotInAllTechs = "hockey";
-const userTechnologies = [{language:"css", weight: "1"}];
-const allTechs = ["javascript", testTechInputInAllTechs, "html", "react", "python"];
+const userTechnologies = [{language:"css", weight: "1", id:1}];
+const allTechs = ["javascript", testTechInputInAllTechs, "css", "react", "python"];
 
 const removeTechnologySpy = sinon.spy();
 const addTechnologySpy = sinon.spy();
@@ -40,12 +40,13 @@ describe('(Component) InputTechnologies', () => {
   const addTechnologyMethodSpy = sinon.spy(InputTechnologies.prototype, "addTechnology");
   const removeTechnologyMethodSpy = sinon.spy(InputTechnologies.prototype, "removeTechnology");
 
-  // it('should make a new button with the correct label when user submits form with tech in allTechs but not in userTechnologies', () => {
-  //   mountWrapper.lastUserAddedTechnology.value = testTechInputInAllTechs;
-  //   const form = mountWrapper.find('#addTechnologyForm');
-  //   mountWrapper.find('#addTechnologyForm').simulate('submit', form);
-  //   expect(addTechnologySpy.calledOnce);
-  // });
+  it('should make a new button with the correct label when user submits form with tech in allTechs but not in userTechnologies', () => {
+    mountWrapper.instance().lastUserAddedTechnology.value = testTechInputInAllTechs;
+    const form = mountWrapper.find('#addTechnologyForm');
+    mountWrapper.find('#addTechnologyForm').simulate('submit', form);
+    console.log(mountWrapper.debug());
+    expect(addTechnologySpy.calledOnce);
+  });
 
   it('should do nothing when user submits form with tech not in allTechs', () => {
     const numButtonsBefore = mountWrapper.find('button').length;
@@ -71,11 +72,11 @@ describe('(Component) InputTechnologies', () => {
   });
 
   it('should trigger onChange to be called once when adding tech', () => {
-    mountWrapper.find('#userLangInput').simulate('change', {target: {value: testTechInputInAllTechs}});
+    mountWrapper.instance().lastUserAddedTechnology.value = testTechInputInAllTechs;
     const form = wrapper.find('form');
     mountWrapper.find('form').simulate('submit', form);
     mountWrapper.find('#langButt0').simulate('click', {target:{id:"langButt0"}});
-    expect(onChange.calledTwice);
+    expect(onChange.calledOnce);
   });
 
 });

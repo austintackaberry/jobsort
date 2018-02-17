@@ -57,6 +57,20 @@ describe('(Component) JobListing', () => {
     expect(wrapper.find('.short-description')).to.have.length(1);
   })
 
+  it('should call handleReadMoreClick when read more is clicked', () => {
+    listing.readMoreOrLess = "read more";
+    wrapper.setProps({listing:listing});
+    wrapper.find('.read-more').simulate('click')
+    expect(handleReadMoreClickSpy.calledOnce);
+  })
+
+  it('should call handleReadLessClick when read less is clicked', () => {
+    listing.readMoreOrLess = "read less";
+    wrapper.setProps({listing:listing});
+    wrapper.find('.read-less').simulate('click')
+    expect(handleReadLessClickSpy.calledOnce);
+  })
+
   it('should show full description when read less is visible', () => {
     listing.readMoreOrLess = "read less";
     wrapper.setProps({listing:listing});

@@ -47,6 +47,9 @@ let store = mockStore(initialState);
 
 const readLessClickedSpy = sinon.spy();
 const readMoreClickedSpy = sinon.spy();
+const unhideAllButtonClickedSpy = sinon.spy();
+const showFullDescriptionsButtonClickedSpy = sinon.spy();
+const showShortDescriptionsButtonClickedSpy = sinon.spy();
 
 const changeState = (stateChangeObj) => {
   const initialState = stateChangeObj.initialState;
@@ -62,6 +65,9 @@ const mountWrapper = (store) => {
       <ConnectedSearchResults
         readLessClicked={readLessClickedSpy}
         readMoreClicked={readMoreClickedSpy}
+        unhideAllButtonClicked={unhideAllButtonClickedSpy}
+        showFullDescriptionsButtonClicked={showFullDescriptionsButtonClickedSpy}
+        showShortDescriptionsButtonClicked={showShortDescriptionsButtonClickedSpy}
       />
     </Provider>
   );
@@ -153,15 +159,36 @@ describe('(Component) SearchResults', () => {
     expect(wrapper.find('.unhide-all')).to.have.length(1);
   });
 
+  it('should call unhideAllButtonClicked when unhideAll button is clicked', () => {
+    let store = mockStore(changeState({initialState, changeType:"unhideAllButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
+    wrapper.find('.unhide-all').simulate('click');
+    expect(unhideAllButtonClickedSpy.calledOnce);
+  });
+
   it('should show showShortDescriptions button when showShortDescriptionsButtonVisible is true', () => {
     let store = mockStore(changeState({initialState, changeType:"showShortDescriptionsButtonVisible", changeValue:true}));
     wrapper = mountWrapper(store);
     expect(wrapper.find('.show-short-descriptions')).to.have.length(1);
   });
 
+  it('should call showShortDescriptionsButtonClicked when showShortDescriptions button is clicked', () => {
+    let store = mockStore(changeState({initialState, changeType:"showShortDescriptionsButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
+    wrapper.find('.show-short-descriptions').simulate('click');
+    expect(showShortDescriptionsButtonClickedSpy.calledOnce);
+  });
+
   it('should show showFullDescriptions button when showFullDescriptionsButtonVisible is true', () => {
     let store = mockStore(changeState({initialState, changeType:"showFullDescriptionsButtonVisible", changeValue:true}));
     wrapper = mountWrapper(store);
     expect(wrapper.find('.show-full-descriptions')).to.have.length(1);
+  });
+
+  it('should show showFullDescriptions button when showFullDescriptionsButtonVisible is true', () => {
+    let store = mockStore(changeState({initialState, changeType:"showFullDescriptionsButtonVisible", changeValue:true}));
+    wrapper = mountWrapper(store);
+    wrapper.find('.show-full-descriptions').simulate('click');
+    expect(showFullDescriptionsButtonClickedSpy.calledOnce);
   });
 });

@@ -26,6 +26,7 @@ const onSubmit = sinon.spy();
 const changeUserLocationSpy = sinon.spy();
 const removeTechnologySpy = sinon.spy();
 const addTechnologySpy = sinon.spy();
+const changeUserTechnologyWeightSpy = sinon.spy();
 
 const wrapper = mount(
   <Provider store={store}>
@@ -35,6 +36,7 @@ const wrapper = mount(
       changeUserLocation={changeUserLocationSpy}
       removeTechnology={removeTechnologySpy}
       addTechnology={addTechnologySpy}
+      changeUserTechnologyWeight={changeUserTechnologyWeightSpy}
     />
   </Provider>
 );
@@ -75,6 +77,11 @@ describe('(Component) UserInput', () => {
 
   it('should have table with 2 rows when userTechnologies has length of 2', () => {
     expect(wrapper.find('.table-col-lang')).to.have.length(2);
+  });
+
+  it('should call changeUserTechnologyWeight when weight-input changes', () => {
+    wrapper.find('.weight-input').first().simulate('change');
+    expect(changeUserTechnologyWeightSpy.calledOnce);
   });
 
 });
