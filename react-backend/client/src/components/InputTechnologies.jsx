@@ -31,6 +31,7 @@ class InputTechnologies extends Component {
       allTechs.includes(lastUserAddedTechnology)
     ) {
       // this.lastUserAddedTechnology.value = '';
+      console.log('should be deleted');
       this.props.addTechnology(lastUserAddedTechnology);
     }
     event.preventDefault();
@@ -90,8 +91,11 @@ class InputTechnologies extends Component {
             /> */}
             {/* {allTechsJSX} */}
             <Downshift
-              onChange={(selection) => {
+              onChange={selection => {
+                console.log(this.lastUserAddedTechnology.value);
                 this.addTechnology(selection);
+                this.lastUserAddedTechnology.value = '';
+                console.log(this.lastUserAddedTechnology.value);
               }}
               render={({
                 getInputProps,
@@ -101,9 +105,9 @@ class InputTechnologies extends Component {
                 inputValue,
                 highlightedIndex,
                 selectedItem,
-                clearSelection
+                clearSelection,
               }) => (
-                <div style={{display:"inline-block"}}>
+                <div style={{ display: 'inline-block', position: 'relative' }}>
                   <label {...getLabelProps()} />
                   <input
                     {...getInputProps({
@@ -112,11 +116,22 @@ class InputTechnologies extends Component {
                       name: 'technologies',
                       list: 'technologies',
                       placeholder: 'technology',
-                      onChange: clearSelection
+                      onChange: clearSelection,
+                      ref: el => {
+                        this.lastUserAddedTechnology = el;
+                      },
                     })}
                   />
+                  <input type="submit" id="add" value="add" />
                   {isOpen ? (
-                    <div>
+                    <div
+                      style={{
+                        display: 'block',
+                        position: 'absolute',
+                        zIndex: 1,
+                        width: "175px"
+                      }}
+                    >
                       {allTechs
                         .filter(i => !inputValue || i.includes(inputValue))
                         .map((item, index) => (
@@ -143,7 +158,6 @@ class InputTechnologies extends Component {
                 </div>
               )}
             />
-            <input type="submit" id="add" value="add" />
           </form>
         </div>
         {userTechnologiesJSX}
