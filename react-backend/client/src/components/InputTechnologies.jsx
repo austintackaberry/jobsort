@@ -18,11 +18,10 @@ class InputTechnologies extends Component {
 
   addTechnologyFromAddButton(event) {
     event.preventDefault();
-    console.log('form submitted');
-    this.addTechnology(this.state.inputValue);
   }
 
-  addTechnology(lastUserAddedTechnology) {
+  addTechnology() {
+    const lastUserAddedTechnology = this.state.inputValue;
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
     if (
@@ -67,12 +66,15 @@ class InputTechnologies extends Component {
       <div className="content-group">
         <h3 className="instructions">input technologies that you know</h3>
         <div style={{ marginTop: '7px' }}>
+          <form
+            id="addTechnologyForm"
+            onSubmit={this.addTechnologyFromAddButton}
+          >
           <Downshift
             onChange={selection => {
               this.addTechnology(selection);
             }}
             inputValue={this.state.inputValue}
-            // selectedItem={this.state.inputValue}
             render={({
               getInputProps,
               getItemProps,
@@ -84,12 +86,6 @@ class InputTechnologies extends Component {
               clearSelection,
             }) => (
               <div style={{ display: 'inline-block', position: 'relative' }}>
-                <form
-                  id="addTechnologyForm"
-                  onSubmit={e => {
-                    this.addTechnologyFromAddButton(e);
-                  }}
-                >
                   <label {...getLabelProps()} />
                   <input
                     {...getInputProps({
@@ -102,6 +98,11 @@ class InputTechnologies extends Component {
                         this.setState({ inputValue: e.target.value });
                         clearSelection();
                       },
+                      onKeyDown: e => {
+                        if (e.key === "Enter") {
+                          this.addTechnology();
+                        }
+                      }
                     })}
                   />
                   <input type="submit" id="add" value="add" />
@@ -137,10 +138,10 @@ class InputTechnologies extends Component {
                         ))}
                     </div>
                   ) : null}
-                </form>
               </div>
             )}
           />
+        </form>
         </div>
         {userTechnologiesJSX}
       </div>
