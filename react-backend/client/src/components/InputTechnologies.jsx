@@ -7,7 +7,7 @@ class InputTechnologies extends Component {
   constructor() {
     super();
     this.state = {
-      lastUserAddedTechnology: '',
+      inputValue: '',
     };
     this.addTechnology = this.addTechnology.bind(this);
     this.addTechnologyFromAddButton = this.addTechnologyFromAddButton.bind(
@@ -18,7 +18,8 @@ class InputTechnologies extends Component {
 
   addTechnologyFromAddButton(event) {
     event.preventDefault();
-    this.addTechnology(this.state.lastUserAddedTechnology.toLowerCase());
+    console.log('form submitted');
+    this.addTechnology(this.state.inputValue);
   }
 
   addTechnology(lastUserAddedTechnology) {
@@ -30,7 +31,7 @@ class InputTechnologies extends Component {
       ) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
-      // this.lastUserAddedTechnology.value = '';
+      this.setState({ inputValue: '' });
       console.log('should be deleted');
       this.props.addTechnology(lastUserAddedTechnology);
     }
@@ -61,53 +62,34 @@ class InputTechnologies extends Component {
     }
 
     const allTechs = this.props.allTechs.slice();
-    // let allTechsJSX = [];
-    // for (let i = 0; i < allTechs.length; i += 1) {
-    //   allTechsJSX.push(<option value={allTechs[i]} key={i} />);
-    // }
-    // allTechsJSX = [
-    //   <datalist id="technologies" key={0}>
-    //     {allTechsJSX}
-    //   </datalist>,
-    // ];
 
     return (
       <div className="content-group">
         <h3 className="instructions">input technologies that you know</h3>
         <div style={{ marginTop: '7px' }}>
-          <form
-            id="addTechnologyForm"
-            onSubmit={e => this.addTechnologyFromAddButton(e)}
-          >
-            {/* <input
-              id="userLangInput"
-              className="textbox"
-              data-lpignore="true"
-              list="technologies"
-              name="technologies"
-              ref={el => {
-                this.lastUserAddedTechnology = el;
-              }}
-            /> */}
-            {/* {allTechsJSX} */}
-            <Downshift
-              onChange={selection => {
-                console.log(this.lastUserAddedTechnology.value);
-                this.addTechnology(selection);
-                this.lastUserAddedTechnology.value = '';
-                console.log(this.lastUserAddedTechnology.value);
-              }}
-              render={({
-                getInputProps,
-                getItemProps,
-                getLabelProps,
-                isOpen,
-                inputValue,
-                highlightedIndex,
-                selectedItem,
-                clearSelection,
-              }) => (
-                <div style={{ display: 'inline-block', position: 'relative' }}>
+          <Downshift
+            onChange={selection => {
+              this.addTechnology(selection);
+            }}
+            inputValue={this.state.inputValue}
+            // selectedItem={this.state.inputValue}
+            render={({
+              getInputProps,
+              getItemProps,
+              getLabelProps,
+              isOpen,
+              inputValue,
+              highlightedIndex,
+              selectedItem,
+              clearSelection,
+            }) => (
+              <div style={{ display: 'inline-block', position: 'relative' }}>
+                <form
+                  id="addTechnologyForm"
+                  onSubmit={e => {
+                    this.addTechnologyFromAddButton(e);
+                  }}
+                >
                   <label {...getLabelProps()} />
                   <input
                     {...getInputProps({
@@ -116,9 +98,9 @@ class InputTechnologies extends Component {
                       name: 'technologies',
                       list: 'technologies',
                       placeholder: 'technology',
-                      onChange: clearSelection,
-                      ref: el => {
-                        this.lastUserAddedTechnology = el;
+                      onChange: e => {
+                        this.setState({ inputValue: e.target.value });
+                        clearSelection();
                       },
                     })}
                   />
@@ -129,7 +111,7 @@ class InputTechnologies extends Component {
                         display: 'block',
                         position: 'absolute',
                         zIndex: 1,
-                        width: "175px"
+                        width: '175px',
                       }}
                     >
                       {allTechs
@@ -155,10 +137,10 @@ class InputTechnologies extends Component {
                         ))}
                     </div>
                   ) : null}
-                </div>
-              )}
-            />
-          </form>
+                </form>
+              </div>
+            )}
+          />
         </div>
         {userTechnologiesJSX}
       </div>
