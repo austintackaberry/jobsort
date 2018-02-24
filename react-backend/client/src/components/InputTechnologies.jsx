@@ -13,6 +13,7 @@ class InputTechnologies extends Component {
     };
     this.addTechnology = this.addTechnology.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
+    this.stateReducer = this.stateReducer.bind(this);
   }
 
   addTechnology(lastUserAddedTechnology) {
@@ -35,6 +36,25 @@ class InputTechnologies extends Component {
   removeTechnology(event) {
     const index = event.target.id.slice(-1);
     this.props.removeTechnology(parseInt(index));
+  }
+
+  stateReducer(state, changes) {
+    console.log(Downshift.stateChangeTypes.changeInput);
+    console.log(changes.type);
+    // this prevents the menu from being closed when the user
+    // selects an item with a keyboard or mouse
+    switch (changes.type) {
+      case Downshift.stateChangeTypes.changeInput:
+        if (this.state.inputValue === "") {
+          return {
+            ...changes,
+            isOpen:false
+          }
+        }
+        return changes
+      default:
+        return changes
+    }
   }
 
   render() {
@@ -66,6 +86,7 @@ class InputTechnologies extends Component {
             onSubmit={(event)=>event.preventDefault()}
           >
           <Downshift
+            stateReducer={this.stateReducer}
             onChange={selection => {
               this.addTechnology(selection);
             }}
