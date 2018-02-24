@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Downshift from 'downshift';
+import glamorous, {Div} from 'glamorous';
+import {css} from 'glamor';
 
 class InputTechnologies extends Component {
   /* istanbul ignore next */
