@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Downshift from 'downshift';
 import glamorous, {Div} from 'glamorous';
 import {css} from 'glamor';
+import matchSorter from 'match-sorter';
 
 class InputTechnologies extends Component {
   /* istanbul ignore next */
@@ -39,10 +40,7 @@ class InputTechnologies extends Component {
   }
 
   stateReducer(state, changes) {
-    console.log(Downshift.stateChangeTypes.changeInput);
-    console.log(changes.type);
-    // this prevents the menu from being closed when the user
-    // selects an item with a keyboard or mouse
+    console.log(changes);
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
         if (this.state.inputValue === "") {
@@ -131,7 +129,7 @@ class InputTechnologies extends Component {
                         width: '175px',
                       }}
                     >
-                      {allTechs
+                      {matchSorter(allTechs, inputValue)
                         .filter(i => !inputValue || i.includes(inputValue))
                         .map((item, index) => (
                           <div
