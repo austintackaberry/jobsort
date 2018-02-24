@@ -34,8 +34,7 @@ class InputTechnologies extends Component {
 
   removeTechnology(event) {
     const index = event.target.id.slice(-1);
-    console.log(index);
-    this.props.removeTechnology(index);
+    this.props.removeTechnology(parseInt(index));
   }
 
   render() {
