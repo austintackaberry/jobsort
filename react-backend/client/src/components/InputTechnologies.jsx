@@ -40,7 +40,6 @@ class InputTechnologies extends Component {
   }
 
   stateReducer(state, changes) {
-    console.log(changes);
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
         if (this.state.inputValue === "") {
@@ -127,6 +126,8 @@ class InputTechnologies extends Component {
                         position: 'absolute',
                         zIndex: 1,
                         width: '175px',
+                        overflow: 'auto',
+                        height: '100px',
                       }}
                     >
                       {matchSorter(allTechs, inputValue)
@@ -144,6 +145,7 @@ class InputTechnologies extends Component {
                                     : 'white',
                                 fontWeight:
                                   selectedItem === item ? 'bold' : 'normal',
+                                cursor: 'pointer'
                               },
                             })}
                           >
