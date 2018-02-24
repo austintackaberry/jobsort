@@ -12,18 +12,13 @@ class InputTechnologies extends Component {
       inputValue: '',
     };
     this.addTechnology = this.addTechnology.bind(this);
-    this.addTechnologyFromAddButton = this.addTechnologyFromAddButton.bind(
-      this
-    );
     this.removeTechnology = this.removeTechnology.bind(this);
   }
 
-  addTechnologyFromAddButton(event) {
-    event.preventDefault();
-  }
-
-  addTechnology() {
-    const lastUserAddedTechnology = this.state.inputValue;
+  addTechnology(lastUserAddedTechnology) {
+    if (lastUserAddedTechnology === undefined) {
+      lastUserAddedTechnology = this.state.inputValue;
+    }
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
     if (
@@ -33,14 +28,13 @@ class InputTechnologies extends Component {
       allTechs.includes(lastUserAddedTechnology)
     ) {
       this.setState({ inputValue: '' });
-      console.log('should be deleted');
       this.props.addTechnology(lastUserAddedTechnology);
     }
-    event.preventDefault();
   }
 
   removeTechnology(event) {
     const index = event.target.id.slice(-1);
+    console.log(index);
     this.props.removeTechnology(index);
   }
 
@@ -70,7 +64,7 @@ class InputTechnologies extends Component {
         <div style={{ marginTop: '7px' }}>
           <form
             id="addTechnologyForm"
-            onSubmit={this.addTechnologyFromAddButton}
+            onSubmit={(event)=>event.preventDefault()}
           >
           <Downshift
             onChange={selection => {

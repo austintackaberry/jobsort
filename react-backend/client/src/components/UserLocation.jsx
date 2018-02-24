@@ -8,12 +8,12 @@ class UserLocation extends Component {
     this.handleUserLocationChange = this.handleUserLocationChange.bind(this);
   }
 
-  handleUserLocationChange(event) {
-    this.props.onUserLocationChange(event.target.value);
-  }
-
   componentDidMount() {
     this.userLocation.focus();
+  }
+
+  handleUserLocationChange(event) {
+    this.props.onUserLocationChange(event.target.value);
   }
 
   render() {
