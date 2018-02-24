@@ -87,8 +87,7 @@ input::-webkit-calendar-picker-indicator {
   border-radius: 2px;
   border:none;
   padding-left: 2px;
-  width: 80%;
-  max-width: 175px;
+  width: 175px;
 }
 
 #lang-table {

@@ -12,6 +12,10 @@ class UserLocation extends Component {
     this.props.onUserLocationChange(event.target.value);
   }
 
+  componentDidMount() {
+    this.userLocation.focus();
+  }
+
   render() {
     return (
       <div className="content-group">
@@ -24,6 +28,9 @@ class UserLocation extends Component {
               data-lpignore="true"
               placeholder="location"
               onChange={this.handleUserLocationChange}
+              ref={el => {
+                this.userLocation = el;
+              }}
             />
           </form>
         </div>
