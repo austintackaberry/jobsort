@@ -47,6 +47,7 @@ Running these tests is as easy as...
 * Redux
 * Nodejs
 * Express
+* Downshift
 * Cheerio
 * MySQL
 * AWS
