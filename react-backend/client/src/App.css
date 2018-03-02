@@ -121,7 +121,7 @@ input::-webkit-calendar-picker-indicator {
   border: 1px solid rgb(128, 128, 128);
   border-radius: 10px;
   box-shadow: 3px 3px 2px -1px rgb(128, 128, 128);
-  background-color: rgb(255, 102, 0);
+  background-color: #ff8533;
 }
 
 .source {
@@ -164,7 +164,7 @@ a {
 }
 
 #get-results {
-  background-color: rgb(255, 102, 0);
+  background-color: #ff8533;
   border-radius: 17px;
   border: 1px solid rgb(128, 128, 128);
   padding: 7px 12px 7px 12px;
@@ -180,7 +180,7 @@ a {
   margin-top: 10px;
   margin-right: 5px;
   margin-left: 5px;
-  background-color: rgb(255, 102, 0);
+  background-color: #ff8533;
   border-radius: 8px;
   border: 1px solid rgb(128, 128, 128);
   padding: 5px 8px 5px 8px;
