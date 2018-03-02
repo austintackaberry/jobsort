@@ -18,7 +18,7 @@ class InputTechnologies extends Component {
   addTechnology(selection) {
     let lastUserAddedTechnology = selection;
     if (lastUserAddedTechnology === undefined) {
-      lastUserAddedTechnology = this.state.inputValue;
+      lastUserAddedTechnology = this.state.inputValue.toLowerCase();
     }
     const userTechnologies = this.props.userTechnologies.slice();
     const allTechs = this.props.allTechs.slice();
@@ -127,8 +127,8 @@ class InputTechnologies extends Component {
                         height: '100px',
                       }}
                     >
-                      {matchSorter(allTechs, inputValue)
-                        .filter(i => !inputValue || i.includes(inputValue))
+                      {matchSorter(allTechs, inputValue.toLowerCase())
+                        .filter(i => !inputValue.toLowerCase() || i.includes(inputValue.toLowerCase()))
                         .map((item, index) => (
                           <div
                             {...getItemProps({
