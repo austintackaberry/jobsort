@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Downshift from 'downshift';
-import glamorous, {Div} from 'glamorous';
-import {css} from 'glamor';
 import matchSorter from 'match-sorter';
 
 class InputTechnologies extends Component {
@@ -17,7 +15,8 @@ class InputTechnologies extends Component {
     this.stateReducer = this.stateReducer.bind(this);
   }
 
-  addTechnology(lastUserAddedTechnology) {
+  addTechnology(selection) {
+    let lastUserAddedTechnology = selection;
     if (lastUserAddedTechnology === undefined) {
       lastUserAddedTechnology = this.state.inputValue;
     }
@@ -36,21 +35,21 @@ class InputTechnologies extends Component {
 
   removeTechnology(event) {
     const index = event.target.id.slice(-1);
-    this.props.removeTechnology(parseInt(index));
+    this.props.removeTechnology(parseInt(index, 10));
   }
 
   stateReducer(state, changes) {
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
-        if (this.state.inputValue === "") {
+        if (this.state.inputValue === '') {
           return {
             ...changes,
-            isOpen:false
-          }
+            isOpen: false,
+          };
         }
-        return changes
+        return changes;
       default:
-        return changes
+        return changes;
     }
   }
 
@@ -80,26 +79,24 @@ class InputTechnologies extends Component {
         <div style={{ marginTop: '7px' }}>
           <form
             id="addTechnologyForm"
-            onSubmit={(event)=>event.preventDefault()}
+            onSubmit={event => event.preventDefault()}
           >
-          <Downshift
-            stateReducer={this.stateReducer}
-            onChange={selection => {
-              this.addTechnology(selection);
-            }}
-            inputValue={this.state.inputValue}
-            render={({
-              getInputProps,
-              getItemProps,
-              getLabelProps,
-              isOpen,
-              inputValue,
-              highlightedIndex,
-              selectedItem,
-              clearSelection,
-            }) => (
-              <div style={{ display: 'inline-block', position: 'relative' }}>
-                  <label {...getLabelProps()} />
+            <Downshift
+              stateReducer={this.stateReducer}
+              onChange={selection => {
+                this.addTechnology(selection);
+              }}
+              inputValue={this.state.inputValue}
+              render={({
+                getInputProps,
+                getItemProps,
+                isOpen,
+                inputValue,
+                highlightedIndex,
+                selectedItem,
+                clearSelection,
+              }) => (
+                <div style={{ display: 'inline-block', position: 'relative' }}>
                   <input
                     {...getInputProps({
                       className: 'textbox',
@@ -112,10 +109,10 @@ class InputTechnologies extends Component {
                         clearSelection();
                       },
                       onKeyDown: e => {
-                        if (e.key === "Enter") {
+                        if (e.key === 'Enter') {
                           this.addTechnology();
                         }
-                      }
+                      },
                     })}
                   />
                   <input type="submit" id="add" value="add" />
@@ -145,7 +142,7 @@ class InputTechnologies extends Component {
                                     : 'white',
                                 fontWeight:
                                   selectedItem === item ? 'bold' : 'normal',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
                               },
                             })}
                           >
@@ -154,10 +151,10 @@ class InputTechnologies extends Component {
                         ))}
                     </div>
                   ) : null}
-              </div>
-            )}
-          />
-        </form>
+                </div>
+              )}
+            />
+          </form>
         </div>
         {userTechnologiesJSX}
       </div>
