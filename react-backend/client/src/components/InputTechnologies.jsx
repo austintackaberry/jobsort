@@ -9,6 +9,7 @@ class InputTechnologies extends Component {
     super();
     this.state = {
       inputValue: '',
+      selectedItem: null
     };
     this.addTechnology = this.addTechnology.bind(this);
     this.removeTechnology = this.removeTechnology.bind(this);
@@ -28,7 +29,7 @@ class InputTechnologies extends Component {
       ) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
-      this.setState({ inputValue: '' });
+      this.setState({ inputValue: '' , selectedItem: null});
       this.props.addTechnology(lastUserAddedTechnology);
     }
   }
@@ -39,6 +40,9 @@ class InputTechnologies extends Component {
   }
 
   stateReducer(state, changes) {
+    if (changes.selectedItem) {
+      this.setState({selectedItem: changes.selectedItem});
+    }
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
         if (this.state.inputValue === '') {
@@ -87,6 +91,7 @@ class InputTechnologies extends Component {
                 this.addTechnology(selection);
               }}
               inputValue={this.state.inputValue}
+              selectedItem={this.state.selectedItem}
               render={({
                 getInputProps,
                 getItemProps,
@@ -106,11 +111,11 @@ class InputTechnologies extends Component {
                       placeholder: 'technology',
                       onChange: e => {
                         this.setState({ inputValue: e.target.value });
-                        clearSelection();
                       },
                       onKeyDown: e => {
                         if (e.key === 'Enter') {
                           this.addTechnology();
+                          clearSelection();
                         }
                       },
                     })}
