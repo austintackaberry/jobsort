@@ -29,7 +29,7 @@ class InputTechnologies extends Component {
       ) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
-      this.setState({ inputValue: '' , selectedItem: null});
+      this.setState({ inputValue: '', selectedItem: null });
       this.props.addTechnology(lastUserAddedTechnology);
     }
   }
@@ -41,7 +41,7 @@ class InputTechnologies extends Component {
 
   stateReducer(state, changes) {
     if (changes.selectedItem) {
-      this.setState({selectedItem: changes.selectedItem});
+      this.setState({ selectedItem: changes.selectedItem });
     }
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
@@ -58,27 +58,26 @@ class InputTechnologies extends Component {
   }
 
   render() {
-    const userTechnologies = this.props.userTechnologies.slice();
-    const userTechnologiesJSX = [];
-    for (let i = 0; i < userTechnologies.length; i += 1) {
-      userTechnologiesJSX.push(
-        <div className="user-lang-div" key={userTechnologies[i].id}>
+    const userTechnologiesJSX = this.props.userTechnologies.map((technology, i) => {
+      return (
+        <div className="user-lang-div" key={technology.id}>
           <button
             id={`langButt${i}`}
             className="exit"
             onClick={this.removeTechnology}
           >
             &#10006;
-          </button>
-          <span className="user-lang-span">{userTechnologies[i].language}</span>
+      </button>
+          <span className="user-lang-span">{technology.language}</span>
         </div>
-      );
-    }
+      )
+    })
+
 
     const allTechs = this.props.allTechs.slice();
 
     return (
-      <div className="content-group">
+      <div className="content-group" >
         <h3 className="instructions">input technologies that you know</h3>
         <div style={{ marginTop: '7px' }}>
           <form
@@ -101,63 +100,63 @@ class InputTechnologies extends Component {
                 selectedItem,
                 clearSelection,
               }) => (
-                <div style={{ display: 'inline-block', position: 'relative' }}>
-                  <input
-                    {...getInputProps({
-                      className: 'textbox',
-                      'data-lpignore': 'true',
-                      name: 'technologies',
-                      list: 'technologies',
-                      placeholder: 'technology',
-                      onChange: e => {
-                        this.setState({ inputValue: e.target.value });
-                      },
-                      onKeyDown: e => {
-                        if (e.key === 'Enter') {
-                          this.addTechnology();
-                          clearSelection();
-                        }
-                      },
-                    })}
-                  />
-                  <input type="submit" id="add" value="add" />
-                  {isOpen ? (
-                    <div
-                      style={{
-                        display: 'block',
-                        position: 'absolute',
-                        zIndex: 1,
-                        width: '175px',
-                        overflow: 'auto',
-                        height: '100px',
-                      }}
-                    >
-                      {matchSorter(allTechs, inputValue.toLowerCase())
-                        .filter(i => !inputValue.toLowerCase() || i.includes(inputValue.toLowerCase()))
-                        .map((item, index) => (
-                          <div
-                            {...getItemProps({
-                              key: item,
-                              index,
-                              item,
-                              style: {
-                                backgroundColor:
-                                  highlightedIndex === index
-                                    ? 'lightgray'
-                                    : 'white',
-                                fontWeight:
-                                  selectedItem === item ? 'bold' : 'normal',
-                                cursor: 'pointer',
-                              },
-                            })}
-                          >
-                            {item}
-                          </div>
-                        ))}
-                    </div>
-                  ) : null}
-                </div>
-              )}
+                  <div style={{ display: 'inline-block', position: 'relative' }}>
+                    <input
+                      {...getInputProps({
+                        className: 'textbox',
+                        'data-lpignore': 'true',
+                        name: 'technologies',
+                        list: 'technologies',
+                        placeholder: 'technology',
+                        onChange: e => {
+                          this.setState({ inputValue: e.target.value });
+                        },
+                        onKeyDown: e => {
+                          if (e.key === 'Enter') {
+                            this.addTechnology();
+                            clearSelection();
+                          }
+                        },
+                      })}
+                    />
+                    <input type="submit" id="add" value="add" />
+                    {isOpen ? (
+                      <div
+                        style={{
+                          display: 'block',
+                          position: 'absolute',
+                          zIndex: 1,
+                          width: '175px',
+                          overflow: 'auto',
+                          height: '100px',
+                        }}
+                      >
+                        {matchSorter(allTechs, inputValue.toLowerCase())
+                          .filter(i => !inputValue.toLowerCase() || i.includes(inputValue.toLowerCase()))
+                          .map((item, index) => (
+                            <div
+                              {...getItemProps({
+                                key: item,
+                                index,
+                                item,
+                                style: {
+                                  backgroundColor:
+                                    highlightedIndex === index
+                                      ? 'lightgray'
+                                      : 'white',
+                                  fontWeight:
+                                    selectedItem === item ? 'bold' : 'normal',
+                                  cursor: 'pointer',
+                                },
+                              })}
+                            >
+                              {item}
+                            </div>
+                          ))}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
             />
           </form>
         </div>
