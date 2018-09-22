@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "server": "node app.js",
-    "start": "npm install && npm run server",
-    "travis": "npm install && cd client && npm install",
     "build": "cd client && npm run build",
-    "test": "cd client && npm run test",
     "coverage": "cd client && npm run coverage",
-    "coveralls": "cd client && npm run coveralls"
+    "coveralls": "cd client && npm run coveralls",
+    "heroku": "npm run travis && npm run build && npm run server",
+    "server": "node app.js",
+    "start": "cd client && npm start",
+    "test": "cd client && npm test",
+    "travis": "npm install && cd client && npm install"
   },
   "dependencies": {
     "async": "^2.6.0",
