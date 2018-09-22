@@ -1,13 +1,30 @@
 {
+  "name": "jobsort-server",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "start": "cd react-backend && npm install && npm start",
-    "travis": "cd react-backend && npm install && cd client && npm install",
-    "build": "cd react-backend/client && npm run build",
-    "test": "cd react-backend/client && npm run test",
-    "coverage": "cd react-backend/client && npm run coverage",
-    "coveralls": "cd react-backend/client && npm run coveralls"
+    "server": "node app.js",
+    "start": "npm install && npm run server",
+    "travis": "npm install && cd client && npm install",
+    "build": "cd client && npm run build",
+    "test": "cd client && npm run test",
+    "coverage": "cd client && npm run coverage",
+    "coveralls": "cd client && npm run coveralls"
   },
   "dependencies": {
-    "node-fetch": "^1.7.3"
+    "async": "^2.6.0",
+    "body-parser": "~1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.15.5",
+    "html-to-text": "^3.3.0",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.0",
+    "node-fetch": "^1.7.3",
+    "node-mysql": "^0.4.2",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "serve-favicon": "~2.4.5"
   }
 }
