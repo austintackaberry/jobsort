@@ -1,18 +1,19 @@
-import React, { Component } from 'react';
-import 'babel-polyfill';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import PropTypes from 'prop-types';
-import './App.css';
-import ConnectedSearchResults from './components/SearchResults';
-import Loader from './components/Loader';
-import ConnectedUserInput from './components/UserInput';
-import * as actionCreators from './actions/actionCreators';
+import React, { Component } from "react";
+import "babel-polyfill";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import PropTypes from "prop-types";
+import "./App.css";
+import ConnectedSearchResults from "./components/SearchResults";
+import Loader from "./components/Loader";
+import ConnectedUserInput from "./components/UserInput";
+import * as actionCreators from "./actions/actionCreators";
+import allTechs from "./data/allTechs";
 
 export async function asyncFetchData(userInputData) {
-  const fetchRes = await fetch('/getresults/', {
-    method: 'POST',
-    body: JSON.stringify(userInputData),
+  const fetchRes = await fetch("/getresults/", {
+    method: "POST",
+    body: JSON.stringify(userInputData)
   });
   if (!fetchRes) return false;
   const response = await fetchRes.json();
@@ -20,17 +21,17 @@ export async function asyncFetchData(userInputData) {
 }
 
 export function generateLoaderText(userInputData) {
-  let userDataText = '{';
+  let userDataText = "{";
   userInputData.userTechnologies.map((element, i) => {
     userDataText = userDataText.concat(
       `${element.language}: ${element.weight}`
     );
     if (i + 1 < userInputData.userTechnologies.length) {
-      userDataText = userDataText.concat(', ');
+      userDataText = userDataText.concat(", ");
     }
     return true;
   });
-  userDataText = userDataText.concat('}');
+  userDataText = userDataText.concat("}");
   return `jobSort({location: '${
     userInputData.userLocation
   }', technologies: ${userDataText}});`;
@@ -42,69 +43,14 @@ export class App extends Component {
     super();
     this.activateLoader = this.activateLoader.bind(this);
     this.getJobListings = this.getJobListings.bind(this);
-    this.allTechs = [
-      'javascript',
-      'git',
-      'jquery',
-      'sass',
-      'rails',
-      'kafka',
-      'aws',
-      'graphql',
-      'bootstrap',
-      'rust',
-      'docker',
-      'redux',
-      'react native',
-      'express',
-      'react',
-      'vue',
-      'd3',
-      'ember',
-      'django',
-      'flask',
-      'sql',
-      'java',
-      'c#',
-      'python',
-      'php',
-      'c++',
-      'c',
-      'clojure',
-      'typescript',
-      'ruby',
-      'swift',
-      'objective-c',
-      '.net',
-      'assembly',
-      'r',
-      'perl',
-      'vba',
-      'matlab',
-      'golang',
-      'scala',
-      'haskell',
-      'node',
-      'angular',
-      '.net core',
-      'cordova',
-      'mysql',
-      'sqlite',
-      'postgresql',
-      'mongodb',
-      'oracle',
-      'redis',
-      'html',
-      'css',
-    ].sort();
   }
 
   getJobListings(event) {
     event.preventDefault();
     const userInputData = {
-      allTechs: this.allTechs,
+      allTechs,
       userLocation: this.props.userLocation,
-      userTechnologies: [...this.props.userTechnologies],
+      userTechnologies: [...this.props.userTechnologies]
     };
     this.activateLoader(userInputData);
     return asyncFetchData(userInputData).then(listings => {
@@ -117,12 +63,12 @@ export class App extends Component {
   activateLoader(userInputData) {
     const loaderText = generateLoaderText(userInputData);
     this.props.activateLoader();
-    let loaderTextCopy = loaderText.split('');
-    let currentLoaderText = '';
+    let loaderTextCopy = loaderText.split("");
+    let currentLoaderText = "";
     const intervalFn = () => {
       if (loaderTextCopy.length === 0) {
-        currentLoaderText = '';
-        loaderTextCopy = loaderText.split('');
+        currentLoaderText = "";
+        loaderTextCopy = loaderText.split("");
       }
       currentLoaderText = currentLoaderText.concat(loaderTextCopy.shift());
       this.props.setCurrentLoaderText(currentLoaderText);
@@ -140,15 +86,15 @@ export class App extends Component {
     let contentLvl1Style;
     let appStyle;
     if (window.innerWidth < 919) {
-      appStyle = { background: '#a4a4a4' };
-      titleContainerStyle = { paddingBottom: '0px' };
-      contentLvl1Style = { border: '0', paddingTop: '7px' };
+      appStyle = { background: "#a4a4a4" };
+      titleContainerStyle = { paddingBottom: "0px" };
+      contentLvl1Style = { border: "0", paddingTop: "7px" };
     } else {
-      appStyle = { background: 'rgb(232, 236, 237)' };
-      titleContainerStyle = { paddingBottom: '20px' };
+      appStyle = { background: "rgb(232, 236, 237)" };
+      titleContainerStyle = { paddingBottom: "20px" };
       contentLvl1Style = {
-        border: '1px solid rgb(128, 128, 128)',
-        paddingTop: '7px',
+        border: "1px solid rgb(128, 128, 128)",
+        paddingTop: "7px"
       };
     }
 
@@ -163,7 +109,7 @@ export class App extends Component {
               onSubmit={event => {
                 this.getJobListings(event).then(res => res);
               }}
-              allTechs={this.allTechs}
+              allTechs={allTechs}
             />
             <Loader
               currentLoaderText={this.props.currentLoaderText}
@@ -179,7 +125,7 @@ export class App extends Component {
 
 App.defaultProps = {
   loaderActive: false,
-  currentLoaderText: '',
+  currentLoaderText: ""
 };
 
 App.propTypes = {
@@ -190,7 +136,7 @@ App.propTypes = {
   setCurrentLoaderText: PropTypes.func.isRequired,
   deactivateLoader: PropTypes.func.isRequired,
   currentLoaderText: PropTypes.string,
-  loaderActive: PropTypes.bool,
+  loaderActive: PropTypes.bool
 };
 
 function mapStateToProps(state) {
@@ -202,7 +148,7 @@ function mapStateToProps(state) {
     userTechnologies: state.userTechnologies,
     userLocation: state.userLocation,
     loaderActive: state.loaderActive,
-    currentLoaderText: state.currentLoaderText,
+    currentLoaderText: state.currentLoaderText
   };
 }
 
@@ -210,4 +156,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(actionCreators, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Downshift from 'downshift';
-import matchSorter from 'match-sorter';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Downshift from "downshift";
+import matchSorter from "match-sorter";
 
 class InputTechnologies extends Component {
   /* istanbul ignore next */
   constructor() {
     super();
     this.state = {
-      inputValue: '',
+      inputValue: "",
       selectedItem: null
     };
     this.addTechnology = this.addTechnology.bind(this);
@@ -29,7 +29,7 @@ class InputTechnologies extends Component {
       ) &&
       allTechs.includes(lastUserAddedTechnology)
     ) {
-      this.setState({ inputValue: '', selectedItem: null });
+      this.setState({ inputValue: "", selectedItem: null });
       this.props.addTechnology(lastUserAddedTechnology);
     }
   }
@@ -45,10 +45,10 @@ class InputTechnologies extends Component {
     }
     switch (changes.type) {
       case Downshift.stateChangeTypes.changeInput:
-        if (this.state.inputValue === '') {
+        if (this.state.inputValue === "") {
           return {
             ...changes,
-            isOpen: false,
+            isOpen: false
           };
         }
         return changes;
@@ -58,28 +58,27 @@ class InputTechnologies extends Component {
   }
 
   render() {
-    const userTechnologiesJSX = this.props.userTechnologies.map((technology, i) => {
-      return (
+    const userTechnologiesJSX = this.props.userTechnologies.map(
+      (technology, i) => (
         <div className="user-lang-div" key={technology.id}>
           <button
             id={`langButt${i}`}
             className="exit"
             onClick={this.removeTechnology}
           >
-            &#10006;
-      </button>
+              &#10006;
+          </button>
           <span className="user-lang-span">{technology.language}</span>
         </div>
-      )
-    })
-
+        )
+    );
 
     const allTechs = this.props.allTechs.slice();
 
     return (
-      <div className="content-group" >
+      <div className="content-group">
         <h3 className="instructions">input technologies that you know</h3>
-        <div style={{ marginTop: '7px' }}>
+        <div style={{ marginTop: "7px" }}>
           <form
             id="addTechnologyForm"
             onSubmit={event => event.preventDefault()}
@@ -98,65 +97,69 @@ class InputTechnologies extends Component {
                 inputValue,
                 highlightedIndex,
                 selectedItem,
-                clearSelection,
+                clearSelection
               }) => (
-                  <div style={{ display: 'inline-block', position: 'relative' }}>
-                    <input
-                      {...getInputProps({
-                        className: 'textbox',
-                        'data-lpignore': 'true',
-                        name: 'technologies',
-                        list: 'technologies',
-                        placeholder: 'technology',
-                        onChange: e => {
-                          this.setState({ inputValue: e.target.value });
-                        },
-                        onKeyDown: e => {
-                          if (e.key === 'Enter') {
-                            this.addTechnology();
-                            clearSelection();
-                          }
-                        },
-                      })}
-                    />
-                    <input type="submit" id="add" value="add" />
-                    {isOpen ? (
-                      <div
-                        style={{
-                          display: 'block',
-                          position: 'absolute',
-                          zIndex: 1,
-                          width: '175px',
-                          overflow: 'auto',
-                          height: '100px',
-                        }}
-                      >
-                        {matchSorter(allTechs, inputValue.toLowerCase())
-                          .filter(i => !inputValue.toLowerCase() || i.includes(inputValue.toLowerCase()))
-                          .map((item, index) => (
-                            <div
-                              {...getItemProps({
-                                key: item,
-                                index,
-                                item,
-                                style: {
-                                  backgroundColor:
-                                    highlightedIndex === index
-                                      ? 'lightgray'
-                                      : 'white',
-                                  fontWeight:
-                                    selectedItem === item ? 'bold' : 'normal',
-                                  cursor: 'pointer',
-                                },
-                              })}
-                            >
-                              {item}
-                            </div>
-                          ))}
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+                <div style={{ display: "inline-block", position: "relative" }}>
+                  <input
+                    {...getInputProps({
+                      className: "textbox",
+                      "data-lpignore": "true",
+                      name: "technologies",
+                      list: "technologies",
+                      placeholder: "technology",
+                      onChange: e => {
+                        this.setState({ inputValue: e.target.value });
+                      },
+                      onKeyDown: e => {
+                        if (e.key === "Enter") {
+                          this.addTechnology();
+                          clearSelection();
+                        }
+                      }
+                    })}
+                  />
+                  <input type="submit" id="add" value="add" />
+                  {isOpen ? (
+                    <div
+                      style={{
+                        display: "block",
+                        position: "absolute",
+                        zIndex: 1,
+                        width: "175px",
+                        overflow: "auto",
+                        height: "100px"
+                      }}
+                    >
+                      {matchSorter(allTechs, inputValue.toLowerCase())
+                        .filter(
+                          i =>
+                            !inputValue.toLowerCase() ||
+                            i.includes(inputValue.toLowerCase())
+                        )
+                        .map((item, index) => (
+                          <div
+                            {...getItemProps({
+                              key: item,
+                              index,
+                              item,
+                              style: {
+                                backgroundColor:
+                                  highlightedIndex === index
+                                    ? "lightgray"
+                                    : "white",
+                                fontWeight:
+                                  selectedItem === item ? "bold" : "normal",
+                                cursor: "pointer"
+                              }
+                            })}
+                          >
+                            {item}
+                          </div>
+                        ))}
+                    </div>
+                  ) : null}
+                </div>
+              )}
             />
           </form>
         </div>
@@ -170,7 +173,7 @@ InputTechnologies.propTypes = {
   userTechnologies: PropTypes.arrayOf(PropTypes.object).isRequired,
   allTechs: PropTypes.arrayOf(PropTypes.string).isRequired,
   addTechnology: PropTypes.func.isRequired,
-  removeTechnology: PropTypes.func.isRequired,
+  removeTechnology: PropTypes.func.isRequired
 };
 
 export default InputTechnologies;
