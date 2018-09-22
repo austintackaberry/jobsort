@@ -6,7 +6,7 @@
     "build": "cd client && npm run build",
     "coverage": "cd client && npm run coverage",
     "coveralls": "cd client && npm run coveralls",
-    "heroku": "npm run travis && npm run build && npm run server",
+    "heroku": "npm run server",
     "server": "node app.js",
     "start": "cd client && npm start",
     "test": "cd client && npm test",
