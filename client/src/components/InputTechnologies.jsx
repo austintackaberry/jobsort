@@ -16,13 +16,27 @@ class InputTechnologies extends Component {
     this.stateReducer = this.stateReducer.bind(this);
   }
 
-  addTechnology(selection) {
+  addTechnology({ selection, highlightedIndex }) {
+    const { inputValue } = this.state;
+    const { allTechs, userTechnologies } = this.props;
+    // If there is a selection then make that the value
     let lastUserAddedTechnology = selection;
-    if (lastUserAddedTechnology === undefined) {
-      lastUserAddedTechnology = this.state.inputValue.toLowerCase();
+    if (!lastUserAddedTechnology) {
+      if (highlightedIndex === null) {
+        // If the user didn't select an option from dropdown, use the input as the value
+        lastUserAddedTechnology = inputValue.toLowerCase();
+      } else {
+        const matches = matchSorter(allTechs, inputValue.toLowerCase()).filter(
+          i => !inputValue.toLowerCase() || i.includes(inputValue.toLowerCase())
+        );
+        if (matches[highlightedIndex] === inputValue) {
+          // This is only for edge cases (user types "java" but selects "javascript")
+          // Note that in the case above, addTechnology gets called twice. Once with a
+          // selection, and once without a selection
+          lastUserAddedTechnology = inputValue.toLowerCase();
+        }
+      }
     }
-    const userTechnologies = this.props.userTechnologies.slice();
-    const allTechs = this.props.allTechs.slice();
     if (
       !userTechnologies.some(
         element => element.language === lastUserAddedTechnology
@@ -66,11 +80,11 @@ class InputTechnologies extends Component {
             className="exit"
             onClick={this.removeTechnology}
           >
-              &#10006;
+            &#10006;
           </button>
           <span className="user-lang-span">{technology.language}</span>
         </div>
-        )
+      )
     );
 
     const allTechs = this.props.allTechs.slice();
@@ -86,7 +100,7 @@ class InputTechnologies extends Component {
             <Downshift
               stateReducer={this.stateReducer}
               onChange={selection => {
-                this.addTechnology(selection);
+                this.addTechnology({ selection });
               }}
               inputValue={this.state.inputValue}
               selectedItem={this.state.selectedItem}
@@ -112,7 +126,7 @@ class InputTechnologies extends Component {
                       },
                       onKeyDown: e => {
                         if (e.key === "Enter") {
-                          this.addTechnology();
+                          this.addTechnology({ highlightedIndex });
                           clearSelection();
                         }
                       }
