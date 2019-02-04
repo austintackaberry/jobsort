@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "async": "^2.6.0",
+    "aws-sdk": "^2.395.0",
     "body-parser": "~1.18.2",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "~1.4.3",
@@ -27,5 +28,8 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "serve-favicon": "~2.4.5"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0"
   }
 }
